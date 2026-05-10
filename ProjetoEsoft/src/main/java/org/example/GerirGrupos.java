@@ -5,12 +5,11 @@ import javax.swing.*;
 public class GerirGrupos extends JFrame {
     private JPanel janelaGrupos;
     private JPanel nomeGrupos;
-    private JPanel grupoSelecionado;
+    private JPanel areaSelecionado;
     private JPanel classificacao;
     private JPanel detalhes;
     private JPanel equipasGrupo;
     private JPanel jogosGrupo;
-    private JLabel lblNomeCampeonato;
     private JLabel lblGrupoSelecionado;
     private JLabel lblPrimSorteio;
     private JLabel lblSegSorteio;
@@ -32,6 +31,14 @@ public class GerirGrupos extends JFrame {
     private JLabel lblSegLugar;
     private JLabel lblTercLugar;
     private JLabel lblQuarLugar;
+    private JPanel menuPrincipal;
+    private JLabel lblNomeCampeonato;
+    private JButton btnGestao;
+    private JButton btnClassificacaoGeral;
+    private JButton btnMerch;
+    private JButton btnCarrinho;
+    private JPanel grupoSelecionado;
+    private JLabel txtGrupoSelecionado;
 
 
     public GerirGrupos(String title) {
