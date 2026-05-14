@@ -47,6 +47,13 @@ public class JanelaPrincipal extends JFrame {
         btnGestao.addActionListener(e ->
                 popup.show(btnGestao, 0, btnGestao.getHeight())
         );
+
+        btnMerch.addActionListener(this::btnMerchActionPerformed);
+    }
+
+    private void btnMerchActionPerformed(ActionEvent actionEvent) {
+        ComprarMerch merch = new ComprarMerch("Comprar Merch");
+        merch.setVisible(true);
     }
 
     private void btnGrupoActionPerformed(ActionEvent actionEvent) {
