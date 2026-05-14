@@ -2,6 +2,7 @@ package org.modelo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class ComprarBilhete extends JFrame {
     private JPanel painelPrincipal;
@@ -25,8 +26,7 @@ public class ComprarBilhete extends JFrame {
     private JPanel CentralInferior;
     private JButton comprarButton;
     private JButton adicionarMerchButton;
-    private JButton button1;
-    private JButton button2;
+    private JSpinner quantBilhetes;
 
     public ComprarBilhete(String title) {
         super(title);
@@ -40,9 +40,20 @@ public class ComprarBilhete extends JFrame {
         CentralInferior.setBorder(BorderFactory.createLineBorder(Color.green,3));
         CentralSuperior.setBorder(BorderFactory.createLineBorder(Color.green,3));
 
+        comprarButton.addActionListener(this::btnComprarActionPerformed);
+
+        quantBilhetes.setModel(new SpinnerNumberModel(1, 1, 99, 1));
+
         setContentPane(painelPrincipal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
     }
+
+    private void btnComprarActionPerformed(ActionEvent actionEvent) {
+        FinalizarCompra janela = new FinalizarCompra("Campeonato Mundial 2026 - Finalizar compra");
+        janela.setVisible(true);
+        dispose();
+    }
+
 }

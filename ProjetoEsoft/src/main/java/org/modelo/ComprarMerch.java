@@ -89,8 +89,8 @@ public class ComprarMerch extends JFrame {
                         "\nQuantidade: " + quantidade
         );
 
-        //FinalizarPagamento pagamento = new FinalizarPagamento("Pagamento");
-        //pagamento.setVisible(true);
+        FinalizarCompra pagamento = new FinalizarCompra("Campeonato Mundial 2026 - Comprar Merch");
+        pagamento.setVisible(true);
 
         dispose();
     }

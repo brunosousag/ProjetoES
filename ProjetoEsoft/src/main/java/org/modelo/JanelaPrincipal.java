@@ -52,17 +52,17 @@ public class JanelaPrincipal extends JFrame {
     }
 
     private void btnMerchActionPerformed(ActionEvent actionEvent) {
-        ComprarMerch merch = new ComprarMerch("Comprar Merch");
+        ComprarMerch merch = new ComprarMerch("Campeonato Mundial 2026 - Comprar Merch");
         merch.setVisible(true);
     }
 
     private void btnGrupoActionPerformed(ActionEvent actionEvent) {
-        GerirGrupos janela = new GerirGrupos("Gerir Grupos");
+        GerirGrupos janela = new GerirGrupos("Campeonato Mundial 2026 - Gerir Grupos");
         janela.setVisible(true);
     }
 
     private void btnComprarActionPerformed(ActionEvent actionEvent) {
-        ComprarBilhete janela = new ComprarBilhete("Comprar");
+        ComprarBilhete janela = new ComprarBilhete("Campeonato Mundial 2026 - Comprar bilhete");
         janela.setVisible(true);
     }
 
