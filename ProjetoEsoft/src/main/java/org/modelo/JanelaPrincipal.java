@@ -12,9 +12,8 @@ public class JanelaPrincipal extends JFrame {
     private JButton btnMerch;
     private JButton btnGestao;
     private JPanel jogoListado;
-    private JButton button5;
+    private JButton BtnComprar;
     private JCheckBox checkBox1;
-    private JButton button4;
     private JPanel listaGrupo;
     private JLabel lblNomeCampeonato;
 
@@ -39,6 +38,7 @@ public class JanelaPrincipal extends JFrame {
         itemEquipas.addActionListener(e -> System.out.println("Abrir gestão de Equipas"));
         itemGrupos.addActionListener(this::btnGrupoActionPerformed);
         itemFases.addActionListener(e -> System.out.println("Abrir gestão de Fases"));
+        BtnComprar.addActionListener(this::btnComprarActionPerformed);
 
         popup.add(itemEquipas);
         popup.add(itemGrupos);
@@ -58,6 +58,11 @@ public class JanelaPrincipal extends JFrame {
 
     private void btnGrupoActionPerformed(ActionEvent actionEvent) {
         GerirGrupos janela = new GerirGrupos("Gerir Grupos");
+        janela.setVisible(true);
+    }
+
+    private void btnComprarActionPerformed(ActionEvent actionEvent) {
+        ComprarBilhete janela = new ComprarBilhete("Comprar");
         janela.setVisible(true);
     }
 

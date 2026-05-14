@@ -47,7 +47,7 @@ public class GerirGrupos extends JFrame {
         setContentPane(janelaGrupos);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(700, 500);
+        pack();
         setLocationRelativeTo(null);
     }
 
