@@ -46,16 +46,6 @@ public class GerirGrupos extends JFrame {
 
         setContentPane(janelaGrupos);
 
-        UITheme.applyTheme(janelaGrupos);
-        UITheme.styleHeader(menuPrincipal);
-        UITheme.styleTitleLabel(lblNomeCampeonato);
-
-        UITheme.setBackground(areaSelecionado, UITheme.BG_CARD);
-        areaSelecionado.setBorder(UITheme.cardBorder());
-
-        UITheme.setBackground(equipasGrupo, UITheme.BG_SECONDARY);
-        UITheme.setBackground(jogosGrupo, UITheme.BG_SECONDARY);
-
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);

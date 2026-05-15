@@ -25,21 +25,6 @@ public class ComprarMerch extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(painelPrincipal);
 
-        UITheme.applyTheme(painelPrincipal);
-
-        // Header
-        cabecalhoMerch.setBackground(UITheme.BG_HEADER);
-        cabecalhoMerch.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, UITheme.ACCENT_GOLD));
-        UITheme.styleTitleLabel(lblNomeMerch);
-
-        // Content card
-        UITheme.setBackground(estruturaMerch, UITheme.BG_CARD);
-        estruturaMerch.setBorder(UITheme.cardBorder());
-
-        UITheme.stylePrimaryButton(btnComprar);
-        UITheme.styleNavButton(btnProdutos);
-        UITheme.styleNavButton(btnTam);
-
         pack();
         setLocationRelativeTo(null);
 

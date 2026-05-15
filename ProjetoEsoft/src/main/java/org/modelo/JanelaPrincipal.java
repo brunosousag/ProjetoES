@@ -22,15 +22,6 @@ public class JanelaPrincipal extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(janelaPrincipal);
-
-        UITheme.applyTheme(janelaPrincipal);
-        UITheme.styleHeader(menuPrincipal);
-        UITheme.styleTitleLabel(lblNomeCampeonato);
-        UITheme.setBackground(jogoListado, UITheme.BG_CARD);
-        jogoListado.setBorder(UITheme.cardBorder());
-        UITheme.stylePrimaryButton(BtnComprar);
-        checkBox1.setBackground(UITheme.BG_CARD);
-
         pack();
         setLocationRelativeTo(null);
 
@@ -77,7 +68,6 @@ public class JanelaPrincipal extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            UITheme.setup();
             new JanelaPrincipal("Campeonato Mundial 2026").setVisible(true);
         });
     }
