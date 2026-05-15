@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class ComprarBilhete extends JFrame {
+public class ComprarBilhete extends BaseFrame {
     private JPanel painelPrincipal;
     private JPanel Bancadas;
     private JPanel estadio;
@@ -50,10 +50,28 @@ public class ComprarBilhete extends JFrame {
         CentralSuperior.setBorder(BorderFactory.createLineBorder(Color.green,3));
 
         comprarButton.addActionListener(this::btnComprarActionPerformed);
+
+        adicionarMerchButton.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "comprarMerch",
+                        "A janela Comprar Merch já está aberta!",
+                        new ComprarMerch("Campeonato Mundial 2026 - Comprar Merch")
+                )
+        );
+
         quantBilhetes.setModel(new SpinnerNumberModel(1, 1, 99, 1));
 
         setContentPane(painelPrincipal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        super.btnGestao = btnGestao;
+        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnMerch = btnMerch;
+        super.btnCarrinho = btnCarrinho;
+
+        configurarMenuGestao();
+
         pack();
         setLocationRelativeTo(null);
     }
@@ -81,11 +99,6 @@ public class ComprarBilhete extends JFrame {
         });
 
         finalizarCompraAberta.setVisible(true);
-    }
-
-    private void btnMerchActionPerformed(ActionEvent actionEvent) {
-        ComprarMerch merch = new ComprarMerch("Campeonato Mundial 2026 - Comprar Merch");
-        merch.setVisible(true);
     }
 
 }
