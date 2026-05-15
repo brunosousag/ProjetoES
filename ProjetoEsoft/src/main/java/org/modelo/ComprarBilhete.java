@@ -36,6 +36,8 @@ public class ComprarBilhete extends JFrame {
     private JRadioButton selecionarRadioButton5;
     private JRadioButton selecionarRadioButton1;
 
+    private FinalizarCompra finalizarCompraAberta; //pra tratar as varias abas abertas
+
     public ComprarBilhete(String title) {
         super(title);
 
@@ -49,7 +51,6 @@ public class ComprarBilhete extends JFrame {
         CentralSuperior.setBorder(BorderFactory.createLineBorder(Color.green,3));
 
         comprarButton.addActionListener(this::btnComprarActionPerformed);
-
         quantBilhetes.setModel(new SpinnerNumberModel(1, 1, 99, 1));
 
         setContentPane(painelPrincipal);
@@ -59,9 +60,33 @@ public class ComprarBilhete extends JFrame {
     }
 
     private void btnComprarActionPerformed(ActionEvent actionEvent) {
-        FinalizarCompra janela = new FinalizarCompra("Campeonato Mundial 2026 - Finalizar compra");
-        janela.setVisible(true);
-        dispose();
+
+        if (finalizarCompraAberta != null && finalizarCompraAberta.isVisible()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "A janela de finalização da compra já está aberta!"
+            );
+
+            finalizarCompraAberta.toFront();
+            finalizarCompraAberta.requestFocus();
+            return;
+        }
+
+        finalizarCompraAberta = new FinalizarCompra("Campeonato Mundial 2026 - Finalizar compra");
+
+        finalizarCompraAberta.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                finalizarCompraAberta = null;
+            }
+        });
+
+        finalizarCompraAberta.setVisible(true);
+    }
+
+    private void btnMerchActionPerformed(ActionEvent actionEvent) {
+        ComprarMerch merch = new ComprarMerch("Campeonato Mundial 2026 - Comprar Merch");
+        merch.setVisible(true);
     }
 
 }
