@@ -6,18 +6,24 @@ import java.awt.event.ActionEvent;
 public class ComprarMerch extends JFrame {
 
     private JPanel painelPrincipal;
-    private JLabel lblNomeMerch;
-    private JLabel lblTxtCompra;
     private JButton btnProdutos;
-    private JPanel cabecalhoMerch;
-    private JPanel estruturaMerch;
     private JButton btnTam;
     private JLabel produtoEsc;
     private JLabel tamEsc;
-    private JLabel lblNomeProduto;
-    private JLabel lblNomeTamanho;
     private JButton btnComprar;
     private JSpinner spinnerQuantidade;
+    private JPanel cabecalhoMerch;
+    private JLabel lblNomeMerch;
+    private JLabel lblTxtCompra;
+    private JPanel estruturaMerch;
+    private JLabel lblNomeProduto;
+    private JLabel lblNomeTamanho;
+    private JPanel menuPrincipal;
+    private JLabel lblNomeCampeonato;
+    private JButton btnGestao;
+    private JButton btnClassificacaoGeral;
+    private JButton btnMerch;
+    private JButton btnCarrinho;
 
     public ComprarMerch(String title) {
         super(title);
