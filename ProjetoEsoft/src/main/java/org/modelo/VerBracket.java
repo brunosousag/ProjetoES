@@ -3,8 +3,6 @@ package org.modelo;
 import javax.swing.*;
 
 public class VerBracket extends BaseFrame {
-    private JPanel menuPrincipal;
-    private JLabel lblNomeCampeonato;
     private JButton btnClassificacaoGeral;
     private JButton btnCarrinho;
     private JButton btnMerch;

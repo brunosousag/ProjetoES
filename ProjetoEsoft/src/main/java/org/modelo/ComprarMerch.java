@@ -6,6 +6,16 @@ import java.awt.event.ActionEvent;
 public class ComprarMerch extends BaseFrame {
 
     private JPanel painelPrincipal;
+
+    // botões do menu/cabeçalho
+    private JPanel menuPrincipal;
+    private JLabel lblNomeCampeonato;
+    private JButton btnGestao;
+    private JButton btnClassificacaoGeral;
+    private JButton btnMerch;
+    private JButton btnCarrinho;
+
+    // componentes da compra
     private JButton btnProdutos;
     private JButton btnTam;
     private JLabel produtoEsc;
@@ -24,8 +34,8 @@ public class ComprarMerch extends BaseFrame {
     public ComprarMerch(String title) {
         super(title);
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(painelPrincipal);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
         super.btnClassificacaoGeral = btnClassificacaoGeral;
@@ -95,6 +105,8 @@ public class ComprarMerch extends BaseFrame {
                 new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
 
         pagamento.setVisible(true);
+
+        dispose();
     }
 
     private void selecionarTamanho(String tamanho) {
@@ -102,14 +114,10 @@ public class ComprarMerch extends BaseFrame {
     }
 
     private void btnCachecolActionPerformed(ActionEvent actionEvent) {
-
         produtoEsc.setText("Cachecol Oficial");
-//        lblTxtCompra.setText("Preço: 14.99€");
     }
 
     private void btnTShirtActionPerformed(ActionEvent actionEvent) {
-
         produtoEsc.setText("T-Shirt Oficial");
-//        lblTxtCompra.setText("Preço: 29.99€");
     }
 }

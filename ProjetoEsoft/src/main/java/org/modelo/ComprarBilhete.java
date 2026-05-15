@@ -34,6 +34,7 @@ public class ComprarBilhete extends BaseFrame {
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
+    private JLabel lblNomeCampeonato;
 
     private FinalizarCompra finalizarCompraAberta; //pra tratar as varias abas abertas
 

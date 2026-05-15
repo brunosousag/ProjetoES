@@ -16,7 +16,7 @@ public class JanelaPrincipal extends BaseFrame {
     private JCheckBox adicionarAoCarrinhoCheckBox;
     private JPanel listaGrupo;
     private JPanel totalMerch;
-
+    private JLabel lblNomeCampeonato;
 
     public JanelaPrincipal(String title) {
         super(title);
