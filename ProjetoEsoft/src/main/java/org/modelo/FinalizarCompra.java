@@ -11,8 +11,8 @@ public class FinalizarCompra extends JFrame {
     private JTextField textField2;
     private JPanel titulo;
     private JPanel MetodoPagamento;
-    private JRadioButton oRadioButton;
-    private JRadioButton metodoPag;
+    private JRadioButton multibancoRadioButton;
+    private JRadioButton dinheiroRadioButton;
     private JPanel finalizarPagamento;
     private JButton voltarButton;
     private JButton finalizarCompraButton;
@@ -20,25 +20,9 @@ public class FinalizarCompra extends JFrame {
     public FinalizarCompra(String title) {
         super(title);
 
-        setContentPane(layoutborder);
-
-        UITheme.applyTheme(layoutborder);
-
-        // Order summary card
-        UITheme.setBackground(resumo, UITheme.BG_CARD);
-        resumo.setBorder(UITheme.cardBorder());
-
-        // Customer data section
-        UITheme.setBackground(DadosCliente, UITheme.BG_SECONDARY);
-
-        // Payment method section
-        UITheme.setBackground(MetodoPagamento, UITheme.BG_SECONDARY);
-
-        UITheme.stylePrimaryButton(finalizarCompraButton);
-        UITheme.styleSecondaryButton(voltarButton);
-
         finalizarCompraButton.addActionListener(this::finalizarCompra);
 
+        setContentPane(layoutborder);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
