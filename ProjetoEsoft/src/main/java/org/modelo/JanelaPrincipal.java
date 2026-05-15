@@ -13,9 +13,9 @@ public class JanelaPrincipal extends JFrame {
     private JButton btnGestao;
     private JPanel jogoListado;
     private JButton btnComprar;
-    private JCheckBox checkBox1;
+    private JCheckBox adicionarAoCarrinhoCheckBox;
     private JPanel listaGrupo;
-    private JLabel lblNomeCampeonato;
+    private JPanel totalMerch;
 
     //verificação das abas
     private GerirGrupos gerirGruposAberto;

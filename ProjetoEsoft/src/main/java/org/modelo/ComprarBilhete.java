@@ -6,14 +6,6 @@ import java.awt.event.ActionEvent;
 
 public class ComprarBilhete extends JFrame {
     private JPanel painelPrincipal;
-    private JPanel menuPrincipal;
-    private JLabel lblNomeCampeonato;
-    private JButton btnGestao;
-    private JButton btnClassificacaoGeral;
-    private JButton btnMerch;
-    private JButton btnCarrinho;
-    private JPanel JogoEscolhido;
-    private JPanel jogoListado;
     private JPanel Bancadas;
     private JPanel estadio;
     private JPanel NorteSuperior;
@@ -35,6 +27,13 @@ public class ComprarBilhete extends JFrame {
     private JRadioButton selecionarRadioButton4;
     private JRadioButton selecionarRadioButton5;
     private JRadioButton selecionarRadioButton1;
+    private JPanel listaGrupo;
+    private JCheckBox adicionarAoCarrinhoCheckBox;
+    private JPanel menuPrincipal;
+    private JButton btnClassificacaoGeral;
+    private JButton btnCarrinho;
+    private JButton btnMerch;
+    private JButton btnGestao;
 
     private FinalizarCompra finalizarCompraAberta; //pra tratar as varias abas abertas
 

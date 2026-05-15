@@ -18,12 +18,8 @@ public class ComprarMerch extends JFrame {
     private JPanel estruturaMerch;
     private JLabel lblNomeProduto;
     private JLabel lblNomeTamanho;
-    private JPanel menuPrincipal;
-    private JLabel lblNomeCampeonato;
-    private JButton btnGestao;
-    private JButton btnClassificacaoGeral;
-    private JButton btnMerch;
-    private JButton btnCarrinho;
+    private JPanel categMerch1;
+    private JPanel categMerch2;
 
     public ComprarMerch(String title) {
         super(title);
