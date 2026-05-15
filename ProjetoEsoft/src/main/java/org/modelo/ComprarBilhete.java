@@ -31,23 +31,58 @@ public class ComprarBilhete extends JFrame {
     public ComprarBilhete(String title) {
         super(title);
 
-        NorteSuperior.setBorder(BorderFactory.createLineBorder(Color.orange,3));
-        SulSuperior.setBorder(BorderFactory.createLineBorder(Color.green,3));
-        Oeste.setBorder(BorderFactory.createLineBorder(Color.red,3));
-        Este.setBorder(BorderFactory.createLineBorder(Color.green,3));
-        SulInferior.setBorder(BorderFactory.createLineBorder(Color.red,3));
-        NorteInferior.setBorder(BorderFactory.createLineBorder(Color.green,3));
-        CentralInferior.setBorder(BorderFactory.createLineBorder(Color.green,3));
-        CentralSuperior.setBorder(BorderFactory.createLineBorder(Color.green,3));
+        UITheme.applyTheme(painelPrincipal);
+        UITheme.styleHeader(menuPrincipal);
+        UITheme.styleTitleLabel(lblNomeCampeonato);
+        UITheme.setBackground(jogoListado, UITheme.BG_CARD);
+        jogoListado.setBorder(UITheme.cardBorder());
+
+        // Stadium sections — availability colors
+        styleSection(NorteSuperior,   UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(CentralSuperior, UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(SulSuperior,     UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(Este,            UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(NorteInferior,   UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(CentralInferior, UITheme.SECTION_AVAILABLE, new Color(39, 174, 96));
+        styleSection(Oeste,           UITheme.SECTION_FEW,       new Color(230, 126, 34));
+        styleSection(SulInferior,     UITheme.SECTION_FULL,      new Color(192, 57, 43));
 
         comprarButton.addActionListener(this::btnComprarActionPerformed);
-
         quantBilhetes.setModel(new SpinnerNumberModel(1, 1, 99, 1));
+
+        UITheme.stylePrimaryButton(comprarButton);
+        UITheme.styleSecondaryButton(adicionarMerchButton);
+        fixCampoPanel();
 
         setContentPane(painelPrincipal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
+    }
+
+    private void styleSection(JPanel section, Color bg, Color borderColor) {
+        UITheme.setBackground(section, bg);
+        section.setBorder(UITheme.sectionBorder(borderColor));
+        for (Component c : section.getComponents()) {
+            if (c instanceof JLabel lbl) lbl.setForeground(Color.WHITE);
+        }
+    }
+
+    /** Finds the unbound CAMPO panel (center of the 3×3 estadio grid) and styles it. */
+    private void fixCampoPanel() {
+        for (Component c : estadio.getComponents()) {
+            if (c instanceof JPanel pnl && pnl != NorteSuperior && pnl != CentralSuperior
+                    && pnl != SulSuperior && pnl != Este && pnl != Oeste
+                    && pnl != NorteInferior && pnl != CentralInferior && pnl != SulInferior) {
+                UITheme.setBackground(pnl, UITheme.CAMPO_BG);
+                for (Component child : pnl.getComponents()) {
+                    if (child instanceof JLabel lbl) {
+                        lbl.setForeground(Color.WHITE);
+                        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18f));
+                    }
+                }
+            }
+        }
     }
 
     private void btnComprarActionPerformed(ActionEvent actionEvent) {

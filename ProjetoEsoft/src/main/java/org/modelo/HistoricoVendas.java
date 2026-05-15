@@ -22,8 +22,14 @@ public class HistoricoVendas extends JFrame {
 
         setContentPane(HistoricoVendas);
 
+        UITheme.applyTheme(HistoricoVendas);
+        UITheme.styleHeader(menuPrincipal);
+        UITheme.styleTitleLabel(lblNomeCampeonato);
+
+        UITheme.setBackground(ListaVendas, UITheme.BG_CARD);
+        ListaVendas.setBorder(UITheme.cardBorder());
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800,600);
         pack();
         setLocationRelativeTo(null);
     }
