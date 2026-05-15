@@ -16,6 +16,7 @@ public class HistoricoVendas extends JFrame {
     private JList list1;
     private JList list2;
     private JList list3;
+    private JButton imprimirButton;
 
     public HistoricoVendas(String title) {
         super(title);
@@ -26,5 +27,18 @@ public class HistoricoVendas extends JFrame {
         setSize(800,600);
         pack();
         setLocationRelativeTo(null);
+
+        DefaultListCellRenderer renderer = new DefaultListCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        list1.setCellRenderer(renderer);
+        list2.setCellRenderer(renderer);
+        list3.setCellRenderer(renderer);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new HistoricoVendas("Campeonato Mundial 2026").setVisible(true);
+        });
     }
 }
