@@ -21,6 +21,7 @@ public class FinalizarCompra extends JFrame {
         super(title);
 
         finalizarCompraButton.addActionListener(this::finalizarCompra);
+        voltarButton.addActionListener(this::btnVoltarActionPerformed);
 
         setContentPane(layoutborder);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -37,4 +38,9 @@ public class FinalizarCompra extends JFrame {
         FinalizarCompra pagamento = new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
         dispose();
     }
+
+    private void btnVoltarActionPerformed(ActionEvent actionEvent) {
+        dispose();
+    }
+
 }
