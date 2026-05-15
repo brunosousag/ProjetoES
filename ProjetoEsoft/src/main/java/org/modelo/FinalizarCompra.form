@@ -476,4 +476,11 @@
       </grid>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="metodoPag">
+      <member id="eef71"/>
+      <member id="eef71"/>
+      <member id="12d8e"/>
+    </group>
+  </buttonGroups>
 </form>

@@ -27,6 +27,14 @@ public class ComprarBilhete extends JFrame {
     private JButton comprarButton;
     private JButton adicionarMerchButton;
     private JSpinner quantBilhetes;
+    private JRadioButton selecionarRadioButton;
+    private JRadioButton selecionarRadioButton7;
+    private JRadioButton selecionarRadioButton6;
+    private JRadioButton selecionarRadioButton2;
+    private JRadioButton selecionarRadioButton3;
+    private JRadioButton selecionarRadioButton4;
+    private JRadioButton selecionarRadioButton5;
+    private JRadioButton selecionarRadioButton1;
 
     public ComprarBilhete(String title) {
         super(title);

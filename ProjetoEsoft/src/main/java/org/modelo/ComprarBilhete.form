@@ -320,7 +320,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="4c62c" binding="NorteSuperior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="4c62c" binding="NorteSuperior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -362,9 +362,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="ae163" class="javax.swing.JRadioButton" binding="selecionarRadioButton" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="8d993" binding="SulSuperior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="8d993" binding="SulSuperior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -405,9 +415,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="b24c1" class="javax.swing.JRadioButton" binding="selecionarRadioButton6" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="289ca" binding="CentralSuperior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="289ca" binding="CentralSuperior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -448,9 +468,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="f0320" class="javax.swing.JRadioButton" binding="selecionarRadioButton7" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="f4816" binding="Este" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="f4816" binding="Este" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -491,9 +521,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="ae646" class="javax.swing.JRadioButton" binding="selecionarRadioButton2" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="cefb1" binding="Oeste" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="cefb1" binding="Oeste" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -534,9 +574,19 @@
                       <text value="200€"/>
                     </properties>
                   </component>
+                  <component id="1f473" class="javax.swing.JRadioButton" binding="selecionarRadioButton1" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="af06d" binding="CentralInferior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="af06d" binding="CentralInferior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -577,9 +627,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="c4215" class="javax.swing.JRadioButton" binding="selecionarRadioButton4" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="e89b1" binding="NorteInferior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="e89b1" binding="NorteInferior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -620,9 +680,19 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="c75e1" class="javax.swing.JRadioButton" binding="selecionarRadioButton5" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="827e2" binding="SulInferior" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="827e2" binding="SulInferior" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -663,6 +733,16 @@
                       <text value="120€"/>
                     </properties>
                   </component>
+                  <component id="5592e" class="javax.swing.JRadioButton" binding="selecionarRadioButton3" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-12961992"/>
+                      <foreground color="-525825"/>
+                      <text value="Selecionar"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
               <grid id="b4811" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -682,7 +762,7 @@
                     <properties>
                       <font size="16" style="1"/>
                       <foreground color="-525825"/>
-                      <text value="CAMPO"/>
+                      <text value="Relvado"/>
                     </properties>
                   </component>
                 </children>
@@ -974,4 +1054,17 @@
       </grid>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="btnGroupBancada">
+      <member id="ae163"/>
+      <member id="ae163"/>
+      <member id="b24c1"/>
+      <member id="f0320"/>
+      <member id="ae646"/>
+      <member id="1f473"/>
+      <member id="c4215"/>
+      <member id="c75e1"/>
+      <member id="5592e"/>
+    </group>
+  </buttonGroups>
 </form>
