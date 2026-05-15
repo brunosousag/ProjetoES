@@ -36,4 +36,15 @@ public class WindowManager {
 
         novaJanela.setVisible(true);
     }
+
+    public static void fecharTodasAsJanelas() {
+
+        for (JFrame frame : janelasAbertas.values()) {
+            if (frame != null && frame.isVisible()) {
+                frame.dispose();
+            }
+        }
+
+        janelasAbertas.clear();
+    }
 }

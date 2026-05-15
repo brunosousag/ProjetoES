@@ -31,12 +31,12 @@ public class FinalizarCompra extends JFrame {
 
     private void finalizarCompra(ActionEvent actionEvent) {
 
-        JOptionPane.showMessageDialog(this,
+        JOptionPane.showMessageDialog(
+                this,
                 "Pagamento efetuado com sucesso!"
         );
-
-        FinalizarCompra pagamento = new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
         dispose();
+        WindowManager.fecharTodasAsJanelas();
     }
 
     private void btnVoltarActionPerformed(ActionEvent actionEvent) {

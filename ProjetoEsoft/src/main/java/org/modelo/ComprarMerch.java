@@ -105,8 +105,6 @@ public class ComprarMerch extends BaseFrame {
                 new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
 
         pagamento.setVisible(true);
-
-        dispose();
     }
 
     private void selecionarTamanho(String tamanho) {
