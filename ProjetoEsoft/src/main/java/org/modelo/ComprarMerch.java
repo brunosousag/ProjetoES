@@ -3,7 +3,7 @@ package org.modelo;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ComprarMerch extends JFrame {
+public class ComprarMerch extends BaseFrame {
 
     private JPanel painelPrincipal;
     private JButton btnProdutos;
@@ -31,10 +31,16 @@ public class ComprarMerch extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(painelPrincipal);
 
+        super.btnGestao = btnGestao;
+        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnMerch = btnMerch;
+        super.btnCarrinho = btnCarrinho;
+
+        configurarMenuGestao();
+        configurarMerchCompra();
+
         pack();
         setLocationRelativeTo(null);
-
-        configurarMerchCompra();
     }
 
     private void configurarMerchCompra() {
@@ -89,16 +95,10 @@ public class ComprarMerch extends JFrame {
         String tamanho = tamEsc.getText();
         int quantidade = obterQuantidade();
 
-        JOptionPane.showMessageDialog(this,
-                "Produto: " + produto +
-                        "\nTamanho: " + tamanho +
-                        "\nQuantidade: " + quantidade
-        );
+        FinalizarCompra pagamento =
+                new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
 
-        FinalizarCompra pagamento = new FinalizarCompra("Campeonato Mundial 2026 - Comprar Merch");
         pagamento.setVisible(true);
-
-        dispose();
     }
 
     private void selecionarTamanho(String tamanho) {

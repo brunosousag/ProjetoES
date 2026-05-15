@@ -2,7 +2,7 @@ package org.modelo;
 
 import javax.swing.*;
 
-public class VerBracket extends JFrame {
+public class VerBracket extends BaseFrame {
     private JPanel menuPrincipal;
     private JLabel lblNomeCampeonato;
     private JButton btnClassificacaoGeral;
@@ -11,20 +11,20 @@ public class VerBracket extends JFrame {
     private JButton btnGestao;
     private JPanel janelaBracket;
 
-    public VerBracket(String title){
+    public VerBracket(String title) {
         super(title);
 
         setContentPane(janelaBracket);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800,600);
+        super.btnGestao = btnGestao;
+        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnMerch = btnMerch;
+        super.btnCarrinho = btnCarrinho;
+
+        configurarMenuGestao();
+
         pack();
         setLocationRelativeTo(null);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VerBracket("Campeonato Mundial 2026").setVisible(true);
-        });
     }
 }

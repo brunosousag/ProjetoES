@@ -35,10 +35,4 @@ public class HistoricoVendas extends JFrame {
         list2.setCellRenderer(renderer);
         list3.setCellRenderer(renderer);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new HistoricoVendas("Campeonato Mundial 2026").setVisible(true);
-        });
-    }
 }
