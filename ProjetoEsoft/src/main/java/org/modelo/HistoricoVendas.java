@@ -105,10 +105,4 @@ public class HistoricoVendas extends BaseFrame {
                 "A fatura vai ser imprimida dentro de segundos!"
         );
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new HistoricoVendas("Campeonato Mundial 2026").setVisible(true);
-        });
-    }
 }
