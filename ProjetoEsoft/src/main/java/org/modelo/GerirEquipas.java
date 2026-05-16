@@ -2,7 +2,7 @@ package org.modelo;
 
 import javax.swing.*;
 
-public class GerirEquipas extends JFrame{
+public class GerirEquipas extends BaseFrame{
     private JPanel gerirEquipas;
     private JLabel lblDadosEquipa;
     private JTextField txtFldNomeEquipa;
@@ -22,8 +22,16 @@ public class GerirEquipas extends JFrame{
     public GerirEquipas(String title) {
         super(title);
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(gerirEquipas);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        super.btnGestao = btnGestao;
+        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnMerch = btnMerch;
+        super.btnCarrinho = btnCarrinho;
+
+        configurarMenuGestao();
+
         pack();
         setLocationRelativeTo(null);
 
