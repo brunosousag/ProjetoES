@@ -5,8 +5,6 @@ import java.awt.event.ActionEvent;
 
 public class HistoricoVendas extends BaseFrame {
 
-    private JPanel menuPrincipal;
-    private JLabel lblNomeCampeonato;
     private JButton btnClassificacaoGeral;
     private JButton btnCarrinho;
     private JButton btnMerch;
@@ -22,6 +20,8 @@ public class HistoricoVendas extends BaseFrame {
     private JList list3;
 
     private JButton imprimirButton;
+    private JPanel menuPrincipal;
+    private JLabel lblNomeCampeonato;
 
     public HistoricoVendas(String title) {
         super(title);
