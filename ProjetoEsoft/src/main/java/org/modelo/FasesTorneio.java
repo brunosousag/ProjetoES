@@ -2,14 +2,14 @@ package org.modelo;
 
 import javax.swing.*;
 
-public class VerBracket extends BaseFrame {
+public class FasesTorneio extends BaseFrame {
     private JButton btnClassificacaoGeral;
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
     private JPanel janelaBracket;
 
-    public VerBracket(String title) {
+    public FasesTorneio(String title) {
         super(title);
 
         setContentPane(janelaBracket);

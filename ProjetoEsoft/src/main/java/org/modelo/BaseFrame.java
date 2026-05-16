@@ -45,7 +45,7 @@ public abstract class BaseFrame extends JFrame {
                         this,
                         "verBracket",
                         "A janela de ver Fases de Torneio ja está aberta!",
-                        new VerBracket("Campeonato Mundial 2026 - Fases de Torneio")
+                        new FasesTorneio("Campeonato Mundial 2026 - Fases de Torneio")
                 )
         );
 
