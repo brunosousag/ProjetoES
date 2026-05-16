@@ -50,7 +50,8 @@ public class HistoricoVendas extends BaseFrame {
                 "Fatura",
                 "Nome",
                 "Total",
-                "Data"
+                "Data",
+                "Selecionar"
         };
 
         Object[][] dados = {
@@ -60,7 +61,23 @@ public class HistoricoVendas extends BaseFrame {
         };
 
         DefaultTableModel tabela =
-                new DefaultTableModel(dados, colunas);
+                new DefaultTableModel(dados, colunas) {
+                    //colocar checkbox em cada linha
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        if (columnIndex == 4) {
+                            return Boolean.class;
+                        }
+
+                        return String.class;
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        // Só permite editar a checkbox
+                        return column == 4;
+                    }
+                };
 
         table1.setModel(tabela);
 
@@ -73,7 +90,8 @@ public class HistoricoVendas extends BaseFrame {
 
         center.setHorizontalAlignment(JLabel.CENTER);
 
-        for (int i = 0; i < table1.getColumnCount(); i++) {
+        //percorrer todas as colunas para centrar o texto
+        for (int i = 0; i < table1.getColumnCount() - 1; i++) {
 
             table1.getColumnModel()
                     .getColumn(i)
@@ -86,5 +104,11 @@ public class HistoricoVendas extends BaseFrame {
                 this,
                 "A fatura vai ser imprimida dentro de segundos!"
         );
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new HistoricoVendas("Campeonato Mundial 2026").setVisible(true);
+        });
     }
 }
