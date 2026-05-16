@@ -85,4 +85,6 @@ public abstract class BaseFrame extends JFrame {
 //                new Carrinho("Campeonato Mundial 2026 - Carrinho")
 //        );
 //    }
+
+
 }
