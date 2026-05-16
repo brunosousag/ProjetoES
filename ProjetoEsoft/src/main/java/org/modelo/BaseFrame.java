@@ -22,10 +22,13 @@ public abstract class BaseFrame extends JFrame {
         JMenuItem itemGrupos = new JMenuItem("Gerir Grupos");
         JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
 
-        //vai ficar aq ate a classe aparecer
         itemEquipas.addActionListener(e ->
-                JOptionPane.showMessageDialog(this,
-                        "Área Gerir Equipas ainda não implementada.")
+                WindowManager.abrirJanela(
+                        this,
+                        "gerirEquipas",
+                        "A janela Gerir Equipas já está aberta!",
+                        new GerirEquipas("Campeonato Mundial 2026 - Gerir Equipas")
+                )
         );
 
         itemGrupos.addActionListener(e ->

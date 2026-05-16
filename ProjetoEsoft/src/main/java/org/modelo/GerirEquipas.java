@@ -22,16 +22,10 @@ public class GerirEquipas extends JFrame{
     public GerirEquipas(String title) {
         super(title);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(gerirEquipas);
         pack();
         setLocationRelativeTo(null);
 
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new GerirEquipas("Campeonato Mundial 2026").setVisible(true);
-        });
     }
 }
