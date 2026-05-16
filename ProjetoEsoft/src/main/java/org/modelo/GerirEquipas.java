@@ -34,6 +34,5 @@ public class GerirEquipas extends BaseFrame{
 
         pack();
         setLocationRelativeTo(null);
-
     }
 }
