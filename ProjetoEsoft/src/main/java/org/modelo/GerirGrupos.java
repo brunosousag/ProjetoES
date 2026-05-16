@@ -13,12 +13,13 @@ public class GerirGrupos extends BaseFrame {
     private JButton btnMerch;
     private JButton btnCarrinho;
 
-    // componentes próprios da página
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
     private JPanel Grupo;
     private JButton adicionarEquipaButton;
-    private JButton modificarGrupoMudaEstadoButton;
+    private JButton alerarVencedorButton;
+    private JComboBox comboBox3;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JComboBox comboBox4;
 
     public GerirGrupos(String title) {
         super(title);

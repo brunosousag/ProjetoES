@@ -21,6 +21,16 @@ public abstract class BaseFrame extends JFrame {
         JMenuItem itemEquipas = new JMenuItem("Gerir Equipas");
         JMenuItem itemGrupos = new JMenuItem("Gerir Grupos");
         JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
+        JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
+
+        itemHistorico.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "hostoricoVendas",
+                        "A janela de historico de vendas já está aberta!",
+                        new HistoricoVendas("Campeonato Mundial 2026 - Histórico de vendas")
+                )
+        );
 
         itemEquipas.addActionListener(e ->
                 WindowManager.abrirJanela(
@@ -52,6 +62,7 @@ public abstract class BaseFrame extends JFrame {
         popup.add(itemEquipas);
         popup.add(itemGrupos);
         popup.add(itemFases);
+        popup.add(itemHistorico);
 
         btnGestao.addActionListener(e ->
                 popup.show(btnGestao, 0, btnGestao.getHeight())
