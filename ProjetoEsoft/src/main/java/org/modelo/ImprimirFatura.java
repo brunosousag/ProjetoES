@@ -27,6 +27,8 @@ public class ImprimirFatura extends BaseFrame {
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 
+        btnImprimir.addActionListener(this::finalizarImprimir);
+
         configurarMenuGestao();
         preencherTabela();
 
@@ -67,5 +69,12 @@ public class ImprimirFatura extends BaseFrame {
                     .getColumn(i)
                     .setCellRenderer(center);
         }
+    }
+
+    public void finalizarImprimir(ActionEvent actionEvent) {
+        JOptionPane.showMessageDialog(
+                this,
+                "A fatura vai ser imprimida dentro de segundos!"
+        );
     }
 }

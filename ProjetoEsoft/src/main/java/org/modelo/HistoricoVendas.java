@@ -70,6 +70,4 @@ public class HistoricoVendas extends BaseFrame {
         });
     }
      */
-
-
 }
