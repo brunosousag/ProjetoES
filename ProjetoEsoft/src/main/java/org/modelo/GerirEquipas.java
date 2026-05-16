@@ -6,7 +6,6 @@ public class GerirEquipas extends BaseFrame{
     private JPanel gerirEquipas;
     private JLabel lblDadosEquipa;
     private JTextField txtFldNomeEquipa;
-    private JButton btnAdicionarEquipa;
     private JTextField txtFldDescricao;
     private JTextField txtFldNacionalidade;
     private JLabel lblNacionalidade;
@@ -18,6 +17,11 @@ public class GerirEquipas extends BaseFrame{
     private JButton btnMerch;
     private JButton btnGestao;
     private JLabel lblNomeCampeonato;
+    private JButton btnAdicionarEquipa;
+    private JCheckBox checkBox1;
+    private JButton gerirDeslocaçãoButton;
+    private JButton gerirAlojamentoButton;
+    private JComboBox comboBox1;
 
     public GerirEquipas(String title) {
         super(title);

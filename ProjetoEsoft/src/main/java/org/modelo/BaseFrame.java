@@ -19,7 +19,7 @@ public abstract class BaseFrame extends JFrame {
         JPopupMenu popup = new JPopupMenu();
 
         JMenuItem itemEquipas = new JMenuItem("Gerir Equipas");
-        JMenuItem itemGrupos = new JMenuItem("Gerir Grupos");
+        JMenuItem itemGrupos = new JMenuItem("Gerir torneio");
         JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
 
@@ -45,7 +45,7 @@ public abstract class BaseFrame extends JFrame {
                 WindowManager.abrirJanela(
                         this,
                         "gerirGrupos",
-                        "A janela Gerir Grupos já está aberta!",
+                        "A janela Gerir Torneio já está aberta!",
                         new GerirGrupos("Campeonato Mundial 2026 - Gerir Grupos")
                 )
         );
