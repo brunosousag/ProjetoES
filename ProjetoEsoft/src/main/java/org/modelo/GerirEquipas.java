@@ -4,12 +4,6 @@ import javax.swing.*;
 
 public class GerirEquipas extends JFrame{
     private JPanel gerirEquipas;
-    private JPanel menuPrincipal;
-    private JLabel lblNomeCampeonato;
-    private JButton btnClassificacaoGeral;
-    private JButton btnCarrinho;
-    private JButton btnMerch;
-    private JButton btnGestao;
     private JLabel lblDadosEquipa;
     private JTextField txtFldNomeEquipa;
     private JButton btnAdicionarEquipa;
@@ -18,6 +12,12 @@ public class GerirEquipas extends JFrame{
     private JLabel lblNacionalidade;
     private JLabel lblDescricao;
     private JLabel lblNomeEquipa;
+    private JPanel menuPrincipal;
+    private JButton btnClassificacaoGeral;
+    private JButton btnCarrinho;
+    private JButton btnMerch;
+    private JButton btnGestao;
+    private JLabel lblNomeCampeonato;
 
     public GerirEquipas(String title) {
         super(title);
