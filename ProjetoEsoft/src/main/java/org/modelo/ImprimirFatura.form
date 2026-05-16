@@ -94,12 +94,14 @@
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-1031"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="45e0e" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Imprimir Fatura"/>
@@ -112,7 +114,9 @@
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-1031"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="52f6f" class="javax.swing.JButton" binding="btnImprimir">
@@ -137,7 +141,9 @@
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-2368549"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="d67d5" class="javax.swing.JTable" binding="table1" default-binding="true">
@@ -146,7 +152,10 @@
                 <preferred-size width="150" height="50"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-2961716"/>
+              <foreground color="-16777216"/>
+            </properties>
           </component>
         </children>
       </grid>
@@ -155,7 +164,10 @@
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-5922401"/>
+          <foreground color="-2961716"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="8b4a2" class="javax.swing.JLabel">
@@ -163,6 +175,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-2961716"/>
               <text value="Nº Fatura"/>
             </properties>
           </component>
