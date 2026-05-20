@@ -1,6 +1,9 @@
 package org.modelo;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class HistoricoVendas extends BaseFrame {
@@ -12,16 +15,14 @@ public class HistoricoVendas extends BaseFrame {
 
     private JPanel HistoricoVendas;
     private JPanel HistoricoTitulo;
-    private JPanel TituloVendas;
-    private JPanel ListaVendas;
 
-    private JList list1;
     private JList list2;
     private JList list3;
 
     private JButton imprimirButton;
     private JPanel menuPrincipal;
     private JLabel lblNomeCampeonato;
+    private JTable table1;
 
     public HistoricoVendas(String title) {
         super(title);
@@ -34,40 +35,74 @@ public class HistoricoVendas extends BaseFrame {
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 
+        imprimirButton.addActionListener(this::imprimirFatura);
+
         configurarMenuGestao();
-        preencherListas();
-        paginaImprimir();
+        preencherTabela();
+
 
         pack();
         setLocationRelativeTo(null);
     }
 
-    public void paginaImprimir() {
-        imprimirButton.addActionListener(e -> {
+    public void preencherTabela() {
+        String[] colunas = {
+                "Fatura",
+                "Nome",
+                "Total",
+                "Data",
+                "Selecionar"
+        };
 
-            ImprimirFatura janela =
-                    new ImprimirFatura("Campeonato Mundial 2026 - Imprimir Fatura");
+        Object[][] dados = {
+                {"1234", "João Silva", "120€", "12/05/2026"},
+                {"1235", "Maria Costa", "85€", "13/05/2026"},
+                {"1236", "Eduardo Almeida", "900€", "14/05/2026"}
+        };
 
-            janela.setVisible(true);
-        });
+        DefaultTableModel tabela =
+                new DefaultTableModel(dados, colunas) {
+                    //colocar checkbox em cada linha
+                    @Override
+                    public Class<?> getColumnClass(int columnIndex) {
+                        if (columnIndex == 4) {
+                            return Boolean.class;
+                        }
+
+                        return String.class;
+                    }
+
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        // Só permite editar a checkbox
+                        return column == 4;
+                    }
+                };
+
+        table1.setModel(tabela);
+
+        //cor letras
+        table1.setForeground(Color.BLACK);
+
+        //Centrar texto tabela
+        DefaultTableCellRenderer center =
+                new DefaultTableCellRenderer();
+
+        center.setHorizontalAlignment(JLabel.CENTER);
+
+        //percorrer todas as colunas para centrar o texto
+        for (int i = 0; i < table1.getColumnCount() - 1; i++) {
+
+            table1.getColumnModel()
+                    .getColumn(i)
+                    .setCellRenderer(center);
+        }
     }
 
-    public void preencherListas(){
-        //Centrar texto das listas
-        DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        list1.setCellRenderer(renderer);
-        list2.setCellRenderer(renderer);
-        list3.setCellRenderer(renderer);
+    public void imprimirFatura(ActionEvent actionEvent) {
+        JOptionPane.showMessageDialog(
+                this,
+                "A fatura vai ser imprimida dentro de segundos!"
+        );
     }
-
-    //Descomentar para testar página
-    /*
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new HistoricoVendas("Campeonato Mundial 2026 - Histórico de Vendas").setVisible(true);
-        });
-    }
-     */
 }
