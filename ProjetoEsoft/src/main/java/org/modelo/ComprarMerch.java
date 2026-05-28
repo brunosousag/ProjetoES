@@ -1,9 +1,12 @@
 package org.modelo;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class ComprarMerch extends BaseFrame {
+
+    private Produto produtoSelecionado;
+    private ArrayList<Produto> produtos;
 
     private JPanel painelPrincipal;
 
@@ -32,6 +35,8 @@ public class ComprarMerch extends BaseFrame {
     private JPanel categMerch2;
     private JButton btnLimpar;
 
+    private JPopupMenu popupTam;
+
     public ComprarMerch(String title) {
         super(title);
 
@@ -55,29 +60,27 @@ public class ComprarMerch extends BaseFrame {
         JPopupMenu popupItens = new JPopupMenu();
         JPopupMenu popupTam = new JPopupMenu();
 
-        JMenuItem itemTShirt = new JMenuItem("T-Shirt");
-        JMenuItem itemCachecol = new JMenuItem("Cachecol");
-
         JMenuItem xs = new JMenuItem("XS");
         JMenuItem s = new JMenuItem("S");
         JMenuItem m = new JMenuItem("M");
-        JMenuItem g = new JMenuItem("G");
+        JMenuItem g = new JMenuItem("L");
 
-        spinnerQuantidade.setModel(new SpinnerNumberModel(1, 1, 99, 1));
+        spinnerQuantidade.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 
-        btnComprar.addActionListener(e -> comprarProduto());
+        produtos = RepositorioDados.carregarProdutos();
 
-        itemTShirt.addActionListener(this::btnTShirtActionPerformed);
-        itemCachecol.addActionListener(this::btnCachecolActionPerformed);
-        btnLimpar.addActionListener(e -> limparSelecionados());
+        for (Produto produto : produtos) {
+            JMenuItem itemProduto = new JMenuItem(produto.getNome());
+
+            itemProduto.addActionListener(e -> selecionarProduto(produto));
+
+            popupItens.add(itemProduto);
+        }
 
         xs.addActionListener(e -> selecionarTamanho("XS"));
         s.addActionListener(e -> selecionarTamanho("S"));
         m.addActionListener(e -> selecionarTamanho("M"));
-        g.addActionListener(e -> selecionarTamanho("G"));
-
-        popupItens.add(itemTShirt);
-        popupItens.add(itemCachecol);
+        g.addActionListener(e -> selecionarTamanho("L"));
 
         popupTam.add(xs);
         popupTam.add(s);
@@ -91,12 +94,54 @@ public class ComprarMerch extends BaseFrame {
         btnTam.addActionListener(e ->
                 popupTam.show(btnTam, 0, btnTam.getHeight())
         );
+
+        btnComprar.addActionListener(e -> comprarProduto());
+        btnLimpar.addActionListener(e -> limparSelecionados());
+    }
+
+    private void selecionarProduto(Produto produto) {
+        produtoSelecionado = produto;
+        produtoEsc.setText(produto.getNome());
+
+        tamEsc.setText("");
+        popupTam.removeAll();
+
+        if (!produto.temAlgumStock()) {
+            tamEsc.setText("Sem stock");
+            btnTam.setEnabled(false);
+            btnComprar.setEnabled(false);
+            return;
+        }
+
+        for (String tamanho : produto.getStockPorTamanho().keySet()) {
+            int stock = produto.getStockDoTamanho(tamanho);
+
+            if (stock > 0) {
+                JMenuItem itemTamanho = new JMenuItem(tamanho + " (" + stock + " disponíveis)");
+
+                itemTamanho.addActionListener(e -> selecionarTamanho(tamanho));
+
+                popupTam.add(itemTamanho);
+            }
+        }
+
+        btnTam.setEnabled(true);
+        btnComprar.setEnabled(true);
     }
 
     private void limparSelecionados() {
+        produtoSelecionado = null;
         produtoEsc.setText("");
         tamEsc.setText("");
-        spinnerQuantidade.setValue(0);
+
+        spinnerQuantidade.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+
+        if (popupTam != null) {
+            popupTam.removeAll();
+        }
+
+        btnTam.setEnabled(true);
+        btnComprar.setEnabled(true);
     }
 
     private int obterQuantidade() {
@@ -105,9 +150,38 @@ public class ComprarMerch extends BaseFrame {
 
     private void comprarProduto() {
 
-        String produto = produtoEsc.getText();
+        if (produtoSelecionado == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Deve selecionar um produto.",
+                    "Produto obrigatório",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         String tamanho = tamEsc.getText();
         int quantidade = obterQuantidade();
+
+        if (tamanho.isBlank()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Deve selecionar um tamanho.",
+                    "Tamanho obrigatório",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (quantidade <= 0) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "A quantidade deve ser superior a 0.",
+                    "Quantidade inválida",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
         FinalizarCompra pagamento =
                 new FinalizarCompra("Campeonato Mundial 2026 - Finalizar Compra");
@@ -117,13 +191,16 @@ public class ComprarMerch extends BaseFrame {
 
     private void selecionarTamanho(String tamanho) {
         tamEsc.setText(tamanho);
-    }
 
-    private void btnCachecolActionPerformed(ActionEvent actionEvent) {
-        produtoEsc.setText("Cachecol Oficial");
-    }
+        int stock = produtoSelecionado.getStockDoTamanho(tamanho);
 
-    private void btnTShirtActionPerformed(ActionEvent actionEvent) {
-        produtoEsc.setText("T-Shirt Oficial");
+        SpinnerNumberModel modelo = new SpinnerNumberModel(
+                1,
+                1,
+                stock,
+                1
+        );
+
+        spinnerQuantidade.setModel(modelo);
     }
 }
