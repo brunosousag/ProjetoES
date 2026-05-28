@@ -17,6 +17,7 @@ public class JanelaPrincipal extends BaseFrame {
     private JPanel listaGrupo;
     private JPanel totalMerch;
     private JLabel lblNomeCampeonato;
+    private JButton btnLimpar;
 
     public JanelaPrincipal(String title) {
         super(title);

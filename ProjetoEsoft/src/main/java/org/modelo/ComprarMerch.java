@@ -30,6 +30,7 @@ public class ComprarMerch extends BaseFrame {
     private JLabel lblNomeTamanho;
     private JPanel categMerch1;
     private JPanel categMerch2;
+    private JButton btnLimpar;
 
     public ComprarMerch(String title) {
         super(title);
@@ -68,6 +69,7 @@ public class ComprarMerch extends BaseFrame {
 
         itemTShirt.addActionListener(this::btnTShirtActionPerformed);
         itemCachecol.addActionListener(this::btnCachecolActionPerformed);
+        btnLimpar.addActionListener(e -> limparSelecionados());
 
         xs.addActionListener(e -> selecionarTamanho("XS"));
         s.addActionListener(e -> selecionarTamanho("S"));
@@ -89,6 +91,12 @@ public class ComprarMerch extends BaseFrame {
         btnTam.addActionListener(e ->
                 popupTam.show(btnTam, 0, btnTam.getHeight())
         );
+    }
+
+    private void limparSelecionados() {
+        produtoEsc.setText("");
+        tamEsc.setText("");
+        spinnerQuantidade.setValue(0);
     }
 
     private int obterQuantidade() {
