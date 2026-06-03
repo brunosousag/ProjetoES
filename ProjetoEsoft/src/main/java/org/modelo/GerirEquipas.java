@@ -1,27 +1,28 @@
 package org.modelo;
 
 import javax.swing.*;
+import java.io.Serializable;
 
-public class GerirEquipas extends BaseFrame{
-    private JPanel gerirEquipas;
+public class GerirEquipas extends BaseFrame {
+    private transient JPanel gerirEquipas;
     private JLabel lblDadosEquipa;
     private JTextField txtFldNomeEquipa;
     private JTextField txtFldDescricao;
     private JTextField txtFldNacionalidade;
-    private JLabel lblNacionalidade;
-    private JLabel lblDescricao;
-    private JLabel lblNomeEquipa;
-    private JPanel menuPrincipal;
-    private JButton btnClassificacaoGeral;
-    private JButton btnCarrinho;
-    private JButton btnMerch;
-    private JButton btnGestao;
-    private JLabel lblNomeCampeonato;
-    private JButton btnAdicionarEquipa;
-    private JCheckBox checkBox1;
-    private JButton gerirDeslocaçãoButton;
-    private JButton gerirAlojamentoButton;
-    private JComboBox comboBox1;
+    private transient JLabel lblNacionalidade;
+    private transient JLabel lblDescricao;
+    private transient JLabel lblNomeEquipa;
+    private transient JPanel menuPrincipal;
+    private transient JButton btnClassificacaoGeral;
+    private transient JButton btnCarrinho;
+    private transient JButton btnMerch;
+    private transient JButton btnGestao;
+    private transient JLabel lblNomeCampeonato;
+    private transient JButton btnAdicionarEquipa;
+    private transient JCheckBox checkBox1;
+    private transient JButton gerirDeslocaçãoButton;
+    private transient JButton gerirAlojamentoButton;
+    private transient JComboBox comboBox1;
 
     public GerirEquipas(String title) {
         super(title);
@@ -40,3 +41,4 @@ public class GerirEquipas extends BaseFrame{
         setLocationRelativeTo(null);
     }
 }
+
