@@ -20,21 +20,42 @@ public class FinalizarCompra extends JFrame {
     public FinalizarCompra(String title) {
         super(title);
 
+        setContentPane(layoutborder);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        configurarMetodoPagamento();
+
         finalizarCompraButton.addActionListener(this::finalizarCompra);
         voltarButton.addActionListener(this::btnVoltarActionPerformed);
 
-        setContentPane(layoutborder);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
     }
 
+    private void configurarMetodoPagamento() {
+        ButtonGroup grupoPagamento = new ButtonGroup();
+
+        grupoPagamento.add(multibancoRadioButton);
+        grupoPagamento.add(dinheiroRadioButton);
+    }
+
     private void finalizarCompra(ActionEvent actionEvent) {
+
+        if (!multibancoRadioButton.isSelected() && !dinheiroRadioButton.isSelected()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Deve selecionar um método de pagamento.",
+                    "Método de pagamento obrigatório",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
         JOptionPane.showMessageDialog(
                 this,
                 "Pagamento efetuado com sucesso!"
         );
+
         dispose();
         WindowManager.fecharTodasAsJanelas();
     }
@@ -42,5 +63,4 @@ public class FinalizarCompra extends JFrame {
     private void btnVoltarActionPerformed(ActionEvent actionEvent) {
         dispose();
     }
-
 }

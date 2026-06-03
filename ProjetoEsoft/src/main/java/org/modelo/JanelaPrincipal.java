@@ -2,6 +2,7 @@ package org.modelo;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class JanelaPrincipal extends BaseFrame {
 
@@ -17,6 +18,10 @@ public class JanelaPrincipal extends BaseFrame {
     private JPanel listaGrupo;
     private JPanel totalMerch;
     private JLabel lblNomeCampeonato;
+    private JButton btnLimpar;
+
+    private ArrayList<Equipa> equipas;
+    private ArrayList<Produto> produtos;
 
     public JanelaPrincipal(String title) {
         super(title);
@@ -30,11 +35,20 @@ public class JanelaPrincipal extends BaseFrame {
         super.btnCarrinho = btnCarrinho;
 
         configurarMenuGestao();
+        carregarDados();
 
         btnComprar.addActionListener(this::btnComprarActionPerformed);
 
         pack();
         setLocationRelativeTo(null);
+    }
+
+    private void carregarDados() {
+        equipas = RepositorioDados.carregarEquipas();
+        produtos = RepositorioDados.carregarProdutos();
+
+        System.out.println("Equipas carregadas: " + equipas.size());
+        System.out.println("Produtos carregados: " + produtos.size());
     }
 
     private void btnComprarActionPerformed(ActionEvent actionEvent) {
@@ -49,6 +63,9 @@ public class JanelaPrincipal extends BaseFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+
+            InicializadorDados.inicializar();
+
             new JanelaPrincipal("Campeonato Mundial 2026").setVisible(true);
         });
     }
