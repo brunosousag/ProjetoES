@@ -9,4 +9,10 @@ public class CaminhosFicheiros {
 
     public static final String FICHEIRO_PRODUTOS =
             PASTA_DADOS + "/produtos.dat";
+
+    public static final String FICHEIRO_JOGADORES =
+            PASTA_DADOS + "/jogadores.dat";
+
+    public static final String FICHEIRO_JOGOS =
+            PASTA_DADOS + "/jogos.dat";
 }

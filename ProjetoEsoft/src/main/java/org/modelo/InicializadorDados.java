@@ -9,6 +9,7 @@ public class InicializadorDados {
     public static void inicializar() {
         criarEquipasSeNaoExistirem();
         criarProdutosSeNaoExistirem();
+        criarJogadoresSeNaoExistirem();
     }
 
     private static void criarEquipasSeNaoExistirem() {
@@ -63,5 +64,33 @@ public class InicializadorDados {
         produtos.add(new Produto("Decoração Oficial", 19.99, stockDecoracao));
 
         RepositorioDados.guardarProdutos(produtos);
+    }
+
+    private static void criarJogadoresSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_JOGADORES);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<Jogador> jogadores = new ArrayList<>();
+
+        jogadores.add(new Jogador("Kylian Mbappé", "França", 11));
+        jogadores.add(new Jogador("Lionel Messi", "Argentina", 10));
+        jogadores.add(new Jogador("Cristiano Ronaldo", "Portugal", 9));
+        jogadores.add(new Jogador("Neymar", "Brasil", 8));
+        jogadores.add(new Jogador("Antoine Griezmann", "França", 7));
+        jogadores.add(new Jogador("Rodrygo", "Brasil", 7));
+        jogadores.add(new Jogador("Vinícius Júnior", "Brasil", 6));
+        jogadores.add(new Jogador("Álvaro Morata", "Espanha", 6));
+        jogadores.add(new Jogador("Bruno Fernandes", "Portugal", 5));
+        jogadores.add(new Jogador("Lamine Yamal", "Espanha", 5));
+        jogadores.add(new Jogador("Julián Álvarez", "Argentina", 4));
+        jogadores.add(new Jogador("Takefusa Kubo", "Japão", 4));
+        jogadores.add(new Jogador("Olivier Giroud", "França", 3));
+        jogadores.add(new Jogador("Kaoru Mitoma", "Japão", 3));
+        jogadores.add(new Jogador("Pedri", "Espanha", 2));
+
+        RepositorioDados.guardarJogadores(jogadores);
     }
 }

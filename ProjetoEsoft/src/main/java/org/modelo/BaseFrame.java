@@ -22,6 +22,8 @@ public abstract class BaseFrame extends JFrame {
         JMenuItem itemGrupos = new JMenuItem("Gerir torneio");
         JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
+        JMenuItem itemGolos = new JMenuItem("Mais Golos Marcados");
+        JMenuItem itemJogos = new JMenuItem("Registar Jogos");
 
         itemHistorico.addActionListener(e ->
                 WindowManager.abrirJanela(
@@ -59,10 +61,30 @@ public abstract class BaseFrame extends JFrame {
                 )
         );
 
+        itemGolos.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "maisGolosMarcados",
+                        "A janela de Mais Golos Marcados já está aberta!",
+                        new maisGolosMarcados("Campeonato Mundial 2026 - Mais Golos Marcados")
+                )
+        );
+
+        itemJogos.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "gerirJogos",
+                        "A janela Registar Jogos já está aberta!",
+                        new GerirJogos("Campeonato Mundial 2026 - Registar Jogos")
+                )
+        );
+
         popup.add(itemEquipas);
         popup.add(itemGrupos);
         popup.add(itemFases);
         popup.add(itemHistorico);
+        popup.add(itemGolos);
+        popup.add(itemJogos);
 
         btnGestao.addActionListener(e ->
                 popup.show(btnGestao, 0, btnGestao.getHeight())
