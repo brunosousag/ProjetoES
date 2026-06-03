@@ -2,7 +2,7 @@ package org.modelo;
 
 import java.util.ArrayList;
 
-public class    RepositorioDados {
+public class RepositorioDados {
 
     public static ArrayList<Equipa> carregarEquipas() {
         return FicheiroBinario.carregarLista(
