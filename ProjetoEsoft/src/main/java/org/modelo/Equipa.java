@@ -80,6 +80,6 @@ public class Equipa implements Serializable {
 
     @Override
     public String toString() {
-        return nome;
+        return nome + " (" + nacionalidade + ")";
     }
 }
