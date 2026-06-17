@@ -2,6 +2,8 @@ package org.modelo;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public abstract class BaseFrame extends JFrame {
 
@@ -9,6 +11,8 @@ public abstract class BaseFrame extends JFrame {
     protected JButton btnClassificacaoGeral;
     protected JButton btnMerch;
     protected JButton btnCarrinho;
+
+    private CarrinhoStore.CarrinhoListener carrinhoListener;
 
     public BaseFrame(String title) {
         super(title);
@@ -92,7 +96,29 @@ public abstract class BaseFrame extends JFrame {
 
         //btnClassificacaoGeral.addActionListener(this::abrirClassificacao);
         btnMerch.addActionListener(this::abrirMerch);
-        //btnCarrinho.addActionListener(this::abrirCarrinho);
+        btnCarrinho.addActionListener(this::abrirCarrinho);
+
+        sincronizarContadorCarrinho();
+    }
+
+    private void sincronizarContadorCarrinho() {
+        atualizarTextoBtnCarrinho();
+
+        carrinhoListener = this::atualizarTextoBtnCarrinho;
+        CarrinhoStore.getInstance().registarListener(carrinhoListener);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                CarrinhoStore.getInstance().removerListener(carrinhoListener);
+            }
+        });
+    }
+
+    private void atualizarTextoBtnCarrinho() {
+        if (btnCarrinho == null) return;
+        int n = CarrinhoStore.getInstance().getNumeroItens();
+        btnCarrinho.setText("🛒 " + n);
     }
 
 //    private void abrirClassificacao(ActionEvent e) {
@@ -113,14 +139,14 @@ public abstract class BaseFrame extends JFrame {
         );
     }
 
-//    private void abrirCarrinho(ActionEvent e) {
-//        WindowManager.abrirJanela(
-//                this,
-//                "carrinho",
-//                "A janela Carrinho já está aberta!",
-//                new Carrinho("Campeonato Mundial 2026 - Carrinho")
-//        );
-//    }
+    private void abrirCarrinho(ActionEvent e) {
+        WindowManager.abrirJanela(
+                this,
+                "carrinho",
+                "A janela Carrinho já está aberta!",
+                new Carrinho("Campeonato Mundial 2026 - Carrinho")
+        );
+    }
 
 
 }

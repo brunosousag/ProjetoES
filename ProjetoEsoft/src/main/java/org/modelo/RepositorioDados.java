@@ -56,6 +56,19 @@ public class RepositorioDados {
         );
     }
 
+    public static ArrayList<JogoCalendario> carregarJogosCalendario() {
+        return FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_JOGOS_CALENDARIO
+        );
+    }
+
+    public static void guardarJogosCalendario(ArrayList<JogoCalendario> jogos) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_JOGOS_CALENDARIO,
+                jogos
+        );
+    }
+
     /** Devolve os jogadores cuja equipa corresponde ao nome dado. */
     public static ArrayList<Jogador> jogadoresDaEquipa(String nomeEquipa) {
         ArrayList<Jogador> resultado = new ArrayList<>();

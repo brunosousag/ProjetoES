@@ -1,6 +1,8 @@
 package org.modelo;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,6 +12,7 @@ public class InicializadorDados {
         criarEquipasSeNaoExistirem();
         criarProdutosSeNaoExistirem();
         criarJogadoresSeNaoExistirem();
+        criarJogosCalendarioSeNaoExistirem();
     }
 
     private static void criarEquipasSeNaoExistirem() {
@@ -92,5 +95,66 @@ public class InicializadorDados {
         jogadores.add(new Jogador("Pedri", "Espanha", 2));
 
         RepositorioDados.guardarJogadores(jogadores);
+    }
+
+    private static void criarJogosCalendarioSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_JOGOS_CALENDARIO);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<JogoCalendario> jogos = new ArrayList<>();
+        LocalDate hoje = LocalDate.now();
+
+        jogos.add(new JogoCalendario(
+                "GRUPO A", "Portugal", "Argentina",
+                hoje, LocalTime.of(18, 30),
+                "Estádio da Luz", 60000, 60000, 45.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO A", "Brasil", "Espanha",
+                hoje, LocalTime.of(21, 0),
+                "Estádio Nacional", 50000, 23000, 45.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO A", "Portugal", "Brasil",
+                hoje.plusDays(3), LocalTime.of(19, 0),
+                "Estádio do Dragão", 50000, 14500, 50.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO A", "Argentina", "Espanha",
+                hoje.minusDays(5), LocalTime.of(20, 0),
+                "Estádio José Alvalade", 50000, 50000, 45.00
+        ));
+
+        jogos.add(new JogoCalendario(
+                "GRUPO B", "França", "Japão",
+                hoje, LocalTime.of(20, 0),
+                "Estádio Municipal de Braga", 30000, 12000, 40.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO B", "França", "Inglaterra",
+                hoje.plusDays(1), LocalTime.of(21, 0),
+                "Estádio do Dragão", 50000, 9000, 55.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO B", "Japão", "Inglaterra",
+                hoje.minusDays(2), LocalTime.of(18, 0),
+                "Estádio Municipal de Braga", 30000, 30000, 40.00
+        ));
+
+        jogos.add(new JogoCalendario(
+                "GRUPO C", "Alemanha", "Bélgica",
+                hoje.plusDays(2), LocalTime.of(19, 30),
+                "Estádio D. Afonso Henriques", 30000, 8000, 45.00
+        ));
+        jogos.add(new JogoCalendario(
+                "GRUPO C", "Itália", "Croácia",
+                hoje.minusDays(1), LocalTime.of(20, 30),
+                "Estádio Algarve", 30000, 30000, 45.00
+        ));
+
+        RepositorioDados.guardarJogosCalendario(jogos);
     }
 }

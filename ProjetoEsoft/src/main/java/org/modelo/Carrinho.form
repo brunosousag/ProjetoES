@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.modelo.JanelaPrincipal">
-  <grid id="27dc6" binding="janelaPrincipal" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.modelo.Carrinho">
+  <grid id="27dc6" binding="painelPrincipal" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="878" height="900"/>
+      <xy x="20" y="20" width="800" height="600"/>
     </constraints>
     <properties>
-      <background color="-1"/>
-      <minimumSize width="800" height="900"/>
-      <preferredSize width="800" height="900"/>
+      <minimumSize width="800" height="600"/>
+      <preferredSize width="800" height="600"/>
     </properties>
     <border type="none"/>
     <children>
       <grid id="menu01" binding="menuPrincipal" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="20" left="20" bottom="20" right="20"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="true">
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false">
             <minimum-size width="0" height="-1"/>
           </grid>
         </constraints>
@@ -72,117 +71,57 @@
             <properties>
               <background color="-1457045"/>
               <foreground color="-525825"/>
-              <text value="🛒 0"/>
+              <text value="🛒"/>
             </properties>
           </component>
         </children>
       </grid>
-      <grid id="filt01" binding="painelFiltro" layout-manager="GridLayoutManager" row-count="1" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="10" left="20" bottom="10" right="20"/>
+      <grid id="titu01" binding="cabecalhoCarrinho" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="20" left="20" bottom="10" right="20"/>
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties>
-          <background color="-1249810"/>
-        </properties>
+        <properties/>
         <border type="none"/>
         <children>
-          <component id="filt02" class="javax.swing.JLabel" binding="lblMostrar">
+          <component id="titu02" class="javax.swing.JLabel" binding="lblTitulo">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font size="14" style="1"/>
-              <text value="Mostrar jogos:"/>
+              <font size="20" style="1"/>
+              <text value="🛒 CARRINHO DE COMPRAS"/>
             </properties>
           </component>
-          <component id="filt03" class="javax.swing.JRadioButton" binding="rbHoje" default-binding="true">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Hoje"/>
-            </properties>
-          </component>
-          <component id="filt04" class="javax.swing.JRadioButton" binding="rbTodos" default-binding="true">
-            <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <selected value="true"/>
-              <text value="Todos"/>
-            </properties>
-          </component>
-          <component id="filt05" class="javax.swing.JRadioButton" binding="rbAnteriores" default-binding="true">
-            <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Anteriores"/>
-            </properties>
-          </component>
-          <component id="filt07" class="javax.swing.JLabel" binding="lblEquipa">
-            <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="14" style="1"/>
-              <text value="Equipa:"/>
-            </properties>
-          </component>
-          <component id="filt08" class="javax.swing.JComboBox" binding="cmbEquipa">
-            <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="180" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <model/>
-            </properties>
-          </component>
-          <hspacer id="filt06">
-            <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
         </children>
       </grid>
-      <grid id="list01" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="tab01" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="20" bottom="10" right="20"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties>
-          <background color="-1"/>
-        </properties>
+        <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="list02" binding="scrollLista">
+          <scrollpane id="tab02" binding="scrollTabela">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="500"/>
+                <preferred-size width="150" height="300"/>
               </grid>
             </constraints>
-            <properties>
-              <background color="-2368549"/>
-            </properties>
+            <properties/>
             <border type="none"/>
             <children>
-              <grid id="list03" binding="painelLista" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+              <component id="tab03" class="javax.swing.JTable" binding="tabelaCarrinho" default-binding="true">
                 <constraints/>
-                <properties>
-                  <background color="-591617"/>
-                </properties>
-                <border type="none"/>
-                <children/>
-              </grid>
+                <properties/>
+              </component>
             </children>
           </scrollpane>
         </children>
       </grid>
-      <grid id="bot01" binding="totalMerch" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="20" left="20" bottom="20" right="20"/>
+      <grid id="tot01" binding="painelTotal" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="10" left="20" bottom="10" right="20"/>
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -191,30 +130,83 @@
         </properties>
         <border type="none"/>
         <children>
-          <hspacer id="bot02">
+          <hspacer id="tot02">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="bot07" class="javax.swing.JLabel" binding="lblCarrinhoNum">
+          <component id="tot03" class="javax.swing.JLabel" binding="lblTotalTexto">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="16" style="1"/>
-              <foreground color="-525825"/>
-              <text value="🛒 0"/>
+              <foreground color="-591617"/>
+              <text value="Total a pagamento:"/>
             </properties>
           </component>
-          <component id="bot06" class="javax.swing.JButton" binding="btnComprar">
+          <component id="tot04" class="javax.swing.JLabel" binding="lblTotalValor">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="16" style="1"/>
+              <foreground color="-525825"/>
+              <text value="0,00€"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="bot01" binding="painelBotoes" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="20" bottom="20" right="20"/>
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="bot02" class="javax.swing.JButton" binding="btnContinuar">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-13734167"/>
+              <font size="13" style="1"/>
+              <foreground color="-525825"/>
+              <text value="⬅ Continuar a comprar"/>
+            </properties>
+          </component>
+          <component id="bot03" class="javax.swing.JButton" binding="btnRemover">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-42400"/>
+              <font size="13" style="1"/>
+              <foreground color="-460033"/>
+              <text value="Remover selecionado"/>
+            </properties>
+          </component>
+          <component id="bot04" class="javax.swing.JButton" binding="btnLimpar">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-1457045"/>
+              <font size="13" style="1"/>
+              <foreground color="-525825"/>
+              <text value="Limpar carrinho"/>
+            </properties>
+          </component>
+          <component id="bot05" class="javax.swing.JButton" binding="btnFinalizar">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
               <background color="-19085"/>
-              <font size="14" style="1"/>
+              <font size="13" style="1"/>
               <foreground color="-16448250"/>
-              <text value="🛒 Continuar compra"/>
+              <text value="Finalizar compra"/>
             </properties>
           </component>
         </children>

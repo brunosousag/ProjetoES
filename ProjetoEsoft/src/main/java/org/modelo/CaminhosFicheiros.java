@@ -15,4 +15,7 @@ public class CaminhosFicheiros {
 
     public static final String FICHEIRO_JOGOS =
             PASTA_DADOS + "/jogos.dat";
+
+    public static final String FICHEIRO_JOGOS_CALENDARIO =
+            PASTA_DADOS + "/jogos_calendario.dat";
 }
