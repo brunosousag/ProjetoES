@@ -44,6 +44,7 @@ public class Carrinho extends BaseFrame {
             "Subtotal"
     };
 
+    //Interface aninhada — declarada dentro da classe CarrinhoStore
     private CarrinhoStore.CarrinhoListener storeListener;
 
     public Carrinho(String title) {
@@ -175,9 +176,9 @@ public class Carrinho extends BaseFrame {
 
         WindowManager.abrirJanela(
                 this,
-                "comprarBilhete",
-                "A janela Comprar Bilhete já está aberta!",
-                new ComprarBilhete("Campeonato Mundial 2026 - Comprar bilhete")
+                "finalizarCompra",
+                "A janela de Finalizar Compra já está aberta!",
+                new FinalizarCompra("Campeonato Mundial 2026 - Finalizar compra")
         );
     }
 }

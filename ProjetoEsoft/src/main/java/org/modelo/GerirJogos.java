@@ -16,7 +16,7 @@ import java.util.Map;
 public class GerirJogos extends BaseFrame {
 
     private static final String[] FASES = {
-            "Oitavos de final", "Quartos de final", "Meias-finais", "Final"
+            "Grupos","16avos","Oitavos de final", "Quartos de final", "Meias-finais", "Final"
     };
 
     /** Uma linha de marcador: nome do jogador + o spinner com os seus golos. */

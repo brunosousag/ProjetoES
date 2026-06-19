@@ -16,7 +16,8 @@ public class JanelaPrincipal extends BaseFrame {
     private enum FiltroJogos {
         HOJE,
         TODOS,
-        ANTERIORES
+        ANTERIORES,
+        DISPONIVEL
     }
 
     private JPanel janelaPrincipal;
@@ -32,6 +33,7 @@ public class JanelaPrincipal extends BaseFrame {
     private JRadioButton rbHoje;
     private JRadioButton rbTodos;
     private JRadioButton rbAnteriores;
+    private JRadioButton rbDisponivel;
     private JLabel lblEquipa;
     private JComboBox<String> cmbEquipa;
 
@@ -42,7 +44,7 @@ public class JanelaPrincipal extends BaseFrame {
     private JLabel lblCarrinhoNum;
     private JButton btnComprar;
 
-    private static final Color FUNDO_PAGINA = new Color(0xDBDBDB);
+    private static final Color FUNDO_PAGINA = new Color(0xFFFFFF);
     private static final Color FUNDO_CARD = new Color(0x3A3F47);
     private static final Color TEXTO_CARD = new Color(0xF7F7F7);
     private static final Color TEXTO_GRUPO = new Color(0x1F2228);
@@ -89,10 +91,14 @@ public class JanelaPrincipal extends BaseFrame {
         grupoFiltro.add(rbHoje);
         grupoFiltro.add(rbTodos);
         grupoFiltro.add(rbAnteriores);
+        grupoFiltro.add(rbDisponivel);
+
+        rbHoje.setSelected(true);   // filtro "Hoje" como predefinição
 
         rbHoje.addActionListener(e -> renderizarJogos());
         rbTodos.addActionListener(e -> renderizarJogos());
         rbAnteriores.addActionListener(e -> renderizarJogos());
+        rbDisponivel.addActionListener(e -> renderizarJogos());
     }
 
     private void configurarFiltroEquipa() {
@@ -141,6 +147,7 @@ public class JanelaPrincipal extends BaseFrame {
     private FiltroJogos getFiltroSelecionado() {
         if (rbHoje.isSelected()) return FiltroJogos.HOJE;
         if (rbAnteriores.isSelected()) return FiltroJogos.ANTERIORES;
+        if (rbDisponivel.isSelected()) return FiltroJogos.DISPONIVEL;
         return FiltroJogos.TODOS;
     }
 
@@ -148,6 +155,7 @@ public class JanelaPrincipal extends BaseFrame {
         switch (filtro) {
             case HOJE: return jogo.isHoje();
             case ANTERIORES: return jogo.isAnterior();
+            case DISPONIVEL: return !jogo.isEsgotado();
             case TODOS: return true;
             default: return true;
         }
@@ -157,13 +165,13 @@ public class JanelaPrincipal extends BaseFrame {
         painelLista.removeAll();
 
         FiltroJogos filtro = getFiltroSelecionado();
-        Map<String, List<JogoCalendario>> porGrupo = agruparJogos(filtro);
+        Map<String, List<JogoCalendario>> porData = agruparPorData(filtro);
 
-        if (porGrupo.isEmpty()) {
+        if (porData.isEmpty()) {
             painelLista.add(criarMensagemVazia());
         } else {
-            for (Map.Entry<String, List<JogoCalendario>> entry : porGrupo.entrySet()) {
-                painelLista.add(criarHeaderGrupo(entry.getKey()));
+            for (Map.Entry<String, List<JogoCalendario>> entry : porData.entrySet()) {
+                painelLista.add(criarHeaderData(entry.getKey()));
 
                 for (JogoCalendario jogo : entry.getValue()) {
                     painelLista.add(criarCardJogo(jogo));
@@ -179,7 +187,7 @@ public class JanelaPrincipal extends BaseFrame {
         painelLista.repaint();
     }
 
-    private Map<String, List<JogoCalendario>> agruparJogos(FiltroJogos filtro) {
+    private Map<String, List<JogoCalendario>> agruparPorData(FiltroJogos filtro) {
         List<JogoCalendario> filtrados = new ArrayList<>();
         String equipa = getEquipaSelecionada();
 
@@ -188,21 +196,19 @@ public class JanelaPrincipal extends BaseFrame {
             if (aplicaFiltro(jogo, filtro)) filtrados.add(jogo);
         }
 
-        filtrados.sort(Comparator
-                .comparing(JogoCalendario::getGrupo)
-                .thenComparing(JogoCalendario::getDataHora));
+        filtrados.sort(Comparator.comparing(JogoCalendario::getDataHora));
 
-        Map<String, List<JogoCalendario>> porGrupo = new LinkedHashMap<>();
+        Map<String, List<JogoCalendario>> porData = new LinkedHashMap<>();
         for (JogoCalendario jogo : filtrados) {
-            porGrupo
-                    .computeIfAbsent(jogo.getGrupo(), k -> new ArrayList<>())
+            porData
+                    .computeIfAbsent(jogo.getDataFormatada(), k -> new ArrayList<>())
                     .add(jogo);
         }
-        return porGrupo;
+        return porData;
     }
 
-    private JComponent criarHeaderGrupo(String grupo) {
-        JLabel lbl = new JLabel(grupo);
+    private JComponent criarHeaderData(String data) {
+        JLabel lbl = new JLabel("📅 " + data);
         lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 16f));
         lbl.setForeground(TEXTO_GRUPO);
         lbl.setBorder(BorderFactory.createEmptyBorder(8, 4, 8, 0));
@@ -224,47 +230,61 @@ public class JanelaPrincipal extends BaseFrame {
         card.setBackground(FUNDO_CARD);
         card.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(2, 4, 2, 4);
-        gbc.anchor = GridBagConstraints.WEST;
 
-        JLabel lblEquipas = new JLabel("⚑ " + jogo.getEquipaA() + "   X   " + jogo.getEquipaB() + " ⚑");
+        JLabel lblEquipas = new JLabel( jogo.getEquipaA() + "   X   " + jogo.getEquipaB());
         lblEquipas.setForeground(TEXTO_CARD);
         lblEquipas.setFont(lblEquipas.getFont().deriveFont(Font.BOLD, 15f));
         lblEquipas.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 3; gbc.weightx = 0;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         card.add(lblEquipas, gbc);
         gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 1;
 
-        JLabel lblData = new JLabel("📅 " + jogo.getDataFormatada() + "   🕐 " + jogo.getHoraFormatada());
-        lblData.setForeground(TEXTO_CARD);
-        lblData.setFont(lblData.getFont().deriveFont(Font.PLAIN, 13f));
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2;
-        card.add(lblData, gbc);
-
-        JLabel lblEstadio = new JLabel("Estádio: " + jogo.getEstadio());
-        lblEstadio.setForeground(TEXTO_CARD);
-        lblEstadio.setFont(lblEstadio.getFont().deriveFont(Font.PLAIN, 13f));
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1; gbc.anchor = GridBagConstraints.WEST;
-        card.add(lblEstadio, gbc);
+        JLabel lblHora = new JLabel("🕐 " + jogo.getHoraFormatada());
+        lblHora.setForeground(TEXTO_CARD);
+        lblHora.setFont(lblHora.getFont().deriveFont(Font.PLAIN, 13f));
+        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.WEST;
+        card.add(lblHora, gbc);
 
         JLabel lblStatus = criarLabelStatus(jogo);
-        gbc.gridx = 1; gbc.gridy = 2; gbc.gridwidth = 1; gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         card.add(lblStatus, gbc);
+
+        JLabel lblInfo = new JLabel(descricaoFaseGrupo(jogo));
+        lblInfo.setForeground(TEXTO_CARD);
+        lblInfo.setFont(lblInfo.getFont().deriveFont(Font.PLAIN, 13f));
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1; gbc.weightx = 1.0; gbc.anchor = GridBagConstraints.WEST;
+        card.add(lblInfo, gbc);
         gbc.weightx = 0;
-        gbc.anchor = GridBagConstraints.WEST;
 
         JComponent controloCarrinho = criarControloCarrinho(jogo);
-        gbc.gridx = 2; gbc.gridy = 2; gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx = 1; gbc.gridy = 3; gbc.gridwidth = 1; gbc.anchor = GridBagConstraints.EAST;
         card.add(controloCarrinho, gbc);
 
         return card;
+    }
+
+    private String descricaoFaseGrupo(JogoCalendario jogo) {
+        String grupo = jogo.getGrupo();
+        String grupoFormatado = tituloCaso(grupo);
+        boolean faseDeGrupos = grupo != null && grupo.trim().toUpperCase().startsWith("GRUPO");
+        String prefixo = faseDeGrupos ? "Primeira Fase - " : "";
+        return prefixo + grupoFormatado + " - " + jogo.getEstadio();
+    }
+
+    private String tituloCaso(String texto) {
+        if (texto == null || texto.isBlank()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (String palavra : texto.trim().toLowerCase().split("\\s+")) {
+            if (sb.length() > 0) sb.append(' ');
+            sb.append(Character.toUpperCase(palavra.charAt(0)));
+            if (palavra.length() > 1) sb.append(palavra.substring(1));
+        }
+        return sb.toString();
     }
 
     private JLabel criarLabelStatus(JogoCalendario jogo) {
@@ -300,46 +320,30 @@ public class JanelaPrincipal extends BaseFrame {
 
         int qtd = CarrinhoStore.getInstance().getQuantidadeBilhete(jogo);
 
-        if (qtd <= 0) {
-            JButton btnAdicionar = new JButton("Adicionar ao carrinho");
-            btnAdicionar.setFont(btnAdicionar.getFont().deriveFont(Font.BOLD, 12f));
-            btnAdicionar.setBackground(BOTAO_ADICIONAR);
-            btnAdicionar.setForeground(BOTAO_ADICIONAR_TEXTO);
-            btnAdicionar.addActionListener(e -> CarrinhoStore.getInstance().adicionarBilhete(jogo));
-            painel.add(btnAdicionar);
-            return painel;
+        if (qtd > 0) {
+            JLabel lblNoCarrinho = new JLabel(qtd + " no carrinho");
+            lblNoCarrinho.setForeground(TEXTO_CARD);
+            lblNoCarrinho.setFont(lblNoCarrinho.getFont().deriveFont(Font.PLAIN, 12f));
+            lblNoCarrinho.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 8));
+            painel.add(lblNoCarrinho);
         }
 
-        JLabel lblNoCarrinho = new JLabel("No carrinho:");
-        lblNoCarrinho.setForeground(TEXTO_CARD);
-        lblNoCarrinho.setFont(lblNoCarrinho.getFont().deriveFont(Font.PLAIN, 12f));
-
-        JButton btnMenos = criarBotaoStepper("−");
-        btnMenos.addActionListener(e -> CarrinhoStore.getInstance().removerUmBilhete(jogo));
-
-        JLabel lblQtd = new JLabel(String.valueOf(qtd));
-        lblQtd.setForeground(TEXTO_CARD);
-        lblQtd.setFont(lblQtd.getFont().deriveFont(Font.BOLD, 14f));
-        lblQtd.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
-
-        JButton btnMais = criarBotaoStepper("+");
-        btnMais.addActionListener(e -> CarrinhoStore.getInstance().adicionarBilhete(jogo));
-
-        painel.add(lblNoCarrinho);
-        painel.add(btnMenos);
-        painel.add(lblQtd);
-        painel.add(btnMais);
+        JButton btnAdicionar = new JButton("Escolher bancada");
+        btnAdicionar.setFont(btnAdicionar.getFont().deriveFont(Font.BOLD, 12f));
+        btnAdicionar.setBackground(BOTAO_ADICIONAR);
+        btnAdicionar.setForeground(BOTAO_ADICIONAR_TEXTO);
+        btnAdicionar.addActionListener(e -> abrirComprarBilhete(jogo));
+        painel.add(btnAdicionar);
         return painel;
     }
 
-    private JButton criarBotaoStepper(String texto) {
-        JButton btn = new JButton(texto);
-        btn.setFont(btn.getFont().deriveFont(Font.BOLD, 16f));
-        btn.setMargin(new Insets(0, 10, 0, 10));
-        btn.setBackground(BOTAO_ADICIONAR);
-        btn.setForeground(BOTAO_ADICIONAR_TEXTO);
-        btn.setFocusable(false);
-        return btn;
+    private void abrirComprarBilhete(JogoCalendario jogo) {
+        WindowManager.abrirJanela(
+                this,
+                "comprarBilhete",
+                "A janela Comprar Bilhete já está aberta!",
+                new ComprarBilhete(jogo)
+        );
     }
 
     private void atualizarContadorCarrinho() {
@@ -369,12 +373,13 @@ public class JanelaPrincipal extends BaseFrame {
 
         WindowManager.abrirJanela(
                 this,
-                "comprarBilhete",
-                "A janela Comprar Bilhete já está aberta!",
-                new ComprarBilhete("Campeonato Mundial 2026 - Comprar bilhete")
+                "carrinho",
+                "A janela Carrinho já está aberta!",
+                new Carrinho("Campeonato Mundial 2026 - Carrinho")
         );
     }
 
+    //inicilizar ficheiros binarios e abrir aplicacao
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             InicializadorDados.inicializar();

@@ -22,12 +22,12 @@ public abstract class BaseFrame extends JFrame {
 
         JPopupMenu popup = new JPopupMenu();
 
-        JMenuItem itemEquipas = new JMenuItem("Gerir Equipas");
-        JMenuItem itemGrupos = new JMenuItem("Gerir torneio");
-        JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
+        JMenuItem itemEquipas = new JMenuItem("Adicionar Equipas");
+        JMenuItem itemGrupos = new JMenuItem("Grupos do torneio");
+        JMenuItem itemFases = new JMenuItem("Brackets do torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
-        JMenuItem itemGolos = new JMenuItem("Mais Golos Marcados");
-        JMenuItem itemJogos = new JMenuItem("Registar Jogos");
+        JMenuItem itemGolos = new JMenuItem("Melhores Marcadores");
+        JMenuItem itemJogos = new JMenuItem("Gerir Resultados");
 
         itemHistorico.addActionListener(e ->
                 WindowManager.abrirJanela(

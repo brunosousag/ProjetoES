@@ -69,6 +69,65 @@ public class RepositorioDados {
         );
     }
 
+    public static ArrayList<Grupo> carregarGrupos() {
+        return FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_GRUPOS
+        );
+    }
+
+    public static void guardarGrupos(ArrayList<Grupo> grupos) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_GRUPOS,
+                grupos
+        );
+    }
+
+    public static ArrayList<Estadio> carregarEstadios() {
+        return FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_ESTADIOS
+        );
+    }
+
+    public static void guardarEstadios(ArrayList<Estadio> estadios) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_ESTADIOS,
+                estadios
+        );
+    }
+
+    public static ArrayList<Bancada> carregarBancadas() {
+        return FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_BANCADAS
+        );
+    }
+
+    public static void guardarBancadas(ArrayList<Bancada> bancadas) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_BANCADAS,
+                bancadas
+        );
+    }
+
+    public static ArrayList<Venda> carregarVendas() {
+        ArrayList<Venda> vendas = FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_VENDAS
+        );
+        return vendas == null ? new ArrayList<>() : vendas;
+    }
+
+    public static void guardarVendas(ArrayList<Venda> vendas) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_VENDAS,
+                vendas
+        );
+    }
+
+    public static void adicionarVenda(Venda venda) {
+        ArrayList<Venda> vendas = carregarVendas();
+        vendas.add(venda);
+        guardarVendas(vendas);
+    }
+
     /** Devolve os jogadores cuja equipa corresponde ao nome dado. */
     public static ArrayList<Jogador> jogadoresDaEquipa(String nomeEquipa) {
         ArrayList<Jogador> resultado = new ArrayList<>();
