@@ -80,12 +80,12 @@ public class InicializadorDados {
 
         ArrayList<Equipa> equipas = new ArrayList<>();
 
-        equipas.add(new Equipa("Portugal", "Seleção portuguesa", "Portuguesa"));
-        equipas.add(new Equipa("Brasil", "Seleção brasileira", "Brasileira"));
-        equipas.add(new Equipa("Argentina", "Seleção argentina", "Argentina"));
-        equipas.add(new Equipa("França", "Seleção francesa", "Francesa"));
-        equipas.add(new Equipa("Espanha", "Seleção espanhola", "Espanhola"));
-        equipas.add(new Equipa("Japão", "Seleção japonesa", "Japonesa"));
+        equipas.add(new Equipa("Portugal", "Seleção"));
+        equipas.add(new Equipa("Brasil", "Seleção"));
+        equipas.add(new Equipa("Argentina", "Seleção"));
+        equipas.add(new Equipa("França", "Seleção"));
+        equipas.add(new Equipa("Espanha", "Seleção"));
+        equipas.add(new Equipa("Japão", "Seleção"));
 
         RepositorioDados.guardarEquipas(equipas);
     }
