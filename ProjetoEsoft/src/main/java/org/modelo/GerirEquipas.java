@@ -22,8 +22,6 @@ public class GerirEquipas extends BaseFrame {
     private transient JButton btnGestao;
     private transient JLabel lblNomeCampeonato;
     private transient JButton btnAdicionarEquipa;
-    private transient JButton gerirDeslocaçãoButton;
-    private transient JButton gerirAlojamentoButton;
     private transient JComboBox comboBox1;
 
     private ArrayList<Equipa> equipas = new ArrayList<>();

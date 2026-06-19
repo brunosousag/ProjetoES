@@ -139,7 +139,23 @@ public abstract class BaseFrame extends JFrame {
                 )
         );
 
-        // TODO: ligar "Alterar Deslocação" e "Alterar Alojamento" quando as janelas existirem.
+        itemDeslocacao.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "alterarDeslocacao",
+                        "A janela Alterar Deslocação já está aberta!",
+                        new AlterarDeslocacao("Campeonato Mundial 2026 - Alterar Deslocação")
+                )
+        );
+
+        itemAlojamento.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "alterarAlojamento",
+                        "A janela Alterar Alojamento já está aberta!",
+                        new AlterarAlojamento("Campeonato Mundial 2026 - Alterar Alojamento")
+                )
+        );
 
         popup.add(itemAdicionar);
         popup.add(itemMostrar);
