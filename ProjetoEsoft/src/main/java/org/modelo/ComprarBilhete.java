@@ -62,7 +62,7 @@ public class ComprarBilhete extends BaseFrame {
         // O BaseFrame.configurarMenuGestao() vai ligar listeners e
         // sincronizar o contador 🛒 com o CarrinhoStore.
         super.btnGestao = criarBotaoMenuColorido("GESTAO", COR_BTN_GESTAO);
-        super.btnClassificacaoGeral = criarBotaoMenuColorido("CLASSIFICAÇÕES", COR_BTN_CLASSIFICACOES);
+        super.btnEquipas = criarBotaoMenuColorido("EQUIPAS", COR_BTN_CLASSIFICACOES);
         super.btnMerch = criarBotaoMenuColorido("MERCH", COR_BTN_MERCH);
         super.btnCarrinho = criarBotaoMenuColorido(
                 "🛒 " + CarrinhoStore.getInstance().getNumeroItens(),
@@ -100,7 +100,7 @@ public class ComprarBilhete extends BaseFrame {
 
     /**
      * Constrói a barra de navegação alinhada visualmente com a JanelaPrincipal:
-     * fundo azul escuro, título à esquerda, GESTAO/CLASSIFICAÇÕES/MERCH esticam,
+     * fundo azul escuro, título à esquerda, GESTAO/EQUIPAS/MERCH esticam,
      * carrinho com largura fixa à direita.
      */
     private JPanel criarMenuTopo() {
@@ -121,7 +121,7 @@ public class ComprarBilhete extends BaseFrame {
 
         gbc.weightx = 1;
         gbc.gridx = 1; menu.add(super.btnGestao, gbc);
-        gbc.gridx = 2; menu.add(super.btnClassificacaoGeral, gbc);
+        gbc.gridx = 2; menu.add(super.btnEquipas, gbc);
         gbc.gridx = 3; menu.add(super.btnMerch, gbc);
 
         gbc.weightx = 0;

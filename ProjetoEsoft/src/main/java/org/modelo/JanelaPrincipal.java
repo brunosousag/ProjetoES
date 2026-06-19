@@ -22,7 +22,7 @@ public class JanelaPrincipal extends BaseFrame {
 
     private JPanel janelaPrincipal;
     private JPanel menuPrincipal;
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
@@ -66,7 +66,7 @@ public class JanelaPrincipal extends BaseFrame {
         setContentPane(janelaPrincipal);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 

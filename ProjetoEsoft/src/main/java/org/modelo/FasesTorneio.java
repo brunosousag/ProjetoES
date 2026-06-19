@@ -3,7 +3,7 @@ package org.modelo;
 import javax.swing.*;
 
 public class FasesTorneio extends BaseFrame {
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
@@ -16,7 +16,7 @@ public class FasesTorneio extends BaseFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 

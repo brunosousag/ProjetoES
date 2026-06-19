@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent;
 public abstract class BaseFrame extends JFrame {
 
     protected JButton btnGestao;
-    protected JButton btnClassificacaoGeral;
+    protected JButton btnEquipas;
     protected JButton btnMerch;
     protected JButton btnCarrinho;
 
@@ -22,7 +22,6 @@ public abstract class BaseFrame extends JFrame {
 
         JPopupMenu popup = new JPopupMenu();
 
-        JMenuItem itemEquipas = new JMenuItem("Adicionar Equipas");
         JMenuItem itemGrupos = new JMenuItem("Grupos do torneio");
         JMenuItem itemFases = new JMenuItem("Brackets do torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
@@ -35,15 +34,6 @@ public abstract class BaseFrame extends JFrame {
                         "hostoricoVendas",
                         "A janela de historico de vendas já está aberta!",
                         new HistoricoVendas("Campeonato Mundial 2026 - Histórico de vendas")
-                )
-        );
-
-        itemEquipas.addActionListener(e ->
-                WindowManager.abrirJanela(
-                        this,
-                        "gerirEquipas",
-                        "A janela Gerir Equipas já está aberta!",
-                        new GerirEquipas("Campeonato Mundial 2026 - Gerir Equipas")
                 )
         );
 
@@ -83,7 +73,6 @@ public abstract class BaseFrame extends JFrame {
                 )
         );
 
-        popup.add(itemEquipas);
         popup.add(itemGrupos);
         popup.add(itemFases);
         popup.add(itemHistorico);
@@ -94,7 +83,8 @@ public abstract class BaseFrame extends JFrame {
                 popup.show(btnGestao, 0, btnGestao.getHeight())
         );
 
-        //btnClassificacaoGeral.addActionListener(this::abrirClassificacao);
+        configurarMenuEquipas();
+
         btnMerch.addActionListener(this::abrirMerch);
         btnCarrinho.addActionListener(this::abrirCarrinho);
 
@@ -121,14 +111,45 @@ public abstract class BaseFrame extends JFrame {
         btnCarrinho.setText("🛒 " + n);
     }
 
-//    private void abrirClassificacao(ActionEvent e) {
-//        WindowManager.abrirJanela(
-//                this,
-//                "classificacaoGeral",
-//                "A janela Classificação Geral já está aberta!",
-//                new ClassificacaoGeral("Campeonato Mundial 2026 - Classificação Geral")
-//        );
-//    }
+    /** Dropdown do botão EQUIPAS (cabeçalho de todas as páginas). */
+    protected void configurarMenuEquipas() {
+
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem itemAdicionar = new JMenuItem("Adicionar Equipas");
+        JMenuItem itemMostrar = new JMenuItem("Mostrar Equipas");
+        JMenuItem itemDeslocacao = new JMenuItem("Alterar Deslocação");
+        JMenuItem itemAlojamento = new JMenuItem("Alterar Alojamento");
+
+        itemAdicionar.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "gerirEquipas",
+                        "A janela Adicionar Equipas já está aberta!",
+                        new GerirEquipas("Campeonato Mundial 2026 - Adicionar Equipas")
+                )
+        );
+
+        itemMostrar.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "mostrarEquipas",
+                        "A janela Mostrar Equipas já está aberta!",
+                        new MostrarEquipas("Campeonato Mundial 2026 - Mostrar Equipas")
+                )
+        );
+
+        // TODO: ligar "Alterar Deslocação" e "Alterar Alojamento" quando as janelas existirem.
+
+        popup.add(itemAdicionar);
+        popup.add(itemMostrar);
+        popup.add(itemDeslocacao);
+        popup.add(itemAlojamento);
+
+        btnEquipas.addActionListener(e ->
+                popup.show(btnEquipas, 0, btnEquipas.getHeight())
+        );
+    }
 
     private void abrirMerch(ActionEvent e) {
         WindowManager.abrirJanela(

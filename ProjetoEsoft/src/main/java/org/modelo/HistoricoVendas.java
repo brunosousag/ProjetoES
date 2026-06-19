@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class HistoricoVendas extends BaseFrame {
 
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
@@ -34,7 +34,7 @@ public class HistoricoVendas extends BaseFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 

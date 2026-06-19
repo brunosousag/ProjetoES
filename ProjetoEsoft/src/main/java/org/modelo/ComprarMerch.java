@@ -14,7 +14,7 @@ public class ComprarMerch extends BaseFrame {
     private JPanel menuPrincipal;
     private JLabel lblNomeCampeonato;
     private JButton btnGestao;
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnMerch;
     private JButton btnCarrinho;
 
@@ -44,7 +44,7 @@ public class ComprarMerch extends BaseFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 
