@@ -194,12 +194,12 @@ public class InicializadorDados {
         estadios.add(new Estadio("Gillette Stadium", 65000, "Foxborough", "Estados Unidos"));
         estadios.add(new Estadio("Hard Rock Stadium", 65000, "Miami Gardens", "Estados Unidos"));
 
-// México (3)
+        // México (3)
         estadios.add(new Estadio("Estadio Azteca", 83000, "Cidade do México", "México"));
         estadios.add(new Estadio("Estadio BBVA", 53500, "Monterrey", "México"));
         estadios.add(new Estadio("Estadio Akron", 48000, "Zapopan (Guadalajara)", "México"));
 
-// Canadá (2)
+        // Canadá (2)
         estadios.add(new Estadio("BC Place", 54000, "Vancouver", "Canadá"));
         estadios.add(new Estadio("BMO Field", 45000, "Toronto", "Canadá"));
 
