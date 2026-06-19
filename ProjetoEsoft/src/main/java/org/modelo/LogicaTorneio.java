@@ -22,6 +22,7 @@ public class LogicaTorneio {
 
     /** Nomes das fases eliminatórias (têm de coincidir com os usados em GerirJogos). */
     public static final String FASE_16AVOS  = "Dezasseis-avos de final";
+    public static final String TERCEIROS_QUALIFICADOS = "Terceiros qualificados";
     public static final String FASE_OITAVOS = "Oitavos de final";
     public static final String FASE_QUARTOS = "Quartos de final";
     public static final String FASE_MEIAS   = "Meias-finais";
