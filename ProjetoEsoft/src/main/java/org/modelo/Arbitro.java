@@ -2,18 +2,16 @@ package org.modelo;
 
 import java.io.Serializable;
 
-public class Jogador implements Serializable {
+public class Arbitro implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private String nome;
     private int equipaId;
-    private int golos;
 
-    public Jogador(String nome, int equipaId, int golos) {
+    public Arbitro(String nome, int equipaId) {
         this.nome = nome;
         this.equipaId = equipaId;
-        this.golos = golos;
     }
 
     public String getNome() {
@@ -24,10 +22,6 @@ public class Jogador implements Serializable {
         return equipaId;
     }
 
-    public int getGolos() {
-        return golos;
-    }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -36,12 +30,8 @@ public class Jogador implements Serializable {
         this.equipaId = equipaId;
     }
 
-    public void setGolos(int golos) {
-        this.golos = golos;
-    }
-
     @Override
     public String toString() {
-        return nome + " - " + golos + " golos";
+        return nome;
     }
 }

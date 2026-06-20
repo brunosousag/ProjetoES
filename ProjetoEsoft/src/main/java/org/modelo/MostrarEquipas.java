@@ -91,6 +91,8 @@ public class MostrarEquipas extends BaseFrame {
             gbc.gridx = c;
             painelTabela.add(criarCelula(COLUNAS[c], true), gbc);
         }
+        gbc.gridx = COLUNAS.length;
+        painelTabela.add(criarCelula("Editar", true), gbc);
 
         int linha = 1;
         for (Equipa equipa : equipas) {
@@ -103,10 +105,27 @@ public class MostrarEquipas extends BaseFrame {
                 gbc.gridx = c;
                 painelTabela.add(criarCelula(valores[c], false), gbc);
             }
+            gbc.gridx = COLUNAS.length;
+            painelTabela.add(criarBotaoEditar(equipa), gbc);
         }
 
         painelTabela.revalidate();
         painelTabela.repaint();
+    }
+
+    /** Botão que abre a página de membros da equipa correspondente. */
+    private JButton criarBotaoEditar(Equipa equipa) {
+        JButton btn = new JButton("Editar");
+        btn.setBorder(BorderFactory.createLineBorder(COR_LINHA));
+        btn.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "membrosEquipa-" + equipa.getNome() + "-" + equipa.getTipo(),
+                        "A janela de membros desta equipa já está aberta!",
+                        new MembrosEquipa("Campeonato Mundial 2026 - Membros da Equipa", equipa)
+                )
+        );
+        return btn;
     }
 
     private JLabel criarCelula(String texto, boolean cabecalho) {

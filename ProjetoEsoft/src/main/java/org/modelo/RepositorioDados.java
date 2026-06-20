@@ -43,6 +43,19 @@ public class RepositorioDados {
         );
     }
 
+    public static ArrayList<Arbitro> carregarArbitros() {
+        return FicheiroBinario.carregarLista(
+                CaminhosFicheiros.FICHEIRO_ARBITROS
+        );
+    }
+
+    public static void guardarArbitros(ArrayList<Arbitro> arbitros) {
+        FicheiroBinario.guardarLista(
+                CaminhosFicheiros.FICHEIRO_ARBITROS,
+                arbitros
+        );
+    }
+
     public static ArrayList<Jogo> carregarJogos() {
         return FicheiroBinario.carregarLista(
                 CaminhosFicheiros.FICHEIRO_JOGOS
@@ -128,14 +141,50 @@ public class RepositorioDados {
         guardarVendas(vendas);
     }
 
-    /** Devolve os jogadores cuja equipa corresponde ao nome dado. */
-    public static ArrayList<Jogador> jogadoresDaEquipa(String nomeEquipa) {
+    /** Devolve os jogadores que pertencem à equipa com o id dado. */
+    public static ArrayList<Jogador> jogadoresDaEquipa(int idEquipa) {
         ArrayList<Jogador> resultado = new ArrayList<>();
         for (Jogador jogador : carregarJogadores()) {
-            if (jogador.getEquipa().equals(nomeEquipa)) {
+            if (jogador.getEquipaId() == idEquipa) {
                 resultado.add(jogador);
             }
         }
         return resultado;
+    }
+
+    /** Conveniência: resolve o nome para id e devolve os jogadores dessa equipa. */
+    public static ArrayList<Jogador> jogadoresDaEquipa(String nomeEquipa) {
+        return jogadoresDaEquipa(idEquipaPorNome(nomeEquipa));
+    }
+
+    /** Devolve os árbitros que pertencem à equipa com o id dado. */
+    public static ArrayList<Arbitro> arbitrosDaEquipa(int idEquipa) {
+        ArrayList<Arbitro> resultado = new ArrayList<>();
+        for (Arbitro arbitro : carregarArbitros()) {
+            if (arbitro.getEquipaId() == idEquipa) {
+                resultado.add(arbitro);
+            }
+        }
+        return resultado;
+    }
+
+    /** Devolve o id da primeira equipa com o nome dado, ou -1 se não existir. */
+    public static int idEquipaPorNome(String nomeEquipa) {
+        for (Equipa equipa : carregarEquipas()) {
+            if (equipa.getNome().equals(nomeEquipa)) {
+                return equipa.getId();
+            }
+        }
+        return -1;
+    }
+
+    /** Devolve o nome da equipa com o id dado, ou "" se não existir. */
+    public static String nomeEquipaPorId(int idEquipa) {
+        for (Equipa equipa : carregarEquipas()) {
+            if (equipa.getId() == idEquipa) {
+                return equipa.getNome();
+            }
+        }
+        return "";
     }
 }

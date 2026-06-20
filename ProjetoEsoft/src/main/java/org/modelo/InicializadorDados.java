@@ -11,6 +11,7 @@ public class InicializadorDados {
         criarEquipasSeNaoExistirem();
         criarProdutosSeNaoExistirem();
         criarJogadoresSeNaoExistirem();
+        criarArbitrosSeNaoExistirem();
         criarGruposSeNaoExistirem();
         criarEstadiosSeNaoExistirem();
         criarBancadasSeNaoExistirem();
@@ -80,12 +81,14 @@ public class InicializadorDados {
 
         ArrayList<Equipa> equipas = new ArrayList<>();
 
-        equipas.add(new Equipa("Portugal", "Seleção"));
-        equipas.add(new Equipa("Brasil", "Seleção"));
-        equipas.add(new Equipa("Argentina", "Seleção"));
-        equipas.add(new Equipa("França", "Seleção"));
-        equipas.add(new Equipa("Espanha", "Seleção"));
-        equipas.add(new Equipa("Japão", "Seleção"));
+        equipas.add(new Equipa(1, "Portugal", "Seleção"));
+        equipas.add(new Equipa(2, "Brasil", "Seleção"));
+        equipas.add(new Equipa(3, "Argentina", "Seleção"));
+        equipas.add(new Equipa(4, "França", "Seleção"));
+        equipas.add(new Equipa(5, "Espanha", "Seleção"));
+        equipas.add(new Equipa(6, "Japão", "Seleção"));
+        equipas.add(new Equipa(7, "Portugal", "Arbitragem"));
+        equipas.add(new Equipa(8, "Portugal", "Médica"));
 
         RepositorioDados.guardarEquipas(equipas);
     }
@@ -134,23 +137,42 @@ public class InicializadorDados {
 
         ArrayList<Jogador> jogadores = new ArrayList<>();
 
-        jogadores.add(new Jogador("Kylian Mbappé", "França", 11));
-        jogadores.add(new Jogador("Lionel Messi", "Argentina", 10));
-        jogadores.add(new Jogador("Cristiano Ronaldo", "Portugal", 9));
-        jogadores.add(new Jogador("Neymar", "Brasil", 8));
-        jogadores.add(new Jogador("Antoine Griezmann", "França", 7));
-        jogadores.add(new Jogador("Rodrygo", "Brasil", 7));
-        jogadores.add(new Jogador("Vinícius Júnior", "Brasil", 6));
-        jogadores.add(new Jogador("Álvaro Morata", "Espanha", 6));
-        jogadores.add(new Jogador("Bruno Fernandes", "Portugal", 5));
-        jogadores.add(new Jogador("Lamine Yamal", "Espanha", 5));
-        jogadores.add(new Jogador("Julián Álvarez", "Argentina", 4));
-        jogadores.add(new Jogador("Takefusa Kubo", "Japão", 4));
-        jogadores.add(new Jogador("Olivier Giroud", "França", 3));
-        jogadores.add(new Jogador("Kaoru Mitoma", "Japão", 3));
-        jogadores.add(new Jogador("Pedri", "Espanha", 2));
+        jogadores.add(new Jogador("Kylian Mbappé", 4, 11));
+        jogadores.add(new Jogador("Lionel Messi", 3, 10));
+        jogadores.add(new Jogador("Cristiano Ronaldo", 1, 9));
+        jogadores.add(new Jogador("Neymar", 2, 8));
+        jogadores.add(new Jogador("Antoine Griezmann", 4, 7));
+        jogadores.add(new Jogador("Rodrygo", 2, 7));
+        jogadores.add(new Jogador("Vinícius Júnior", 2, 6));
+        jogadores.add(new Jogador("Álvaro Morata", 5, 6));
+        jogadores.add(new Jogador("Bruno Fernandes", 1, 5));
+        jogadores.add(new Jogador("Lamine Yamal", 5, 5));
+        jogadores.add(new Jogador("Julián Álvarez", 3, 4));
+        jogadores.add(new Jogador("Takefusa Kubo", 6, 4));
+        jogadores.add(new Jogador("Olivier Giroud", 4, 3));
+        jogadores.add(new Jogador("Kaoru Mitoma", 6, 3));
+        jogadores.add(new Jogador("Pedri", 5, 2));
 
         RepositorioDados.guardarJogadores(jogadores);
+    }
+
+    private static void criarArbitrosSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_ARBITROS);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<Arbitro> arbitros = new ArrayList<>();
+
+        arbitros.add(new Arbitro("João Pinheiro", 7));
+        arbitros.add(new Arbitro("Ismail Elfath", 7));
+        arbitros.add(new Arbitro("Raphael Claus", 7));
+        arbitros.add(new Arbitro("Mustapha Ghorbal", 7));
+        arbitros.add(new Arbitro("Yusuke Araki", 7));
+        arbitros.add(new Arbitro("Campbell-Kirk Kawana-Waugh", 7));
+
+        RepositorioDados.guardarArbitros(arbitros);
     }
 
     /**
