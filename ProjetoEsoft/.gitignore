@@ -40,3 +40,7 @@ build/
 
 ### claude code ##
 ProjetoEsoft/.claude/
+
+### Ficheiros dados ###
+ProjetoEsoft/dados/*
+!ProjetoEsoft/dados/.gitkeep
