@@ -88,7 +88,12 @@ public class InicializadorDados {
         equipas.add(new Equipa(5, "Espanha", "Seleção"));
         equipas.add(new Equipa(6, "Japão", "Seleção"));
         equipas.add(new Equipa(7, "Portugal", "Arbitragem"));
-        equipas.add(new Equipa(8, "Portugal", "Médica"));
+        equipas.add(new Equipa(8, "Estados-Unidos", "Arbitragem"));
+        equipas.add(new Equipa(9, "Brasil", "Arbitragem"));
+        equipas.add(new Equipa(10, "Argélia", "Arbitragem"));
+        equipas.add(new Equipa(11, "Japão", "Arbitragem"));
+        equipas.add(new Equipa(12, "Nova-Zelândia", "Arbitragem"));
+        equipas.add(new Equipa(13, "Portugal", "Médica"));
 
         RepositorioDados.guardarEquipas(equipas);
     }
@@ -166,11 +171,11 @@ public class InicializadorDados {
         ArrayList<Arbitro> arbitros = new ArrayList<>();
 
         arbitros.add(new Arbitro("João Pinheiro", 7));
-        arbitros.add(new Arbitro("Ismail Elfath", 7));
-        arbitros.add(new Arbitro("Raphael Claus", 7));
-        arbitros.add(new Arbitro("Mustapha Ghorbal", 7));
-        arbitros.add(new Arbitro("Yusuke Araki", 7));
-        arbitros.add(new Arbitro("Campbell-Kirk Kawana-Waugh", 7));
+        arbitros.add(new Arbitro("Ismail Elfath", 8));
+        arbitros.add(new Arbitro("Raphael Claus", 9));
+        arbitros.add(new Arbitro("Mustapha Ghorbal", 10));
+        arbitros.add(new Arbitro("Yusuke Araki", 11));
+        arbitros.add(new Arbitro("Campbell-Kirk Kawana-Waugh", 12));
 
         RepositorioDados.guardarArbitros(arbitros);
     }
