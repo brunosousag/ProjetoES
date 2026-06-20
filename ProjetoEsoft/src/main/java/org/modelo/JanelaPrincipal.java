@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 public class JanelaPrincipal extends BaseFrame {
 
     private enum FiltroJogos {
@@ -26,6 +27,7 @@ public class JanelaPrincipal extends BaseFrame {
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
+    private JButton btnUser;
     private JLabel lblNomeCampeonato;
 
     private JPanel painelFiltro;
@@ -69,6 +71,7 @@ public class JanelaPrincipal extends BaseFrame {
         super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
+        super.btnUser = btnUser;
 
         configurarMenuGestao();
         configurarFiltro();

@@ -61,7 +61,7 @@ public class ComprarBilhete extends BaseFrame {
         // Criar os botões do menu que o BaseFrame espera receber.
         // O BaseFrame.configurarMenuGestao() vai ligar listeners e
         // sincronizar o contador 🛒 com o CarrinhoStore.
-        super.btnGestao = criarBotaoMenuColorido("GESTAO", COR_BTN_GESTAO);
+        super.btnGestao = criarBotaoMenuColorido("TORNEIO", COR_BTN_GESTAO);
         super.btnEquipas = criarBotaoMenuColorido("EQUIPAS", COR_BTN_CLASSIFICACOES);
         super.btnMerch = criarBotaoMenuColorido("MERCH", COR_BTN_MERCH);
         super.btnCarrinho = criarBotaoMenuColorido(

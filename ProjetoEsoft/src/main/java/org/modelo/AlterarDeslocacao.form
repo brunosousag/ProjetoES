@@ -61,7 +61,7 @@
             <properties>
               <background color="-14635993"/>
               <foreground color="-525825"/>
-              <text value="GESTAO"/>
+              <text value="TORNEIO"/>
             </properties>
           </component>
           <component id="ede3b" class="javax.swing.JLabel" binding="lblNomeCampeonato">
