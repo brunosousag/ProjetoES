@@ -140,7 +140,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="77a3" class="javax.swing.JLabel">
+                  <component id="77a3" class="javax.swing.JLabel" binding="lblOitavos_jogo1_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -148,7 +148,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="9746" class="javax.swing.JLabel">
+                  <component id="9746" class="javax.swing.JLabel" binding="lblOitavos_jogo1_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -156,7 +156,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="3b0cb" class="javax.swing.JLabel">
+                  <component id="3b0cb" class="javax.swing.JLabel" binding="lblOitavos_jogo2_equipa1">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -164,7 +164,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="eecde" class="javax.swing.JLabel">
+                  <component id="eecde" class="javax.swing.JLabel" binding="lblOitavos_jogo2_equipa2">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -172,7 +172,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="a4d8e" class="javax.swing.JLabel">
+                  <component id="a4d8e" class="javax.swing.JLabel" binding="lblOitavos_jogo3_equipa1">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -180,7 +180,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="b1220" class="javax.swing.JLabel">
+                  <component id="b1220" class="javax.swing.JLabel" binding="lblOitavos_jogo3_equipa2">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -188,7 +188,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="b2bba" class="javax.swing.JLabel">
+                  <component id="b2bba" class="javax.swing.JLabel" binding="lblOitavos_jogo4_equipa1">
                     <constraints>
                       <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -196,7 +196,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="e02c9" class="javax.swing.JLabel">
+                  <component id="e02c9" class="javax.swing.JLabel" binding="lblOitavos_jogo4_equipa2">
                     <constraints>
                       <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -237,7 +237,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="4dfff" class="javax.swing.JLabel">
+                  <component id="4dfff" class="javax.swing.JLabel" binding="lblQuartos_jogo1_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -246,7 +246,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="46aa0" class="javax.swing.JLabel">
+                  <component id="46aa0" class="javax.swing.JLabel" binding="lblQuartos_jogo1_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -255,7 +255,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="1e717" class="javax.swing.JLabel">
+                  <component id="1e717" class="javax.swing.JLabel" binding="lblQuartos_jogo2_equipa1">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -263,7 +263,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="d78db" class="javax.swing.JLabel">
+                  <component id="d78db" class="javax.swing.JLabel" binding="lblQuartos_jogo2_equipa2">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -304,7 +304,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="3b247" class="javax.swing.JLabel">
+                  <component id="3b247" class="javax.swing.JLabel" binding="lblMeia_jogo1_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -312,7 +312,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="d5f5f" class="javax.swing.JLabel">
+                  <component id="d5f5f" class="javax.swing.JLabel" binding="lblMeia_jogo1_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -353,7 +353,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="be5cd" class="javax.swing.JLabel">
+                  <component id="be5cd" class="javax.swing.JLabel" binding="lblFinal_jogo1_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -394,7 +394,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="a5646" class="javax.swing.JLabel">
+                  <component id="a5646" class="javax.swing.JLabel" binding="lblVencedor">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -435,7 +435,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="91fea" class="javax.swing.JLabel">
+                  <component id="91fea" class="javax.swing.JLabel" binding="lblFinal_jogo1_equipa2">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -476,7 +476,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="126ab" class="javax.swing.JLabel">
+                  <component id="126ab" class="javax.swing.JLabel" binding="lblMeia_jogo2_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -484,7 +484,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="271a" class="javax.swing.JLabel">
+                  <component id="271a" class="javax.swing.JLabel" binding="lblMeia_jogo2_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -525,7 +525,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="512b5" class="javax.swing.JLabel">
+                  <component id="512b5" class="javax.swing.JLabel" binding="lblQuartos_jogo3_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -533,7 +533,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="45fa8" class="javax.swing.JLabel">
+                  <component id="45fa8" class="javax.swing.JLabel" binding="lblQuartos_jogo3_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -541,7 +541,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="cc257" class="javax.swing.JLabel">
+                  <component id="cc257" class="javax.swing.JLabel" binding="lblQuartos_jogo4_equipa1">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -549,7 +549,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="43811" class="javax.swing.JLabel">
+                  <component id="43811" class="javax.swing.JLabel" binding="lblQuartos_jogo4_equipa2">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -590,7 +590,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="ec02d" class="javax.swing.JLabel">
+                  <component id="ec02d" class="javax.swing.JLabel" binding="lblOitavos_jogo5_equipa1">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -598,7 +598,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="64dff" class="javax.swing.JLabel">
+                  <component id="64dff" class="javax.swing.JLabel" binding="lblOitavos_jogo5_equipa2">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -606,7 +606,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="228bc" class="javax.swing.JLabel">
+                  <component id="228bc" class="javax.swing.JLabel" binding="lblOitavos_jogo6_equipa1">
                     <constraints>
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -614,7 +614,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="e6644" class="javax.swing.JLabel">
+                  <component id="e6644" class="javax.swing.JLabel" binding="lblOitavos_jogo6_equipa2">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -622,7 +622,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="989b1" class="javax.swing.JLabel">
+                  <component id="989b1" class="javax.swing.JLabel" binding="lblOitavos_jogo7_equipa1">
                     <constraints>
                       <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -630,7 +630,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="93874" class="javax.swing.JLabel">
+                  <component id="93874" class="javax.swing.JLabel" binding="lblOitavos_jogo7_equipa2">
                     <constraints>
                       <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -638,7 +638,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="b47a" class="javax.swing.JLabel">
+                  <component id="b47a" class="javax.swing.JLabel" binding="lblOitavos_jogo8_equipa1">
                     <constraints>
                       <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -646,7 +646,7 @@
                       <text value="Label"/>
                     </properties>
                   </component>
-                  <component id="19971" class="javax.swing.JLabel">
+                  <component id="19971" class="javax.swing.JLabel" binding="lblOitavos_jogo8_equipa2">
                     <constraints>
                       <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
