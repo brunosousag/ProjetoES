@@ -289,12 +289,7 @@ public class ComprarMerch extends BaseFrame {
         resumo.add(lblNumeroItensCarrinho);
         resumo.add(lblTotalCarrinho);
 
-        JLabel dica = new JLabel("Dica: podes adicionar vários produtos antes de finalizar a compra.");
-        dica.setForeground(new Color(226, 232, 244));
-        dica.setHorizontalAlignment(SwingConstants.RIGHT);
-
         rodape.add(resumo, BorderLayout.WEST);
-        rodape.add(dica, BorderLayout.EAST);
         return rodape;
     }
 
