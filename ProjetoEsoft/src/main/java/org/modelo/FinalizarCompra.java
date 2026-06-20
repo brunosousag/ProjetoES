@@ -198,7 +198,6 @@ public class FinalizarCompra extends BaseFrame {
                 }
             }
         }
-
         if (alterouJogos) RepositorioDados.guardarJogosCalendario(jogos);
     }
 

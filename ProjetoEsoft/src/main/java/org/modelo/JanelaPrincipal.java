@@ -375,11 +375,11 @@ public class JanelaPrincipal extends BaseFrame {
     }
 
     private void btnComprarActionPerformed(ActionEvent e) {
-        if (!CarrinhoStore.getInstance().temBilhetes()) {
+        if (CarrinhoStore.getInstance().getItens().isEmpty()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Adicione pelo menos um jogo ao carrinho para continuar a compra.",
-                    "Carrinho sem jogos",
+                    "O carrinho está vazio. Adicione pelo menos um item para continuar a compra.",
+                    "Carrinho vazio",
                     JOptionPane.WARNING_MESSAGE
             );
             return;
