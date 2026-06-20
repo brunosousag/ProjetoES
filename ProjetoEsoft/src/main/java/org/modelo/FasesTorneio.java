@@ -1,6 +1,8 @@
 package org.modelo;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FasesTorneio extends BaseFrame {
     private JButton btnEquipas;
@@ -54,8 +56,56 @@ public class FasesTorneio extends BaseFrame {
         super.btnCarrinho = btnCarrinho;
 
         configurarMenuGestao();
+        preencherLabelsOitavos();
 
         pack();
         setLocationRelativeTo(null);
+    }
+
+    private void preencherLabelsOitavos() {
+        List<JogoCalendario> jogosOitavos = obterJogosOitavos();
+        JLabel[][] labelsOitavos = {
+                {lblOitavos_jogo1_equipa1, lblOitavos_jogo1_equipa2},
+                {lblOitavos_jogo2_equipa1, lblOitavos_jogo2_equipa2},
+                {lblOitavos_jogo3_equipa1, lblOitavos_jogo3_equipa2},
+                {lblOitavos_jogo4_equipa1, lblOitavos_jogo4_equipa2},
+                {lblOitavos_jogo5_equipa1, lblOitavos_jogo5_equipa2},
+                {lblOitavos_jogo6_equipa1, lblOitavos_jogo6_equipa2},
+                {lblOitavos_jogo7_equipa1, lblOitavos_jogo7_equipa2},
+                {lblOitavos_jogo8_equipa1, lblOitavos_jogo8_equipa2}
+        };
+
+        for (int i = 0; i < labelsOitavos.length; i++) {
+            if (i < jogosOitavos.size()) {
+                JogoCalendario jogo = jogosOitavos.get(i);
+                labelsOitavos[i][0].setText(jogo.getEquipaA());
+                labelsOitavos[i][1].setText(jogo.getEquipaB());
+            } else {
+                labelsOitavos[i][0].setText("Por definir");
+                labelsOitavos[i][1].setText("Por definir");
+            }
+        }
+    }
+
+    private List<JogoCalendario> obterJogosOitavos() {
+        List<JogoCalendario> jogosOitavos = filtrarJogosOitavos(
+                RepositorioDados.carregarJogosCalendario()
+        );
+
+        if (!jogosOitavos.isEmpty()) {
+            return jogosOitavos;
+        }
+
+        return new LogicaTorneio().gerarOitavos();
+    }
+
+    private List<JogoCalendario> filtrarJogosOitavos(List<JogoCalendario> jogos) {
+        List<JogoCalendario> jogosOitavos = new ArrayList<>();
+        for (JogoCalendario jogo : jogos) {
+            if (LogicaTorneio.FASE_OITAVOS.equals(jogo.getGrupo())) {
+                jogosOitavos.add(jogo);
+            }
+        }
+        return jogosOitavos;
     }
 }
