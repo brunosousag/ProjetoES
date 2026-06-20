@@ -84,7 +84,25 @@ public class ComprarBilhete extends BaseFrame {
         if (lista == null || lista.isEmpty()) {
             return new ArrayList<>();
         }
+        // bancadas.dat é só o template; a ocupação (lugares livres/esgotados)
+        // é a deste jogo. Lemos a versão persistida porque a janela principal
+        // pode ter uma cópia em memória desatualizada após uma compra.
+        JogoCalendario jogoAtual = jogoComOcupacaoAtual();
+        for (Bancada b : lista) {
+            b.setLugaresVendidos(jogoAtual.getLugaresVendidosBancada(b.getNome()));
+        }
         return lista;
+    }
+
+    /** Versão persistida deste jogo (com a ocupação por bancada mais recente). */
+    private JogoCalendario jogoComOcupacaoAtual() {
+        String chave = jogo.getEquipaA() + " vs " + jogo.getEquipaB();
+        for (JogoCalendario j : RepositorioDados.carregarJogosCalendario()) {
+            if (chave.equals(j.getEquipaA() + " vs " + j.getEquipaB())) {
+                return j;
+            }
+        }
+        return jogo; // ainda não persistido — usa o recebido
     }
 
     private JPanel criarConteudo() {
@@ -391,38 +409,39 @@ public class ComprarBilhete extends BaseFrame {
     }
 
     private JPanel criarResumo() {
-        JPanel resumo = new JPanel(new GridLayout(3, 2, 8, 4));
+        JPanel resumo = new JPanel(new GridLayout(3, 2, 8, 12));
         resumo.setBackground(COR_FUNDO);
+        resumo.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
 
-        resumo.add(new JLabel("Bancada selecionada:"));
+        resumo.add(criarLabelCampo("Bancada selecionada:"));
         lblBancadaSelecionada = new JLabel("—", SwingConstants.RIGHT);
-        lblBancadaSelecionada.setFont(lblBancadaSelecionada.getFont().deriveFont(Font.BOLD));
+        lblBancadaSelecionada.setFont(lblBancadaSelecionada.getFont().deriveFont(Font.BOLD, 15f));
         resumo.add(lblBancadaSelecionada);
 
-        resumo.add(new JLabel("Preço por bilhete:"));
+        resumo.add(criarLabelCampo("Preço por bilhete:"));
         lblPrecoUnitario = new JLabel("—", SwingConstants.RIGHT);
+        lblPrecoUnitario.setFont(lblPrecoUnitario.getFont().deriveFont(15f));
         resumo.add(lblPrecoUnitario);
 
-        resumo.add(new JLabel("Quantidade:"));
+        resumo.add(criarLabelCampo("Quantidade:"));
         spnQuantidade = new JSpinner(new SpinnerNumberModel(1, 1, 1, 1));
         spnQuantidade.setEnabled(false);
+        spnQuantidade.setFont(spnQuantidade.getFont().deriveFont(15f));
+        spnQuantidade.setPreferredSize(new Dimension(0, 32));
         resumo.add(spnQuantidade);
 
         return resumo;
     }
 
-    private JPanel criarBotoesFinais() {
-        JPanel botoes = new JPanel(new GridLayout(1, 2, 12, 0));
-        botoes.setBackground(COR_FUNDO);
+    private JLabel criarLabelCampo(String texto) {
+        JLabel lbl = new JLabel(texto);
+        lbl.setFont(lbl.getFont().deriveFont(14f));
+        return lbl;
+    }
 
-        JButton btnMerch = new JButton("Adicionar Merch");
-        btnMerch.setFont(btnMerch.getFont().deriveFont(Font.BOLD, 13f));
-        btnMerch.addActionListener(e -> WindowManager.abrirJanela(
-                this,
-                "comprarMerch",
-                "A janela Comprar Merch já está aberta!",
-                new ComprarMerch("Campeonato Mundial 2026 - Comprar Merch")
-        ));
+    private JPanel criarBotoesFinais() {
+        JPanel botoes = new JPanel(new GridLayout(1, 1, 12, 0));
+        botoes.setBackground(COR_FUNDO);
 
         btnAdicionarCarrinho = new JButton("Adicionar ao carrinho");
         btnAdicionarCarrinho.setBackground(COR_BOTAO_PRIMARIO);
@@ -431,7 +450,6 @@ public class ComprarBilhete extends BaseFrame {
         btnAdicionarCarrinho.setEnabled(false);
         btnAdicionarCarrinho.addActionListener(this::adicionarAoCarrinho);
 
-        botoes.add(btnMerch);
         botoes.add(btnAdicionarCarrinho);
         return botoes;
     }

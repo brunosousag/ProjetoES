@@ -23,6 +23,7 @@ public class FinalizarCompra extends BaseFrame {
     private JPanel finalizarPagamento;
     private JButton voltarButton;
     private JButton finalizarCompraButton;
+    private JCheckBox chkConsumidorFinal;
 
     public FinalizarCompra(String title) {
         super(title);
@@ -35,9 +36,27 @@ public class FinalizarCompra extends BaseFrame {
 
         finalizarCompraButton.addActionListener(this::finalizarCompra);
         voltarButton.addActionListener(this::btnVoltarActionPerformed);
+        chkConsumidorFinal.addActionListener(this::aplicarConsumidorFinal);
 
         pack();
         setLocationRelativeTo(null);
+    }
+
+    /**
+     * "Consumidor final": preenche nome e NIF com dados genéricos e bloqueia
+     * a edição desses campos. Ao desmarcar, limpa-os e volta a permitir editar.
+     */
+    private void aplicarConsumidorFinal(ActionEvent e) {
+        boolean ativo = chkConsumidorFinal.isSelected();
+        if (ativo) {
+            txtNome.setText("Consumidor final");
+            txtNif.setText("999999999");
+        } else {
+            txtNome.setText("");
+            txtNif.setText("");
+        }
+        txtNome.setEnabled(!ativo);
+        txtNif.setEnabled(!ativo);
     }
 
     private void configurarMetodoPagamento() {
@@ -158,14 +177,13 @@ public class FinalizarCompra extends BaseFrame {
     }
 
     /**
-     * Reflete a venda nos dados persistidos: bilhetesVendidos do jogo
-     * e lugaresVendidos das bancadas afetadas.
+     * Reflete a venda nos dados persistidos: o total de bilhetes vendidos do
+     * jogo e a ocupação por bancada DESSE jogo (cada jogo tem a sua, o template
+     * bancadas.dat não é alterado).
      */
     private void atualizarLugaresVendidos(List<ItemCarrinho> itens) {
         ArrayList<JogoCalendario> jogos = RepositorioDados.carregarJogosCalendario();
-        ArrayList<Bancada> bancadas = RepositorioDados.carregarBancadas();
         boolean alterouJogos = false;
-        boolean alterouBancadas = false;
 
         for (ItemCarrinho item : itens) {
             if (item.getTipo() != ItemCarrinho.Tipo.BILHETE) continue;
@@ -174,22 +192,14 @@ public class FinalizarCompra extends BaseFrame {
                 String descricao = jogo.getEquipaA() + " vs " + jogo.getEquipaB();
                 if (descricao.equals(item.getJogoDescricao())) {
                     jogo.setBilhetesVendidos(jogo.getBilhetesVendidos() + item.getQuantidade());
+                    jogo.registarVendaBancada(item.getBancadaNome(), item.getQuantidade());
                     alterouJogos = true;
-                    break;
-                }
-            }
-
-            for (Bancada b : bancadas) {
-                if (b.getNome().equals(item.getBancadaNome())) {
-                    b.venderLugares(item.getQuantidade());
-                    alterouBancadas = true;
                     break;
                 }
             }
         }
 
         if (alterouJogos) RepositorioDados.guardarJogosCalendario(jogos);
-        if (alterouBancadas) RepositorioDados.guardarBancadas(bancadas);
     }
 
     private void mostrarErro(String mensagem, String titulo) {

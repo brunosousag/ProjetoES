@@ -356,11 +356,22 @@ public class JanelaPrincipal extends BaseFrame {
 
     private void onCarrinhoAlterado() {
         atualizarContadorCarrinho();
+        // Após uma compra concluída o carrinho é esvaziado (dispara este
+        // método) e os jogos já foram gravados em disco — recarregamos para o
+        // calendário refletir os bilhetes vendidos / lugares esgotados.
+        recarregarJogos();
 
         int scroll = scrollLista.getVerticalScrollBar().getValue();
         renderizarJogos();
         SwingUtilities.invokeLater(() ->
                 scrollLista.getVerticalScrollBar().setValue(scroll));
+    }
+
+    private void recarregarJogos() {
+        ArrayList<JogoCalendario> atualizados = RepositorioDados.carregarJogosCalendario();
+        if (atualizados != null) {
+            jogos = atualizados;
+        }
     }
 
     private void btnComprarActionPerformed(ActionEvent e) {

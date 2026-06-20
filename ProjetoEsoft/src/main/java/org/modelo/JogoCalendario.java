@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JogoCalendario implements Serializable {
 
@@ -24,6 +26,13 @@ public class JogoCalendario implements Serializable {
     private int capacidadeTotal;
     private int bilhetesVendidos;
     private double precoBilhete;
+
+    /**
+     * Lugares vendidos por bancada NESTE jogo (nome da bancada -> quantidade).
+     * A capacidade e o preço de cada bancada são iguais para todos os jogos
+     * (vêm do template em bancadas.dat); só a ocupação é específica do jogo.
+     */
+    private Map<String, Integer> lugaresVendidosPorBancada = new HashMap<>();
 
     public JogoCalendario(
             String grupo,
@@ -59,6 +68,26 @@ public class JogoCalendario implements Serializable {
 
     public void setBilhetesVendidos(int bilhetesVendidos) {
         this.bilhetesVendidos = bilhetesVendidos;
+    }
+
+    // Inicializa o mapa de forma preguiçosa: jogos carregados de ficheiros
+    // antigos (gravados antes deste campo existir) vêm com o mapa a null.
+    private Map<String, Integer> mapaLugares() {
+        if (lugaresVendidosPorBancada == null) {
+            lugaresVendidosPorBancada = new HashMap<>();
+        }
+        return lugaresVendidosPorBancada;
+    }
+
+    /** Lugares já vendidos numa bancada específica deste jogo. */
+    public int getLugaresVendidosBancada(String nomeBancada) {
+        return mapaLugares().getOrDefault(nomeBancada, 0);
+    }
+
+    /** Regista a venda de lugares numa bancada deste jogo. */
+    public void registarVendaBancada(String nomeBancada, int quantidade) {
+        if (nomeBancada == null || quantidade <= 0) return;
+        mapaLugares().merge(nomeBancada, quantidade, Integer::sum);
     }
 
     public LocalDateTime getDataHora() {

@@ -6,10 +6,11 @@ import java.io.Serializable;
  * Representa uma zona de bancada de um estádio (ex: "1º piso inferior Norte").
  *
  * Como simplificação do projeto, todos os estádios partilham o mesmo conjunto
- * de bancadas — basta um único ficheiro bancadas.dat. Os lugaresVendidos são
- * geridos globalmente por jogo (ver FinalizarCompra) e não persistem por
- * bancada+jogo: usamos o valor como aproximação de ocupação para mostrar a
- * cor na UI.
+ * de bancadas — basta um único ficheiro bancadas.dat, que funciona como
+ * TEMPLATE (nome, setor, piso, capacidade e multiplicador de preço iguais para
+ * todos os jogos). A ocupação (lugaresVendidos) NÃO pertence ao template: é
+ * específica de cada jogo e vive em JogoCalendario. Ao mostrar as bancadas de
+ * um jogo, a ocupação desse jogo é aplicada via setLugaresVendidos(...).
  */
 public class Bancada implements Serializable {
 
@@ -57,6 +58,11 @@ public class Bancada implements Serializable {
 
     public void venderLugares(int quantidade) {
         this.lugaresVendidos = Math.min(capacidadeTotal, lugaresVendidos + quantidade);
+    }
+
+    /** Define a ocupação desta bancada (usado ao aplicar os lugares vendidos de um jogo). */
+    public void setLugaresVendidos(int lugaresVendidos) {
+        this.lugaresVendidos = Math.max(0, Math.min(capacidadeTotal, lugaresVendidos));
     }
 
     public boolean isEsgotada() {
