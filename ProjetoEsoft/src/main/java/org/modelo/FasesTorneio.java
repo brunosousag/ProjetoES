@@ -9,15 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Janela das fases eliminatórias.
- *
- * Esta versão continua compatível com o ficheiro FasesTorneio.form do IntelliJ.
- * Por isso, mantém todos os campos que o .form espera encontrar.
- *
- * A lógica da árvore é dinâmica: os jogos são lidos/criados por LogicaTorneio e,
- * quando um resultado é guardado em GerirJogos, o vencedor aparece na fase seguinte.
- */
+
 public class FasesTorneio extends BaseFrame {
 
     // ------------------------------------------------------------------ campos usados pelo .form

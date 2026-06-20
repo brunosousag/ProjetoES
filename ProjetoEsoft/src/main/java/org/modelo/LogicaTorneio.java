@@ -498,7 +498,8 @@ public class LogicaTorneio {
 
     /**
      * Mantém o calendário público coerente com a árvore eliminatória.
-     * Remove entradas antigas das eliminatórias e recria apenas jogos com equipas reais.
+     * Remove entradas antigas das eliminatórias e recria apenas jogos que ainda
+     * podem ser vendidos ao público: jogos não terminados e com equipas reais.
      */
     private void sincronizarCalendarioEliminatorias(List<Jogo> todos) {
         ArrayList<JogoCalendario> calendario = RepositorioDados.carregarJogosCalendario();
@@ -520,7 +521,9 @@ public class LogicaTorneio {
 
         List<Jogo> eliminatorias = filtrarEliminatorias(todos);
         for (Jogo jogo : eliminatorias) {
-            if (isPlaceholder(jogo.getEquipaA()) || isPlaceholder(jogo.getEquipaB())) {
+            if (jogo.isTerminado()
+                    || isPlaceholder(jogo.getEquipaA())
+                    || isPlaceholder(jogo.getEquipaB())) {
                 continue;
             }
 

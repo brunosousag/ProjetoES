@@ -67,9 +67,11 @@ public class JanelaPrincipal extends BaseFrame {
      * No perfil Gestor, o menu principal deixa de mostrar venda de bilhetes
      * e passa a mostrar os jogos eliminatórios ainda por preencher.
      */
-    private Timer timerAtualizacaoGestor;
+    private Timer timerAtualizacaoPrincipal;
     private Sessao.PerfilListener listenerPerfilPrincipal;
     private String assinaturaJogosGestor = "";
+    private String assinaturaJogosVendedor = "";
+    private boolean atualizandoComboEquipa = false;
 
     public JanelaPrincipal(String title) {
         super(title);
@@ -89,7 +91,7 @@ public class JanelaPrincipal extends BaseFrame {
         carregarDados();
         configurarFiltroEquipa();
         renderizarJogos();
-        configurarAtualizacaoMenuGestor();
+        configurarAtualizacaoMenuPrincipal();
 
         atualizarContadorCarrinho();
         CarrinhoStore.getInstance().registarListener(this::onCarrinhoAlterado);
@@ -116,18 +118,47 @@ public class JanelaPrincipal extends BaseFrame {
     }
 
     private void configurarFiltroEquipa() {
-        cmbEquipa.addItem(TODAS_AS_EQUIPAS);
+        atualizarComboEquipa();
+        cmbEquipa.addActionListener(e -> {
+            if (!atualizandoComboEquipa) {
+                renderizarJogos();
+            }
+        });
+    }
+
+    private void atualizarComboEquipa() {
+        if (cmbEquipa == null) {
+            return;
+        }
+
+        Object selecionada = cmbEquipa.getSelectedItem();
+        String valorSelecionado = selecionada == null ? TODAS_AS_EQUIPAS : selecionada.toString();
 
         Set<String> equipas = new TreeSet<>();
-        for (JogoCalendario jogo : jogos) {
-            equipas.add(jogo.getEquipaA());
-            equipas.add(jogo.getEquipaB());
+        if (jogos != null) {
+            for (JogoCalendario jogo : jogos) {
+                if (jogo.getEquipaA() != null && !LogicaTorneio.isPlaceholder(jogo.getEquipaA())) {
+                    equipas.add(jogo.getEquipaA());
+                }
+                if (jogo.getEquipaB() != null && !LogicaTorneio.isPlaceholder(jogo.getEquipaB())) {
+                    equipas.add(jogo.getEquipaB());
+                }
+            }
         }
+
+        atualizandoComboEquipa = true;
+        cmbEquipa.removeAllItems();
+        cmbEquipa.addItem(TODAS_AS_EQUIPAS);
         for (String equipa : equipas) {
             cmbEquipa.addItem(equipa);
         }
 
-        cmbEquipa.addActionListener(e -> renderizarJogos());
+        if (valorSelecionado != null && (TODAS_AS_EQUIPAS.equals(valorSelecionado) || equipas.contains(valorSelecionado))) {
+            cmbEquipa.setSelectedItem(valorSelecionado);
+        } else {
+            cmbEquipa.setSelectedItem(TODAS_AS_EQUIPAS);
+        }
+        atualizandoComboEquipa = false;
     }
 
     private String getEquipaSelecionada() {
@@ -149,6 +180,7 @@ public class JanelaPrincipal extends BaseFrame {
     }
 
     private void carregarDados() {
+        sincronizarCalendarioComTorneio();
         jogos = RepositorioDados.carregarJogosCalendario();
 
         if (jogos == null) {
@@ -156,6 +188,14 @@ public class JanelaPrincipal extends BaseFrame {
         }
 
         System.out.println("Jogos calendário carregados: " + jogos.size());
+    }
+
+    private void sincronizarCalendarioComTorneio() {
+        try {
+            new LogicaTorneio().garantirArvoreEliminatoria();
+        } catch (Exception ex) {
+            System.err.println("Não foi possível sincronizar o calendário com o torneio: " + ex.getMessage());
+        }
     }
 
     private FiltroJogos getFiltroSelecionado() {
@@ -175,6 +215,26 @@ public class JanelaPrincipal extends BaseFrame {
         }
     }
 
+    private String criarAssinaturaCalendarioAtual() {
+        StringBuilder sb = new StringBuilder();
+        if (jogos == null) {
+            return "";
+        }
+
+        jogos.stream()
+                .sorted(Comparator.comparing(JogoCalendario::getDataHora)
+                        .thenComparing(JogoCalendario::getEquipaA)
+                        .thenComparing(JogoCalendario::getEquipaB))
+                .forEach(jogo -> sb.append(jogo.getGrupo()).append('|')
+                        .append(jogo.getEquipaA()).append('|')
+                        .append(jogo.getEquipaB()).append('|')
+                        .append(jogo.getDataHora()).append('|')
+                        .append(jogo.getEstadio()).append('|')
+                        .append(jogo.getBilhetesVendidos()).append('|')
+                        .append(jogo.getBilhetesDisponiveis()).append('\n'));
+        return sb.toString();
+    }
+
     private void renderizarJogos() {
         painelLista.removeAll();
         atualizarVisibilidadeFiltro();
@@ -186,6 +246,8 @@ public class JanelaPrincipal extends BaseFrame {
             painelLista.repaint();
             return;
         }
+
+        assinaturaJogosVendedor = criarAssinaturaCalendarioAtual();
 
         FiltroJogos filtro = getFiltroSelecionado();
         Map<String, List<JogoCalendario>> porData = agruparPorData(filtro);
@@ -213,23 +275,24 @@ public class JanelaPrincipal extends BaseFrame {
 
     // ------------------------------------------------------------------ vista do Gestor
 
-    private void configurarAtualizacaoMenuGestor() {
+    private void configurarAtualizacaoMenuPrincipal() {
         listenerPerfilPrincipal = novoPerfil -> SwingUtilities.invokeLater(() -> {
             recarregarJogos();
             assinaturaJogosGestor = "";
+            assinaturaJogosVendedor = "";
             renderizarJogos();
         });
         Sessao.registarListener(listenerPerfilPrincipal);
 
-        timerAtualizacaoGestor = new Timer(1000, e -> atualizarJogosGestorSeNecessario());
-        timerAtualizacaoGestor.start();
+        timerAtualizacaoPrincipal = new Timer(1000, e -> atualizarJogosSeNecessario());
+        timerAtualizacaoPrincipal.start();
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 Sessao.removerListener(listenerPerfilPrincipal);
-                if (timerAtualizacaoGestor != null) {
-                    timerAtualizacaoGestor.stop();
+                if (timerAtualizacaoPrincipal != null) {
+                    timerAtualizacaoPrincipal.stop();
                 }
             }
         });
@@ -241,16 +304,52 @@ public class JanelaPrincipal extends BaseFrame {
         }
     }
 
-    private void atualizarJogosGestorSeNecessario() {
-        if (!Sessao.isGestor()) {
-            return;
+    private void atualizarJogosSeNecessario() {
+        if (Sessao.isGestor()) {
+            atualizarJogosGestorSeNecessario();
+        } else {
+            atualizarJogosVendedorSeNecessario();
         }
+    }
 
+    private void atualizarJogosGestorSeNecessario() {
         String novaAssinatura = criarAssinaturaJogosGestor();
         if (!novaAssinatura.equals(assinaturaJogosGestor)) {
             assinaturaJogosGestor = novaAssinatura;
             renderizarJogos();
         }
+    }
+
+    private void atualizarJogosVendedorSeNecessario() {
+        String novaAssinatura = criarAssinaturaJogosVendedor();
+        if (!novaAssinatura.equals(assinaturaJogosVendedor)) {
+            assinaturaJogosVendedor = novaAssinatura;
+            int scroll = scrollLista.getVerticalScrollBar().getValue();
+            renderizarJogos();
+            SwingUtilities.invokeLater(() ->
+                    scrollLista.getVerticalScrollBar().setValue(Math.min(scroll, scrollLista.getVerticalScrollBar().getMaximum())));
+        }
+    }
+
+    private String criarAssinaturaJogosVendedor() {
+        recarregarJogos();
+        StringBuilder sb = new StringBuilder();
+        if (jogos == null) {
+            return "";
+        }
+
+        jogos.stream()
+                .sorted(Comparator.comparing(JogoCalendario::getDataHora)
+                        .thenComparing(JogoCalendario::getEquipaA)
+                        .thenComparing(JogoCalendario::getEquipaB))
+                .forEach(jogo -> sb.append(jogo.getGrupo()).append('|')
+                        .append(jogo.getEquipaA()).append('|')
+                        .append(jogo.getEquipaB()).append('|')
+                        .append(jogo.getDataHora()).append('|')
+                        .append(jogo.getEstadio()).append('|')
+                        .append(jogo.getBilhetesVendidos()).append('|')
+                        .append(jogo.getBilhetesDisponiveis()).append('\n'));
+        return sb.toString();
     }
 
     private String criarAssinaturaJogosGestor() {
@@ -646,9 +745,11 @@ public class JanelaPrincipal extends BaseFrame {
     }
 
     private void recarregarJogos() {
+        sincronizarCalendarioComTorneio();
         ArrayList<JogoCalendario> atualizados = RepositorioDados.carregarJogosCalendario();
         if (atualizados != null) {
             jogos = atualizados;
+            atualizarComboEquipa();
         }
     }
 
