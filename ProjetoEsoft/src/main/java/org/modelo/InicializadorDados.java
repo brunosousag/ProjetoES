@@ -83,11 +83,11 @@ public class InicializadorDados {
 
         ArrayList<Equipa> equipas = new ArrayList<>();
 
+        // Portugal e Japão como Seleção ANTES da arbitragem: existem equipas de
+        // arbitragem com o mesmo nome, e o idEquipaPorNome devolve a 1ª — assim
+        // os jogadores destas seleções resolvem para a Seleção, não a Arbitragem.
+        // As restantes seleções dos jogos são criadas no fim (a partir dos grupos).
         equipas.add(new Equipa(1, "Portugal", "Seleção"));
-        equipas.add(new Equipa(2, "Brasil", "Seleção"));
-        equipas.add(new Equipa(3, "Argentina", "Seleção"));
-        equipas.add(new Equipa(4, "França", "Seleção"));
-        equipas.add(new Equipa(5, "Espanha", "Seleção"));
         equipas.add(new Equipa(6, "Japão", "Seleção"));
         equipas.add(new Equipa(7, "Portugal", "Arbitragem"));
         equipas.add(new Equipa(8, "Estados-Unidos", "Arbitragem"));
@@ -170,23 +170,80 @@ public class InicializadorDados {
 
         ArrayList<Jogador> jogadores = new ArrayList<>();
 
-        jogadores.add(new Jogador("Kylian Mbappé", 4, 11));
-        jogadores.add(new Jogador("Lionel Messi", 3, 10));
-        jogadores.add(new Jogador("Cristiano Ronaldo", 1, 9));
-        jogadores.add(new Jogador("Neymar", 2, 8));
-        jogadores.add(new Jogador("Antoine Griezmann", 4, 7));
-        jogadores.add(new Jogador("Rodrygo", 2, 7));
-        jogadores.add(new Jogador("Vinícius Júnior", 2, 6));
-        jogadores.add(new Jogador("Álvaro Morata", 5, 6));
-        jogadores.add(new Jogador("Bruno Fernandes", 1, 5));
-        jogadores.add(new Jogador("Lamine Yamal", 5, 5));
-        jogadores.add(new Jogador("Julián Álvarez", 3, 4));
-        jogadores.add(new Jogador("Takefusa Kubo", 6, 4));
-        jogadores.add(new Jogador("Olivier Giroud", 4, 3));
-        jogadores.add(new Jogador("Kaoru Mitoma", 6, 3));
-        jogadores.add(new Jogador("Pedri", 5, 2));
+        adicionarJogadores(jogadores, "México",
+                "Guillermo Ochoa", "Jorge Sánchez", "César Montes", "Johan Vásquez",
+                "Jesús Gallardo", "Edson Álvarez", "Luis Chávez", "Erick Sánchez",
+                "Hirving Lozano", "Santiago Giménez", "Alexis Vega");
+        adicionarJogadores(jogadores, "Coreia do Sul",
+                "Jo Hyeon-woo", "Seol Young-woo", "Kim Min-jae", "Kim Young-gwon",
+                "Kim Jin-su", "Hwang In-beom", "Park Yong-woo", "Lee Kang-in",
+                "Jae-sung Lee", "Hwang Hee-chan", "Son Heung-min");
+        adicionarJogadores(jogadores, "Suiça",
+                "Yann Sommer", "Fabian Schär", "Manuel Akanji", "Ricardo Rodríguez",
+                "Silvan Widmer", "Remo Freuler", "Granit Xhaka", "Dan Ndoye",
+                "Xherdan Shaqiri", "Ruben Vargas", "Breel Embolo");
+        adicionarJogadores(jogadores, "Canadá",
+                "Maxime Crépeau", "Alistair Johnston", "Moïse Bombito", "Derek Cornelius",
+                "Richie Laryea", "Ismaël Koné", "Stephen Eustáquio", "Alphonso Davies",
+                "Jonathan David", "Jacob Shaffelburg", "Cyle Larin");
+        adicionarJogadores(jogadores, "Escócia",
+                "Angus Gunn", "Ryan Porteous", "Jack Hendry", "Kieran Tierney",
+                "Anthony Ralston", "Billy Gilmour", "Callum McGregor", "Andy Robertson",
+                "Scott McTominay", "John McGinn", "Ché Adams");
+        adicionarJogadores(jogadores, "Marrocos",
+                "Yassine Bounou", "Achraf Hakimi", "Nayef Aguerd", "Romain Saïss",
+                "Noussair Mazraoui", "Sofyan Amrabat", "Azzedine Ounahi", "Bilal El Khannouss",
+                "Hakim Ziyech", "Youssef En-Nesyri", "Brahim Díaz");
+        adicionarJogadores(jogadores, "Portugal",
+                "Diogo Costa", "João Cancelo", "Rúben Dias", "Gonçalo Inácio",
+                "Nuno Mendes", "João Palhinha", "Vitinha", "Bruno Fernandes",
+                "Bernardo Silva", "Cristiano Ronaldo", "Rafael Leão");
+        adicionarJogadores(jogadores, "Austrália",
+                "Mathew Ryan", "Gethin Jones", "Harry Souttar", "Kye Rowles",
+                "Aziz Behich", "Connor Metcalfe", "Keanu Baccus", "Jackson Irvine",
+                "Craig Goodwin", "Mitchell Duke", "Kusini Yengi");
+        adicionarJogadores(jogadores, "Alemanha",
+                "Marc-André ter Stegen", "Joshua Kimmich", "Antonio Rüdiger", "Jonathan Tah",
+                "Maximilian Mittelstädt", "Robert Andrich", "Toni Kroos", "Jamal Musiala",
+                "Ilkay Gündoğan", "Florian Wirtz", "Kai Havertz");
+        adicionarJogadores(jogadores, "Costa do Marfim",
+                "Yahia Fofana", "Wilfried Singo", "Odilon Kossounou", "Evan Ndicka",
+                "Ghislain Konan", "Franck Kessié", "Jean Michaël Seri", "Seko Fofana",
+                "Simon Adingra", "Sébastien Haller", "Nicolas Pépé");
+        adicionarJogadores(jogadores, "Suécia",
+                "Robin Olsen", "Emil Holm", "Victor Lindelöf", "Isak Hien",
+                "Ludwig Augustinsson", "Dejan Kulusevski", "Jens Cajuste", "Anton Salétros",
+                "Emil Forsberg", "Alexander Isak", "Viktor Gyökeres");
+        adicionarJogadores(jogadores, "Japão",
+                "Zion Suzuki", "Yukinari Sugawara", "Ko Itakura", "Takehiro Tomiyasu",
+                "Hiroki Ito", "Wataru Endo", "Hidemasa Morita", "Takefusa Kubo",
+                "Takumi Minamino", "Kaoru Mitoma", "Ayase Ueda");
+        adicionarJogadores(jogadores, "Nova Zelândia",
+                "Oliver Sail", "Tim Payne", "Michael Boxall", "Nando Pijnaker",
+                "Liberato Cacace", "Joe Bell", "Marko Stamenic", "Matthew Garbett",
+                "Callum McCowatt", "Chris Wood", "Ben Waine");
+        adicionarJogadores(jogadores, "Irão",
+                "Alireza Beiranvand", "Ramin Rezaeian", "Hossein Kanaani", "Shojae Khalilzadeh",
+                "Milad Mohammadi", "Saeid Ezatolahi", "Saman Ghoddos", "Alireza Jahanbakhsh",
+                "Mehdi Taremi", "Mohammad Mohebi", "Sardar Azmoun");
+        adicionarJogadores(jogadores, "Uruguai",
+                "Sergio Rochet", "Nahitan Nández", "Ronald Araújo", "José María Giménez",
+                "Mathias Olivera", "Federico Valverde", "Manuel Ugarte", "Nicolás de la Cruz",
+                "Facundo Pellistri", "Darwin Núñez", "Maximiliano Araújo");
+        adicionarJogadores(jogadores, "Arábia Saudita",
+                "Mohammed Al-Owais", "Ali Lajami", "Ali Al-Bulaihi", "Saud Abdulhamid",
+                "Sultan Al-Ghannam", "Mohamed Kanno", "Abdullah Al-Khaibari", "Faisal Al-Ghamdi",
+                "Nasser Al-Dawsari", "Saleh Al-Shehri", "Salem Al-Dawsari");
 
         RepositorioDados.guardarJogadores(jogadores);
+    }
+
+    /** Adiciona vários jogadores à mesma equipa (resolvida pelo nome), todos com 0 golos. */
+    private static void adicionarJogadores(ArrayList<Jogador> jogadores, String nomeEquipa, String... nomes) {
+        int idEquipa = RepositorioDados.idEquipaPorNome(nomeEquipa);
+        for (String nome : nomes) {
+            jogadores.add(new Jogador(nome, idEquipa, 0));
+        }
     }
 
     private static void criarArbitrosSeNaoExistirem() {
