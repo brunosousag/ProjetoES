@@ -1,9 +1,13 @@
 package org.modelo;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class InicializadorDados {
 
@@ -18,6 +22,140 @@ public class InicializadorDados {
         criarEstadiosSeNaoExistirem();
         criarBancadasSeNaoExistirem();
         criarJogosCalendarioSeNaoExistirem();
+        // Atribui um árbitro a cada jogo (sem repetir árbitro no mesmo horário).
+        atribuirArbitrosAosJogos();
+        // Depois: hotel por defeito para cada seleção e cada equipa de arbitragem,
+        // perto do estádio do respetivo jogo.
+        criarAlojamentosSeNaoExistirem();
+    }
+
+    /**
+     * Atribui um árbitro a cada jogo do calendário, de forma rotativa, garantindo
+     * que o mesmo árbitro não fica em dois jogos com a mesma data+hora.
+     * Só preenche jogos que ainda não têm árbitro.
+     */
+    private static void atribuirArbitrosAosJogos() {
+        ArrayList<JogoCalendario> jogos = RepositorioDados.carregarJogosCalendario();
+        ArrayList<Arbitro> arbitros = RepositorioDados.carregarArbitros();
+        if (arbitros.isEmpty()) {
+            return;
+        }
+
+        // Árbitros já ocupados em cada horário (data+hora -> nomes de árbitros).
+        Map<LocalDateTime, Set<String>> ocupadosPorHorario = new HashMap<>();
+        for (JogoCalendario jogo : jogos) {
+            if (jogo.getArbitro() != null) {
+                ocupadosPorHorario
+                        .computeIfAbsent(jogo.getDataHora(), k -> new HashSet<>())
+                        .add(jogo.getArbitro());
+            }
+        }
+
+        boolean alterou = false;
+        int proximo = 0;   // índice rotativo, para distribuir os árbitros
+        for (JogoCalendario jogo : jogos) {
+            if (jogo.getArbitro() != null) {
+                continue;
+            }
+            Set<String> ocupados = ocupadosPorHorario
+                    .computeIfAbsent(jogo.getDataHora(), k -> new HashSet<>());
+
+            // Procura o próximo árbitro livre neste horário.
+            for (int n = 0; n < arbitros.size(); n++) {
+                Arbitro candidato = arbitros.get((proximo + n) % arbitros.size());
+                if (!ocupados.contains(candidato.getNome())) {
+                    jogo.setArbitro(candidato.getNome());
+                    ocupados.add(candidato.getNome());
+                    proximo = (proximo + n + 1) % arbitros.size();
+                    alterou = true;
+                    break;
+                }
+            }
+        }
+
+        if (alterou) {
+            RepositorioDados.guardarJogosCalendario(jogos);
+        }
+    }
+
+    /**
+     * Atribui a cada seleção um alojamento num hotel perto do estádio do seu
+     * jogo. Corre depois de existirem equipas, estádios e calendário.
+     * Só preenche equipas SEM alojamento, para não sobrescrever escolhas
+     * feitas na aplicação.
+     */
+    private static void criarAlojamentosSeNaoExistirem() {
+        ArrayList<Equipa> equipas = RepositorioDados.carregarEquipas();
+        ArrayList<JogoCalendario> jogos = RepositorioDados.carregarJogosCalendario();
+        ArrayList<Estadio> estadios = RepositorioDados.carregarEstadios();
+        ArrayList<Arbitro> arbitros = RepositorioDados.carregarArbitros();
+
+        boolean alterou = false;
+        for (Equipa equipa : equipas) {
+            if (equipa.getAlojamento() != null) {
+                continue;   // já tem alojamento -> não mexe
+            }
+
+            // Seleção: estádio onde a equipa joga. Arbitragem: estádio do jogo
+            // que o árbitro dela apita.
+            String nomeEstadio;
+            if ("Seleção".equals(equipa.getTipo())) {
+                nomeEstadio = estadioDaEquipa(jogos, equipa.getNome());
+            } else if ("Arbitragem".equals(equipa.getTipo())) {
+                nomeEstadio = estadioDoArbitro(equipa, arbitros, jogos);
+            } else {
+                continue;   // outros tipos (ex.: Médica) não têm jogo associado
+            }
+
+            if (nomeEstadio == null) {
+                continue;   // sem jogo associado -> sem hotel
+            }
+            String cidade = cidadeDoEstadio(estadios, nomeEstadio);
+            equipa.setAlojamento(new Alojamento(
+                    "Hotel " + cidade,
+                    "Perto do " + nomeEstadio + ", " + cidade));
+            alterou = true;
+        }
+
+        if (alterou) {
+            RepositorioDados.guardarEquipas(equipas);
+        }
+    }
+
+    /** Estádio do jogo que o árbitro desta equipa de arbitragem apita, ou null. */
+    private static String estadioDoArbitro(Equipa equipaArbitragem,
+                                           ArrayList<Arbitro> arbitros,
+                                           ArrayList<JogoCalendario> jogos) {
+        for (Arbitro arbitro : arbitros) {
+            if (arbitro.getEquipaId() == equipaArbitragem.getId()) {
+                for (JogoCalendario jogo : jogos) {
+                    if (arbitro.getNome().equals(jogo.getArbitro())) {
+                        return jogo.getEstadio();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Estádio do (primeiro) jogo em que a equipa participa, ou null. */
+    private static String estadioDaEquipa(ArrayList<JogoCalendario> jogos, String nomeEquipa) {
+        for (JogoCalendario jogo : jogos) {
+            if (nomeEquipa.equals(jogo.getEquipaA()) || nomeEquipa.equals(jogo.getEquipaB())) {
+                return jogo.getEstadio();
+            }
+        }
+        return null;
+    }
+
+    /** Cidade do estádio com o nome dado, ou "" se não existir. */
+    private static String cidadeDoEstadio(ArrayList<Estadio> estadios, String nomeEstadio) {
+        for (Estadio estadio : estadios) {
+            if (estadio.getNome().equals(nomeEstadio)) {
+                return estadio.getCidade();
+            }
+        }
+        return "";
     }
 
     /**

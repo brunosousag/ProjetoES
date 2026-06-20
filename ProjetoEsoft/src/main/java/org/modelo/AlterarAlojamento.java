@@ -19,7 +19,6 @@ public class AlterarAlojamento extends BaseFrame {
     private JComboBox cmbEquipa;
     private JTextField txtNomeHotel;
     private JTextField txtMorada;
-    private JTextField txtNumeroQuartos;
     private JButton btnGuardar;
 
     private ArrayList<Equipa> equipas = new ArrayList<>();
@@ -31,8 +30,7 @@ public class AlterarAlojamento extends BaseFrame {
     /** Evita reagir a alterações do cmbEquipa enquanto este é repreenchido. */
     private transient boolean carregando;
 
-    private static final String FICHEIRO_EQUIPAS =
-            "dados" + File.separator + "equipas.dat";
+    private static final String FICHEIRO_EQUIPAS = CaminhosFicheiros.FICHEIRO_EQUIPAS;
 
     public AlterarAlojamento(String title) {
         super(title);
@@ -120,7 +118,6 @@ public class AlterarAlojamento extends BaseFrame {
         if (i < 0 || i >= equipasDoJogo.size()) {
             txtNomeHotel.setText("");
             txtMorada.setText("");
-            txtNumeroQuartos.setText("");
             return;
         }
 
@@ -128,11 +125,9 @@ public class AlterarAlojamento extends BaseFrame {
         if (a != null) {
             txtNomeHotel.setText(a.getNomeHotel());
             txtMorada.setText(a.getMorada());
-            txtNumeroQuartos.setText(String.valueOf(a.getNumeroQuartos()));
         } else {
             txtNomeHotel.setText("");
             txtMorada.setText("");
-            txtNumeroQuartos.setText("");
         }
     }
 
@@ -145,27 +140,13 @@ public class AlterarAlojamento extends BaseFrame {
 
         String nomeHotel = txtNomeHotel.getText().trim();
         String morada = txtMorada.getText().trim();
-        String quartosTexto = txtNumeroQuartos.getText().trim();
 
-        if (nomeHotel.isEmpty() || morada.isEmpty() || quartosTexto.isEmpty()) {
+        if (nomeHotel.isEmpty() || morada.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int numeroQuartos;
-        try {
-            numeroQuartos = Integer.parseInt(quartosTexto);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "O número de quartos tem de ser um número inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (numeroQuartos <= 0) {
-            JOptionPane.showMessageDialog(this, "O número de quartos tem de ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        equipasDoJogo.get(i).setAlojamento(new Alojamento(nomeHotel, morada, numeroQuartos));
+        equipasDoJogo.get(i).setAlojamento(new Alojamento(nomeHotel, morada));
         guardarEquipasDisco();
 
         JOptionPane.showMessageDialog(this, "Alojamento atualizado com sucesso!");

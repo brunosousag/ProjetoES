@@ -26,6 +26,7 @@ public class JogoCalendario implements Serializable {
     private int capacidadeTotal;
     private int bilhetesVendidos;
     private double precoBilhete;
+    private String arbitro;            // nome do árbitro deste jogo
 
     /**
      * Lugares vendidos por bancada NESTE jogo (nome da bancada -> quantidade).
@@ -68,6 +69,14 @@ public class JogoCalendario implements Serializable {
 
     public void setBilhetesVendidos(int bilhetesVendidos) {
         this.bilhetesVendidos = bilhetesVendidos;
+    }
+
+    public String getArbitro() {
+        return arbitro;
+    }
+
+    public void setArbitro(String arbitro) {
+        this.arbitro = arbitro;
     }
 
     // Inicializa o mapa de forma preguiçosa: jogos carregados de ficheiros
