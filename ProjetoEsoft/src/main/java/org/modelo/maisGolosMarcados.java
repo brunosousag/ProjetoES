@@ -84,7 +84,7 @@ public class maisGolosMarcados extends BaseFrame {
 
             lblPos.setText(String.valueOf(index + 1));
             lblNome.setText(jogador.getNome());
-            lblEquipa.setText(jogador.getEquipa());
+            lblEquipa.setText(RepositorioDados.nomeEquipaPorId(jogador.getEquipaId()));
             lblGolos.setText(String.valueOf(jogador.getGolos()));
 
             Color fundo = isSelected ? list.getSelectionBackground() : list.getBackground();

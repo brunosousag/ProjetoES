@@ -55,12 +55,23 @@ public class GerirEquipas extends BaseFrame {
             return;
         }
 
-        equipas.add(new Equipa(nome, tipo));
+        equipas.add(new Equipa(proximoId(), nome, tipo));
         guardarEquipasDisco();
 
         txtFldNomeEquipa.setText("");
 
         JOptionPane.showMessageDialog(this, "Equipa adicionada com sucesso!");
+    }
+
+    /** Próximo id livre (maior id existente + 1). */
+    private int proximoId() {
+        int max = 0;
+        for (Equipa equipa : equipas) {
+            if (equipa.getId() > max) {
+                max = equipa.getId();
+            }
+        }
+        return max + 1;
     }
 
     private void guardarEquipasDisco() {

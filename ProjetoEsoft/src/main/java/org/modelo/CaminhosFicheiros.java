@@ -13,6 +13,9 @@ public class CaminhosFicheiros {
     public static final String FICHEIRO_JOGADORES =
             PASTA_DADOS + "/jogadores.dat";
 
+    public static final String FICHEIRO_ARBITROS =
+            PASTA_DADOS + "/arbitros.dat";
+
     public static final String FICHEIRO_JOGOS =
             PASTA_DADOS + "/jogos.dat";
 

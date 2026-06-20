@@ -54,7 +54,11 @@ public class AlterarDeslocacao extends BaseFrame {
     private void preencherComboEquipas() {
         cmbEquipa.removeAllItems();
         for (Equipa equipa : equipas) {
-            cmbEquipa.addItem(equipa.getNome());
+            String tipo = equipa.getTipo();
+            String etiqueta = (tipo == null || tipo.isEmpty())
+                    ? equipa.getNome()
+                    : equipa.getNome() + " - " + tipo;
+            cmbEquipa.addItem(etiqueta);
         }
     }
 

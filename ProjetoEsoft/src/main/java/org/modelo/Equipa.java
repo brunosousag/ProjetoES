@@ -6,25 +6,32 @@ public class Equipa implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private int id;
     private String nome;
     private String tipo;
 
     private Alojamento alojamento;
     private Deslocacao deslocacao;
 
-    public Equipa(String nome, String tipo) {
+    public Equipa(int id, String nome, String tipo) {
+        this.id = id;
         this.nome = nome;
         this.tipo = tipo;
         this.alojamento = null;
         this.deslocacao = null;
     }
 
-    public Equipa(String nome, String tipo,
+    public Equipa(int id, String nome, String tipo,
                   Alojamento alojamento, Deslocacao deslocacao) {
+        this.id = id;
         this.nome = nome;
         this.tipo = tipo;
         this.alojamento = alojamento;
         this.deslocacao = deslocacao;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNome() {
@@ -41,6 +48,10 @@ public class Equipa implements Serializable {
 
     public Deslocacao getDeslocacao() {
         return deslocacao;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setNome(String nome) {
