@@ -22,8 +22,7 @@ public class GerirEquipas extends BaseFrame {
 
     private ArrayList<Equipa> equipas = new ArrayList<>();
 
-    private static final String FICHEIRO_EQUIPAS =
-            "dados" + File.separator + "equipas.dat";
+    private static final String FICHEIRO_EQUIPAS = CaminhosFicheiros.FICHEIRO_EQUIPAS;
 
     public GerirEquipas(String title) {
         super(title);

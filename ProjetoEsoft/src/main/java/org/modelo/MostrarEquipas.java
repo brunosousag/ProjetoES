@@ -2,10 +2,9 @@ package org.modelo;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,24 +18,22 @@ public class MostrarEquipas extends BaseFrame {
     private transient JLabel lblNomeCampeonato;
     private JPanel visualizarEquipas;
 
+    // Construídos em código dentro de visualizarEquipas.
+    private transient JComboBox cmbEquipa;
+    private transient JComboBox cmbInfo;
+    private transient JPanel painelInfo;
+
     private ArrayList<Equipa> equipas = new ArrayList<>();
 
-    /** Grelha onde as equipas são desenhadas dinamicamente (dentro de visualizarEquipas). */
-    private transient JPanel painelTabela;
-
-    /** Redesenha a tabela quando o perfil (Gestor/Vendedor) muda. */
-    private transient Sessao.PerfilListener perfilTabelaListener;
-
-    // Cores para manter o mesmo aspeto (cabeçalho escuro, células com bordas, fundo claro).
+    // Cores para manter o mesmo aspeto (cabeçalho escuro, fundo claro).
     private static final Color FUNDO_TABELA = new Color(-2565410, true);
     private static final Color FUNDO_HEADER = new Color(-16035707, true);
     private static final Color TEXTO_HEADER = new Color(-525825, true);
     private static final Color COR_LINHA = new Color(-16448250, true);
 
-    private static final String[] COLUNAS = {"Nome", "Tipo"};
+    private static final String[] INFOS = {"Membros", "Alojamento", "Deslocamento"};
 
-    private static final String FICHEIRO_EQUIPAS =
-            "dados" + File.separator + "equipas.dat";
+    private static final String FICHEIRO_EQUIPAS = CaminhosFicheiros.FICHEIRO_EQUIPAS;
 
     public MostrarEquipas(String title) {
         super(title);
@@ -52,36 +49,40 @@ public class MostrarEquipas extends BaseFrame {
         configurarMenuGestao();
 
         lerEquipasDoDisco();
-
-        configurarTabelaEquipas();
-        preencherTabela();
-
-        // Atualiza a coluna/botão (Editar vs Visualizar/Ver) ao mudar de perfil.
-        perfilTabelaListener = novoPerfil -> preencherTabela();
-        Sessao.registarListener(perfilTabelaListener);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                Sessao.removerListener(perfilTabelaListener);
-            }
-        });
+        construirUI();
+        atualizarInfo();
 
         pack();
         setLocationRelativeTo(null);
     }
 
-    /**
-     * Constrói uma grelha dinâmica dentro de visualizarEquipas, mantendo o aspeto
-     * de tabela (cabeçalho escuro, células com bordas, fundo claro).
-     */
-    private void configurarTabelaEquipas() {
-        painelTabela = new JPanel(new GridBagLayout());
-        painelTabela.setBackground(FUNDO_TABELA);
+    /** Monta a barra de seleção (equipa + informação) e a área de visualização. */
+    private void construirUI() {
+        cmbEquipa = new JComboBox();
+        for (Equipa equipa : equipas) {
+            cmbEquipa.addItem(equipa.getNome() + " - " + equipa.getTipo());
+        }
 
-        // Encosta a grelha ao topo para as linhas manterem a altura natural.
+        cmbInfo = new JComboBox();
+        for (String info : INFOS) {
+            cmbInfo.addItem(info);
+        }
+
+        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 10));
+        barra.setBackground(FUNDO_TABELA);
+        barra.add(new JLabel("Equipa:"));
+        barra.add(cmbEquipa);
+        barra.add(Box.createHorizontalStrut(15));
+        barra.add(new JLabel("Ver:"));
+        barra.add(cmbInfo);
+
+        painelInfo = new JPanel(new GridBagLayout());
+        painelInfo.setBackground(FUNDO_TABELA);
+
+        // Encosta o conteúdo ao topo.
         JPanel topo = new JPanel(new BorderLayout());
         topo.setBackground(FUNDO_TABELA);
-        topo.add(painelTabela, BorderLayout.NORTH);
+        topo.add(painelInfo, BorderLayout.NORTH);
 
         JScrollPane scroll = new JScrollPane(topo);
         scroll.setBorder(BorderFactory.createLineBorder(COR_LINHA));
@@ -90,72 +91,125 @@ public class MostrarEquipas extends BaseFrame {
 
         visualizarEquipas.removeAll();
         visualizarEquipas.setLayout(new BorderLayout());
+        visualizarEquipas.add(barra, BorderLayout.NORTH);
         visualizarEquipas.add(scroll, BorderLayout.CENTER);
+
+        cmbEquipa.addActionListener(e -> atualizarInfo());
+        cmbInfo.addActionListener(e -> atualizarInfo());
     }
 
-    /** Redesenha a grelha com todas as equipas atualmente em memória. */
-    private void preencherTabela() {
-        painelTabela.removeAll();
+    /** Mostra a informação escolhida (membros/alojamento/deslocamento) da equipa. */
+    private void atualizarInfo() {
+        painelInfo.removeAll();
 
+        Equipa equipa = equipaSelecionada();
+        String info = (String) cmbInfo.getSelectedItem();
+        if (equipa != null && info != null) {
+            switch (info) {
+                case "Membros":
+                    mostrarMembros(equipa);
+                    break;
+                case "Alojamento":
+                    mostrarAlojamento(equipa);
+                    break;
+                case "Deslocamento":
+                    mostrarDeslocamento(equipa);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        painelInfo.revalidate();
+        painelInfo.repaint();
+    }
+
+    private void mostrarMembros(Equipa equipa) {
+        List<String> linhas = new ArrayList<>();
+        linhas.add("Membros");
+        List<String> membros = obterMembros(equipa);
+        if (membros.isEmpty()) {
+            linhas.add("(sem membros)");
+        } else {
+            linhas.addAll(membros);
+        }
+        desenharLista(linhas);
+    }
+
+    private void mostrarAlojamento(Equipa equipa) {
+        Alojamento a = equipa.getAlojamento();
+        if (a == null) {
+            desenharLista(java.util.Arrays.asList("(sem alojamento definido)"));
+        } else {
+            desenharTabela(
+                    new String[]{"Hotel", "Morada"},
+                    new String[]{a.getNomeHotel(), a.getMorada()});
+        }
+    }
+
+    private void mostrarDeslocamento(Equipa equipa) {
+        Deslocacao d = equipa.getDeslocacao();
+        if (d == null) {
+            desenharLista(java.util.Arrays.asList("(sem deslocação definida)"));
+        } else {
+            desenharTabela(
+                    new String[]{"Tipo de Transporte", "Origem", "Destino"},
+                    new String[]{d.getTipoTransporte(), d.getOrigem(), d.getDestino()});
+        }
+    }
+
+    /** Desenha as linhas em coluna; a primeira é o cabeçalho. */
+    private void desenharLista(List<String> linhas) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.gridx = 0;
+
+        for (int i = 0; i < linhas.size(); i++) {
+            gbc.gridy = i;
+            painelInfo.add(criarCelula(linhas.get(i), i == 0), gbc);
+        }
+    }
+
+    /** Cabeçalho (colunas) numa linha e os valores na linha seguinte. */
+    private void desenharTabela(String[] colunas, String[] valores) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
         gbc.gridy = 0;
-        for (int c = 0; c < COLUNAS.length; c++) {
+        for (int c = 0; c < colunas.length; c++) {
             gbc.gridx = c;
-            painelTabela.add(criarCelula(COLUNAS[c], true), gbc);
+            painelInfo.add(criarCelula(colunas[c], true), gbc);
         }
-        gbc.gridx = COLUNAS.length;
-        painelTabela.add(criarCelula(Sessao.isGestor() ? "Ações" : "Visualizar", true), gbc);
 
-        int linha = 1;
-        for (Equipa equipa : equipas) {
-            gbc.gridy = linha++;
-            String[] valores = {
-                    equipa.getNome(),
-                    equipa.getTipo()
-            };
-            for (int c = 0; c < valores.length; c++) {
-                gbc.gridx = c;
-                painelTabela.add(criarCelula(valores[c], false), gbc);
+        gbc.gridy = 1;
+        for (int c = 0; c < valores.length; c++) {
+            gbc.gridx = c;
+            painelInfo.add(criarCelula(valores[c], false), gbc);
+        }
+    }
+
+    /** Membros conforme o tipo: Seleção → jogadores, Arbitragem → árbitros. */
+    private List<String> obterMembros(Equipa equipa) {
+        List<String> nomes = new ArrayList<>();
+        String tipo = equipa.getTipo();
+
+        if ("Seleção".equals(tipo)) {
+            for (Jogador j : RepositorioDados.jogadoresDaEquipa(equipa.getId())) {
+                nomes.add(j.getNome());
             }
-
-            gbc.gridx = COLUNAS.length;
-            painelTabela.add(criarCelulaBotao(equipa), gbc);
+        } else if ("Arbitragem".equals(tipo)) {
+            for (Arbitro a : RepositorioDados.arbitrosDaEquipa(equipa.getId())) {
+                nomes.add(a.getNome());
+            }
         }
-
-        painelTabela.revalidate();
-        painelTabela.repaint();
+        return nomes;
     }
 
-    /**
-     * Célula da coluna de ação: tem a mesma borda/fundo das restantes células
-     * (para a grelha ficar uniforme) e contém o botão compacto centrado.
-     */
-    private JPanel criarCelulaBotao(Equipa equipa) {
-        JPanel cell = new JPanel(new GridBagLayout());
-        cell.setOpaque(true);
-        cell.setBackground(FUNDO_TABELA);
-        cell.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COR_LINHA),
-                BorderFactory.createEmptyBorder(6, 12, 6, 12)));
-        cell.add(criarBotaoAccao(equipa));
-        return cell;
-    }
-
-    /** Botão que abre a página de membros da equipa correspondente. */
-    private JButton criarBotaoAccao(Equipa equipa) {
-        JButton btn = new JButton(Sessao.isGestor() ? "Editar" : "Ver");
-        btn.addActionListener(e ->
-                WindowManager.abrirJanela(
-                        this,
-                        "membrosEquipa-" + equipa.getNome() + "-" + equipa.getTipo(),
-                        "A janela de membros desta equipa já está aberta!",
-                        new MembrosEquipa("Campeonato Mundial 2026 - Membros da Equipa", equipa)
-                )
-        );
-        return btn;
+    private Equipa equipaSelecionada() {
+        int i = cmbEquipa.getSelectedIndex();
+        return (i >= 0 && i < equipas.size()) ? equipas.get(i) : null;
     }
 
     private JLabel criarCelula(String texto, boolean cabecalho) {
