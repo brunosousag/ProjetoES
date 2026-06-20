@@ -95,6 +95,21 @@ public class CarrinhoStore {
         return total;
     }
 
+    /** Quantidade de bilhetes no carrinho para um jogo + bancada específicos. */
+    public int getQuantidadeBilhete(JogoCalendario jogo, Bancada bancada) {
+        int total = 0;
+        String descricao = descricaoBilhete(jogo);
+        String nomeBancada = bancada.getNome();
+        for (ItemCarrinho item : itens) {
+            if (item.getTipo() == ItemCarrinho.Tipo.BILHETE
+                    && descricao.equals(item.getJogoDescricao())
+                    && nomeBancada.equals(item.getBancadaNome())) {
+                total += item.getQuantidade();
+            }
+        }
+        return total;
+    }
+
     private ItemCarrinho encontrarBilhete(String descricao, String detalhe) {
         for (ItemCarrinho item : itens) {
             if (item.getTipo() == ItemCarrinho.Tipo.BILHETE

@@ -469,9 +469,49 @@ public class ComprarBilhete extends BaseFrame {
     }
 
     private void atualizarLimiteQuantidade() {
-        int max = Math.max(1, bancadaSelecionada.getLugaresDisponiveis());
+        int max = lugaresMaximosDisponiveis();
+        if (max <= 0) {
+            // Bancada já totalmente ocupada (vendidos + carrinho) — bloquear adição.
+            spnQuantidade.setModel(new SpinnerNumberModel(0, 0, 0, 1));
+            spnQuantidade.setEnabled(false);
+            btnAdicionarCarrinho.setEnabled(false);
+            configurarTextFieldDoSpinner();
+            return;
+        }
         spnQuantidade.setModel(new SpinnerNumberModel(1, 1, max, 1));
         spnQuantidade.setEnabled(true);
+        btnAdicionarCarrinho.setEnabled(true);
+        configurarTextFieldDoSpinner();
+    }
+
+    /**
+     * Faz com que o campo de texto do spinner mantenha (PERSIST) o que o
+     * utilizador escreveu quando perde o foco. Por defeito, o JFormattedTextField
+     * faz commit-or-revert e, se o número escrito ultrapassar o max do modelo,
+     * volta silenciosamente ao último valor válido — o que faria a validação
+     * explícita em adicionarAoCarrinho() nunca ver o número escrito.
+     *
+     * Tem de ser chamado SEMPRE depois de setModel() — cada novo SpinnerNumberModel
+     * recria o editor do spinner e perde esta configuração.
+     */
+    private void configurarTextFieldDoSpinner() {
+        JComponent editor = spnQuantidade.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            ((JSpinner.DefaultEditor) editor).getTextField()
+                    .setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        }
+    }
+
+    /**
+     * Lugares ainda compráveis na bancada seleccionada — capacidade total
+     * menos vendidos (persistidos no jogo) menos o que já está no carrinho
+     * para este mesmo jogo + bancada.
+     */
+    private int lugaresMaximosDisponiveis() {
+        if (bancadaSelecionada == null) return 0;
+        int disponiveis = bancadaSelecionada.getLugaresDisponiveis()
+                - CarrinhoStore.getInstance().getQuantidadeBilhete(jogo, bancadaSelecionada);
+        return Math.max(0, disponiveis);
     }
 
     private String formatarPreco(double valor) {
@@ -481,7 +521,38 @@ public class ComprarBilhete extends BaseFrame {
     private void adicionarAoCarrinho(ActionEvent e) {
         if (bancadaSelecionada == null) return;
 
-        int qtd = (Integer) spnQuantidade.getValue();
+        int max = lugaresMaximosDisponiveis();
+        if (max <= 0) {
+            avisar("Já não há lugares disponíveis nesta bancada.");
+            return;
+        }
+
+        // Ler directamente o texto do spinner — o getValue() devolve o último
+        // valor do modelo, que não reflecte o que o utilizador escreveu sem
+        // confirmar com as setas/Enter.
+        int qtd;
+        try {
+            JComponent editor = spnQuantidade.getEditor();
+            String texto = ((JSpinner.DefaultEditor) editor).getTextField().getText().trim();
+            qtd = Integer.parseInt(texto);
+        } catch (NumberFormatException nfe) {
+            avisar("Quantidade inválida. Indica um número entre 1 e " + max + ".");
+            resetarQuantidade();
+            return;
+        }
+
+        if (qtd < 1) {
+            avisar("Escolhe pelo menos 1 bilhete.");
+            resetarQuantidade();
+            return;
+        }
+        if (qtd > max) {
+            avisar("Só estão disponíveis " + max
+                    + " lugar(es) nesta bancada (já a contar com os que tens no carrinho).");
+            resetarQuantidade();
+            return;
+        }
+
         CarrinhoStore.getInstance().adicionarBilhete(jogo, bancadaSelecionada, qtd);
 
         JOptionPane.showMessageDialog(
@@ -492,6 +563,24 @@ public class ComprarBilhete extends BaseFrame {
         );
 
         dispose();
+    }
+
+    private void avisar(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Aviso", JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * Volta a quantidade a 1. Tem de actualizar o texto do JFormattedTextField
+     * explicitamente porque, se o modelo já está em 1 (que é o caso quando o
+     * utilizador escreveu um valor inválido sem nunca o ter feito commit), o
+     * setValue não dispara ChangeEvent e o texto visível não é refrescado.
+     */
+    private void resetarQuantidade() {
+        spnQuantidade.setValue(1);
+        JComponent editor = spnQuantidade.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            ((JSpinner.DefaultEditor) editor).getTextField().setText("1");
+        }
     }
 
     // Lista de bancadas para um setor + piso. Se piso == null, considera todos.
