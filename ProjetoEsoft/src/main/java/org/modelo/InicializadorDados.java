@@ -8,11 +8,13 @@ import java.util.HashMap;
 public class InicializadorDados {
 
     public static void inicializar() {
+        // Os grupos têm de existir antes das equipas: a criação das equipas
+        // usa-os para semear automaticamente todas as seleções que jogam.
+        criarGruposSeNaoExistirem();
         criarEquipasSeNaoExistirem();
         criarProdutosSeNaoExistirem();
         criarJogadoresSeNaoExistirem();
         criarArbitrosSeNaoExistirem();
-        criarGruposSeNaoExistirem();
         criarEstadiosSeNaoExistirem();
         criarBancadasSeNaoExistirem();
         criarJogosCalendarioSeNaoExistirem();
@@ -95,7 +97,33 @@ public class InicializadorDados {
         equipas.add(new Equipa(12, "Nova-Zelândia", "Arbitragem"));
         equipas.add(new Equipa(13, "Portugal", "Médica"));
 
+        // Cria como "Seleção" todas as equipas presentes nos jogos (as dos
+        // grupos), excepto as que já existam. O id continua a partir do maior.
+        int proximoId = 1;
+        for (Equipa equipa : equipas) {
+            if (equipa.getId() >= proximoId) {
+                proximoId = equipa.getId() + 1;
+            }
+        }
+        for (Grupo grupo : RepositorioDados.carregarGrupos()) {
+            for (String nomeEquipa : grupo.getEquipas()) {
+                if (!existeSelecao(equipas, nomeEquipa)) {
+                    equipas.add(new Equipa(proximoId++, nomeEquipa, "Seleção"));
+                }
+            }
+        }
+
         RepositorioDados.guardarEquipas(equipas);
+    }
+
+    /** Verifica se já existe uma equipa do tipo "Seleção" com o nome dado. */
+    private static boolean existeSelecao(ArrayList<Equipa> equipas, String nomeEquipa) {
+        for (Equipa equipa : equipas) {
+            if ("Seleção".equals(equipa.getTipo()) && equipa.getNome().equals(nomeEquipa)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void criarProdutosSeNaoExistirem() {
