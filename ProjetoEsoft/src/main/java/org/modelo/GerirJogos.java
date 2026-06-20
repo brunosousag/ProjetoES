@@ -9,31 +9,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Registo de jogos da fase eliminatória.
- * Cada jogo é guardado de uma só vez (todos os marcadores das duas equipas),
- * e a equipa vencedora é determinada automaticamente a partir dos golos.
+ * Registo de jogos da fase de grupos.
+ *
+ * Agora o utilizador escolhe primeiro o grupo. Depois disso, as equipas
+ * disponíveis passam a ser apenas as equipas desse grupo. Os marcadores
+ * são escolhidos através de uma checkbox por jogador; o spinner indica
+ * quantos golos esse jogador marcou na partida.
  */
 public class GerirJogos extends BaseFrame {
 
-    private static final String[] FASES = {
-            "Grupos","16avos","Oitavos de final", "Quartos de final", "Meias-finais", "Final"
-    };
-
-    /** Uma linha de marcador: nome do jogador + o spinner com os seus golos. */
+    /** Uma linha de marcador: jogador escolhido + número de golos. */
     private static class LinhaGolo {
         final String jogador;
+        final JCheckBox checkBox;
         final JSpinner spinner;
-        LinhaGolo(String jogador, JSpinner spinner) {
+
+        LinhaGolo(String jogador, JCheckBox checkBox, JSpinner spinner) {
             this.jogador = jogador;
+            this.checkBox = checkBox;
             this.spinner = spinner;
         }
     }
 
-    private final JComboBox<String> cmbFase = new JComboBox<>(FASES);
+    private final JComboBox<String> cmbGrupo = new JComboBox<>();
     private final JComboBox<String> cmbEquipaA = new JComboBox<>();
     private final JComboBox<String> cmbEquipaB = new JComboBox<>();
 
-    // uma coluna de jogadores por equipa, cada jogador com o seu spinner de golos
+    // uma coluna de jogadores por equipa, cada jogador com checkbox + spinner de golos
     private final JPanel colunaA = criarColuna();
     private final JPanel colunaB = criarColuna();
     private final JScrollPane scrollA = new JScrollPane(colunaA);
@@ -49,6 +51,7 @@ public class GerirJogos extends BaseFrame {
     private final JList<Jogo> listaJogos = new JList<>(jogosModel);
 
     private ArrayList<Jogo> jogos = new ArrayList<>();
+    private ArrayList<Grupo> grupos = new ArrayList<>();
     private Jogo jogoEmEdicao = null;
     private boolean carregando = false;   // suprime listeners durante carregamentos
 
@@ -119,7 +122,7 @@ public class GerirJogos extends BaseFrame {
         JPanel corpo = new JPanel(new BorderLayout(0, 12));
         corpo.setBorder(BorderFactory.createEmptyBorder(16, 20, 16, 20));
 
-        JLabel titulo = new JLabel("Fases do torneio — Registo de jogos");
+        JLabel titulo = new JLabel("Fase de grupos — Registo de jogos");
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 18f));
         corpo.add(titulo, BorderLayout.NORTH);
 
@@ -153,11 +156,11 @@ public class GerirJogos extends BaseFrame {
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(4, 6, 4, 6);
         g.fill = GridBagConstraints.HORIZONTAL;
-        addLinha(form, g, 0, "Fase:", cmbFase);
+        addLinha(form, g, 0, "Grupo:", cmbGrupo);
         addLinha(form, g, 1, "Equipa A:", cmbEquipaA);
         addLinha(form, g, 2, "Equipa B:", cmbEquipaB);
 
-        JLabel dica = new JLabel("Marcadores — ajusta os golos de cada jogador com as setas ▲▼");
+        JLabel dica = new JLabel("Marcadores — seleciona apenas quem marcou e indica quantos golos fez");
         dica.setForeground(new Color(90, 90, 90));
 
         JPanel topo = new JPanel(new BorderLayout(0, 8));
@@ -195,18 +198,33 @@ public class GerirJogos extends BaseFrame {
 
     private void carregarDados() {
         jogos = RepositorioDados.carregarJogos();
+        grupos = RepositorioDados.carregarGrupos();
+
+        for (Grupo grupo : grupos) {
+            cmbGrupo.addItem(grupo.getNome());
+        }
+
+        // Mostra nesta janela apenas os jogos cujo campo fase corresponde a um grupo.
         for (Jogo jogo : jogos) {
-            jogosModel.addElement(jogo);
+            if (grupoExiste(jogo.getFase())) {
+                jogosModel.addElement(jogo);
+            }
         }
-        for (Equipa equipa : RepositorioDados.carregarEquipas()) {
-            cmbEquipaA.addItem(equipa.getNome());
-            cmbEquipaB.addItem(equipa.getNome());
-        }
+
+        atualizarEquipasDoGrupo(null, null);
     }
 
     private void ligarEventos() {
+        cmbGrupo.addActionListener(e -> {
+            if (!carregando) {
+                atualizarEquipasDoGrupo(null, null);
+                preencherColunas(null);
+            }
+        });
+
         cmbEquipaA.addActionListener(e -> { if (!carregando) preencherColunas(null); });
         cmbEquipaB.addActionListener(e -> { if (!carregando) preencherColunas(null); });
+
         listaJogos.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && listaJogos.getSelectedValue() != null) {
                 carregarJogoNoEditor(listaJogos.getSelectedValue());
@@ -217,24 +235,77 @@ public class GerirJogos extends BaseFrame {
     private void novoJogo() {
         jogoEmEdicao = null;
         carregando = true;
-        cmbFase.setSelectedIndex(0);
-        if (cmbEquipaA.getItemCount() > 0) cmbEquipaA.setSelectedIndex(0);
-        if (cmbEquipaB.getItemCount() > 1) cmbEquipaB.setSelectedIndex(1);
+        if (cmbGrupo.getItemCount() > 0) cmbGrupo.setSelectedIndex(0);
         carregando = false;
+
+        atualizarEquipasDoGrupo(null, null);
         preencherColunas(null);
     }
 
     private void carregarJogoNoEditor(Jogo jogo) {
         jogoEmEdicao = jogo;
         carregando = true;
-        cmbFase.setSelectedItem(jogo.getFase());
-        cmbEquipaA.setSelectedItem(jogo.getEquipaA());
-        cmbEquipaB.setSelectedItem(jogo.getEquipaB());
+        cmbGrupo.setSelectedItem(jogo.getFase());
         carregando = false;
+
+        atualizarEquipasDoGrupo(jogo.getEquipaA(), jogo.getEquipaB());
         preencherColunas(jogo);
     }
 
-    /** Preenche cada coluna com os jogadores da respetiva equipa (golos do jogo ou 0). */
+    /** Atualiza as equipas disponíveis com base no grupo selecionado. */
+    private void atualizarEquipasDoGrupo(String equipaASelecionada, String equipaBSelecionada) {
+        carregando = true;
+        cmbEquipaA.removeAllItems();
+        cmbEquipaB.removeAllItems();
+
+        Grupo grupo = grupoSelecionado();
+        if (grupo != null) {
+            for (String equipa : grupo.getEquipas()) {
+                cmbEquipaA.addItem(equipa);
+                cmbEquipaB.addItem(equipa);
+            }
+        }
+
+        if (equipaASelecionada != null) {
+            cmbEquipaA.setSelectedItem(equipaASelecionada);
+        } else if (cmbEquipaA.getItemCount() > 0) {
+            cmbEquipaA.setSelectedIndex(0);
+        }
+
+        if (equipaBSelecionada != null) {
+            cmbEquipaB.setSelectedItem(equipaBSelecionada);
+        } else if (cmbEquipaB.getItemCount() > 1) {
+            cmbEquipaB.setSelectedIndex(1);
+        } else if (cmbEquipaB.getItemCount() > 0) {
+            cmbEquipaB.setSelectedIndex(0);
+        }
+
+        carregando = false;
+    }
+
+    private Grupo grupoSelecionado() {
+        String nomeGrupo = (String) cmbGrupo.getSelectedItem();
+        if (nomeGrupo == null) return null;
+
+        for (Grupo grupo : grupos) {
+            if (grupo.getNome().equals(nomeGrupo)) {
+                return grupo;
+            }
+        }
+        return null;
+    }
+
+    private boolean grupoExiste(String nomeGrupo) {
+        if (nomeGrupo == null) return false;
+        for (Grupo grupo : grupos) {
+            if (grupo.getNome().equals(nomeGrupo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Preenche cada coluna com os jogadores da respetiva equipa. */
     private void preencherColunas(Jogo jogo) {
         carregando = true;
         String a = (String) cmbEquipaA.getSelectedItem();
@@ -275,21 +346,51 @@ public class GerirJogos extends BaseFrame {
         linha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
         linha.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lbl = new JLabel(nome);
+        boolean marcou = golos > 0;
+        JCheckBox checkBox = new JCheckBox(nome, marcou);
+        checkBox.setOpaque(false);
 
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(golos, 0, 99, 1));
+        spinner.setEnabled(marcou);
         JComponent editor = spinner.getEditor();
         if (editor instanceof JSpinner.DefaultEditor) {
             ((JSpinner.DefaultEditor) editor).getTextField().setColumns(2);
         }
         spinner.setMaximumSize(new Dimension(64, 28));
         spinner.setPreferredSize(new Dimension(64, 28));
-        spinner.addChangeListener(e -> { if (!carregando) recalcularResultado(); });
 
-        linha.add(lbl, BorderLayout.CENTER);
+        checkBox.addActionListener(e -> {
+            boolean selecionado = checkBox.isSelected();
+            spinner.setEnabled(selecionado);
+
+            if (selecionado && (Integer) spinner.getValue() == 0) {
+                spinner.setValue(1);
+            } else if (!selecionado) {
+                spinner.setValue(0);
+            }
+
+            if (!carregando) recalcularResultado();
+        });
+
+        spinner.addChangeListener(e -> {
+            if (carregando) return;
+
+            int valor = (Integer) spinner.getValue();
+            if (valor > 0 && !checkBox.isSelected()) {
+                checkBox.setSelected(true);
+                spinner.setEnabled(true);
+            } else if (valor == 0 && checkBox.isSelected()) {
+                checkBox.setSelected(false);
+                spinner.setEnabled(false);
+            }
+
+            recalcularResultado();
+        });
+
+        linha.add(checkBox, BorderLayout.CENTER);
         linha.add(spinner, BorderLayout.EAST);
 
-        linhas.add(new LinhaGolo(nome, spinner));
+        linhas.add(new LinhaGolo(nome, checkBox, spinner));
         return linha;
     }
 
@@ -300,7 +401,8 @@ public class GerirJogos extends BaseFrame {
         int gb = somaGolos(linhasB);
 
         String txt = nome(a) + "   " + ga + " – " + gb + "   " + nome(b);
-        if (ga > gb)       txt += "      🏆 " + a;
+        if (a == null || b == null) txt = "Escolhe um grupo com pelo menos duas equipas.";
+        else if (ga > gb)       txt += "      🏆 " + a;
         else if (gb > ga)  txt += "      🏆 " + b;
         else               txt += "      (empate — decidido nos penáltis)";
         lblResultado.setText(txt);
@@ -311,7 +413,9 @@ public class GerirJogos extends BaseFrame {
     private int somaGolos(List<LinhaGolo> linhas) {
         int total = 0;
         for (LinhaGolo linha : linhas) {
-            total += (Integer) linha.spinner.getValue();
+            if (linha.checkBox.isSelected()) {
+                total += (Integer) linha.spinner.getValue();
+            }
         }
         return total;
     }
@@ -319,10 +423,17 @@ public class GerirJogos extends BaseFrame {
     // ------------------------------------------------------------------ guardar
 
     private void guardarJogo() {
+        String grupo = (String) cmbGrupo.getSelectedItem();
         String a = (String) cmbEquipaA.getSelectedItem();
         String b = (String) cmbEquipaB.getSelectedItem();
+
+        if (grupo == null) {
+            JOptionPane.showMessageDialog(this, "Escolhe um grupo.");
+            return;
+        }
+
         if (a == null || b == null || a.equals(b)) {
-            JOptionPane.showMessageDialog(this, "Escolhe duas equipas diferentes para o jogo.");
+            JOptionPane.showMessageDialog(this, "Escolhe duas equipas diferentes do mesmo grupo.");
             return;
         }
 
@@ -335,8 +446,8 @@ public class GerirJogos extends BaseFrame {
 
         Jogo jogo = (jogoEmEdicao != null)
                 ? jogoEmEdicao
-                : new Jogo((String) cmbFase.getSelectedItem(), a, b);
-        jogo.setFase((String) cmbFase.getSelectedItem());
+                : new Jogo(grupo, a, b);
+        jogo.setFase(grupo);          // o campo "fase" passa a guardar o grupo nesta janela
         jogo.setEquipaA(a);
         jogo.setEquipaB(b);
         jogo.setGolosA(ga);
@@ -368,7 +479,7 @@ public class GerirJogos extends BaseFrame {
     private void recolherMarcadores(List<LinhaGolo> linhas, Map<String, Integer> dest) {
         for (LinhaGolo linha : linhas) {
             int golos = (Integer) linha.spinner.getValue();
-            if (golos > 0) {
+            if (linha.checkBox.isSelected() && golos > 0) {
                 dest.put(linha.jogador, golos);
             }
         }
