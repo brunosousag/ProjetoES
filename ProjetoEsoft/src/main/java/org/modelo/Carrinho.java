@@ -15,7 +15,7 @@ public class Carrinho extends BaseFrame {
     private JPanel menuPrincipal;
     private JLabel lblNomeCampeonato;
     private JButton btnGestao;
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnMerch;
     private JButton btnCarrinho;
 
@@ -44,6 +44,7 @@ public class Carrinho extends BaseFrame {
             "Subtotal"
     };
 
+    //Interface aninhada — declarada dentro da classe CarrinhoStore
     private CarrinhoStore.CarrinhoListener storeListener;
 
     public Carrinho(String title) {
@@ -53,7 +54,7 @@ public class Carrinho extends BaseFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 
@@ -175,9 +176,9 @@ public class Carrinho extends BaseFrame {
 
         WindowManager.abrirJanela(
                 this,
-                "comprarBilhete",
-                "A janela Comprar Bilhete já está aberta!",
-                new ComprarBilhete("Campeonato Mundial 2026 - Comprar bilhete")
+                "finalizarCompra",
+                "A janela de Finalizar Compra já está aberta!",
+                new FinalizarCompra("Campeonato Mundial 2026 - Finalizar compra")
         );
     }
 }

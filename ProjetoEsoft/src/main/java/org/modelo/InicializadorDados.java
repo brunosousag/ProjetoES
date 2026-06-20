@@ -1,9 +1,8 @@
 package org.modelo;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class InicializadorDados {
@@ -12,7 +11,65 @@ public class InicializadorDados {
         criarEquipasSeNaoExistirem();
         criarProdutosSeNaoExistirem();
         criarJogadoresSeNaoExistirem();
+        criarArbitrosSeNaoExistirem();
+        criarGruposSeNaoExistirem();
+        criarEstadiosSeNaoExistirem();
+        criarBancadasSeNaoExistirem();
         criarJogosCalendarioSeNaoExistirem();
+    }
+
+    /**
+     * Cria o layout padrão de bancadas — partilhado por todos os estádios.
+     * Distribuído por setores (Norte/Sul/Este/Oeste/Camarotes/Mob. reduzida)
+     * e pisos. O multiplicador de preço espelha a localização: central e
+     * inferior é mais caro, terceiro piso é mais barato.
+     */
+    private static void criarBancadasSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_BANCADAS);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<Bancada> bancadas = new ArrayList<>();
+
+        // 1º piso inferior (mais perto do relvado, mais caro)
+        bancadas.add(new Bancada("1º piso inferior Norte Esq", Bancada.Setor.NORTE, Bancada.Piso.INFERIOR, 800, 1.5));
+        bancadas.add(new Bancada("1º piso inferior Norte", Bancada.Setor.NORTE, Bancada.Piso.INFERIOR, 1000, 1.6));
+        bancadas.add(new Bancada("1º piso inferior Norte Drt", Bancada.Setor.NORTE, Bancada.Piso.INFERIOR, 800, 1.5));
+        bancadas.add(new Bancada("1º piso inferior Oeste", Bancada.Setor.OESTE, Bancada.Piso.INFERIOR, 1200, 1.4));
+        bancadas.add(new Bancada("1º piso inferior Este", Bancada.Setor.ESTE, Bancada.Piso.INFERIOR, 1200, 1.4));
+        bancadas.add(new Bancada("Sul inferior Esq", Bancada.Setor.SUL, Bancada.Piso.INFERIOR, 800, 1.5));
+        bancadas.add(new Bancada("1º piso inferior Sul", Bancada.Setor.SUL, Bancada.Piso.INFERIOR, 1000, 1.6));
+        bancadas.add(new Bancada("Sul inferior Drt", Bancada.Setor.SUL, Bancada.Piso.INFERIOR, 800, 1.5));
+
+        // 2º piso superior (preço médio)
+        bancadas.add(new Bancada("2º piso Sup Oeste Esq", Bancada.Setor.OESTE, Bancada.Piso.SUPERIOR_2, 600, 1.1));
+        bancadas.add(new Bancada("2º piso Sup Oeste Cent", Bancada.Setor.OESTE, Bancada.Piso.SUPERIOR_2, 700, 1.2));
+        bancadas.add(new Bancada("2º piso Sup Oeste Drt", Bancada.Setor.OESTE, Bancada.Piso.SUPERIOR_2, 600, 1.1));
+        bancadas.add(new Bancada("2º piso Sup Est Esq", Bancada.Setor.ESTE, Bancada.Piso.SUPERIOR_2, 600, 1.1));
+        bancadas.add(new Bancada("2º piso Sup Est Cent", Bancada.Setor.ESTE, Bancada.Piso.SUPERIOR_2, 700, 1.2));
+        bancadas.add(new Bancada("2º piso Sup Est Drt", Bancada.Setor.ESTE, Bancada.Piso.SUPERIOR_2, 600, 1.1));
+
+        // 3º piso superior (mais barato)
+        bancadas.add(new Bancada("3º superior Norte Esq", Bancada.Setor.NORTE, Bancada.Piso.SUPERIOR_3, 1000, 0.8));
+        bancadas.add(new Bancada("3º superior Norte Cent", Bancada.Setor.NORTE, Bancada.Piso.SUPERIOR_3, 1200, 0.9));
+        bancadas.add(new Bancada("3º superior Norte Drt", Bancada.Setor.NORTE, Bancada.Piso.SUPERIOR_3, 1000, 0.8));
+        bancadas.add(new Bancada("3º superior Sul Esq", Bancada.Setor.SUL, Bancada.Piso.SUPERIOR_3, 1000, 0.8));
+        bancadas.add(new Bancada("3º superior Sul Cent", Bancada.Setor.SUL, Bancada.Piso.SUPERIOR_3, 1200, 0.9));
+        bancadas.add(new Bancada("3º superior Sul Drt", Bancada.Setor.SUL, Bancada.Piso.SUPERIOR_3, 1000, 0.8));
+
+        // Camarotes (premium)
+        bancadas.add(new Bancada("Camarotes Norte", Bancada.Setor.CAMAROTE, Bancada.Piso.CAMAROTE, 200, 3.0));
+        bancadas.add(new Bancada("Camarotes Sul", Bancada.Setor.CAMAROTE, Bancada.Piso.CAMAROTE, 200, 3.0));
+
+        // Mobilidade reduzida (preço base)
+        bancadas.add(new Bancada("Mobilidade reduzida Norte Esq", Bancada.Setor.MOBILIDADE_REDUZIDA, Bancada.Piso.MOBILIDADE_REDUZIDA, 50, 1.0));
+        bancadas.add(new Bancada("Mobilidade reduzida Norte Drt", Bancada.Setor.MOBILIDADE_REDUZIDA, Bancada.Piso.MOBILIDADE_REDUZIDA, 50, 1.0));
+        bancadas.add(new Bancada("Mobilidade reduzida Sul Esq", Bancada.Setor.MOBILIDADE_REDUZIDA, Bancada.Piso.MOBILIDADE_REDUZIDA, 50, 1.0));
+        bancadas.add(new Bancada("Mobilidade reduzida Sul Drt", Bancada.Setor.MOBILIDADE_REDUZIDA, Bancada.Piso.MOBILIDADE_REDUZIDA, 50, 1.0));
+
+        RepositorioDados.guardarBancadas(bancadas);
     }
 
     private static void criarEquipasSeNaoExistirem() {
@@ -24,12 +81,19 @@ public class InicializadorDados {
 
         ArrayList<Equipa> equipas = new ArrayList<>();
 
-        equipas.add(new Equipa("Portugal", "Seleção portuguesa", "Portuguesa"));
-        equipas.add(new Equipa("Brasil", "Seleção brasileira", "Brasileira"));
-        equipas.add(new Equipa("Argentina", "Seleção argentina", "Argentina"));
-        equipas.add(new Equipa("França", "Seleção francesa", "Francesa"));
-        equipas.add(new Equipa("Espanha", "Seleção espanhola", "Espanhola"));
-        equipas.add(new Equipa("Japão", "Seleção japonesa", "Japonesa"));
+        equipas.add(new Equipa(1, "Portugal", "Seleção"));
+        equipas.add(new Equipa(2, "Brasil", "Seleção"));
+        equipas.add(new Equipa(3, "Argentina", "Seleção"));
+        equipas.add(new Equipa(4, "França", "Seleção"));
+        equipas.add(new Equipa(5, "Espanha", "Seleção"));
+        equipas.add(new Equipa(6, "Japão", "Seleção"));
+        equipas.add(new Equipa(7, "Portugal", "Arbitragem"));
+        equipas.add(new Equipa(8, "Estados-Unidos", "Arbitragem"));
+        equipas.add(new Equipa(9, "Brasil", "Arbitragem"));
+        equipas.add(new Equipa(10, "Argélia", "Arbitragem"));
+        equipas.add(new Equipa(11, "Japão", "Arbitragem"));
+        equipas.add(new Equipa(12, "Nova-Zelândia", "Arbitragem"));
+        equipas.add(new Equipa(13, "Portugal", "Médica"));
 
         RepositorioDados.guardarEquipas(equipas);
     }
@@ -78,25 +142,55 @@ public class InicializadorDados {
 
         ArrayList<Jogador> jogadores = new ArrayList<>();
 
-        jogadores.add(new Jogador("Kylian Mbappé", "França", 11));
-        jogadores.add(new Jogador("Lionel Messi", "Argentina", 10));
-        jogadores.add(new Jogador("Cristiano Ronaldo", "Portugal", 9));
-        jogadores.add(new Jogador("Neymar", "Brasil", 8));
-        jogadores.add(new Jogador("Antoine Griezmann", "França", 7));
-        jogadores.add(new Jogador("Rodrygo", "Brasil", 7));
-        jogadores.add(new Jogador("Vinícius Júnior", "Brasil", 6));
-        jogadores.add(new Jogador("Álvaro Morata", "Espanha", 6));
-        jogadores.add(new Jogador("Bruno Fernandes", "Portugal", 5));
-        jogadores.add(new Jogador("Lamine Yamal", "Espanha", 5));
-        jogadores.add(new Jogador("Julián Álvarez", "Argentina", 4));
-        jogadores.add(new Jogador("Takefusa Kubo", "Japão", 4));
-        jogadores.add(new Jogador("Olivier Giroud", "França", 3));
-        jogadores.add(new Jogador("Kaoru Mitoma", "Japão", 3));
-        jogadores.add(new Jogador("Pedri", "Espanha", 2));
+        jogadores.add(new Jogador("Kylian Mbappé", 4, 11));
+        jogadores.add(new Jogador("Lionel Messi", 3, 10));
+        jogadores.add(new Jogador("Cristiano Ronaldo", 1, 9));
+        jogadores.add(new Jogador("Neymar", 2, 8));
+        jogadores.add(new Jogador("Antoine Griezmann", 4, 7));
+        jogadores.add(new Jogador("Rodrygo", 2, 7));
+        jogadores.add(new Jogador("Vinícius Júnior", 2, 6));
+        jogadores.add(new Jogador("Álvaro Morata", 5, 6));
+        jogadores.add(new Jogador("Bruno Fernandes", 1, 5));
+        jogadores.add(new Jogador("Lamine Yamal", 5, 5));
+        jogadores.add(new Jogador("Julián Álvarez", 3, 4));
+        jogadores.add(new Jogador("Takefusa Kubo", 6, 4));
+        jogadores.add(new Jogador("Olivier Giroud", 4, 3));
+        jogadores.add(new Jogador("Kaoru Mitoma", 6, 3));
+        jogadores.add(new Jogador("Pedri", 5, 2));
 
         RepositorioDados.guardarJogadores(jogadores);
     }
 
+    private static void criarArbitrosSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_ARBITROS);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<Arbitro> arbitros = new ArrayList<>();
+
+        arbitros.add(new Arbitro("João Pinheiro", 7));
+        arbitros.add(new Arbitro("Ismail Elfath", 8));
+        arbitros.add(new Arbitro("Raphael Claus", 9));
+        arbitros.add(new Arbitro("Mustapha Ghorbal", 10));
+        arbitros.add(new Arbitro("Yusuke Araki", 11));
+        arbitros.add(new Arbitro("Campbell-Kirk Kawana-Waugh", 12));
+
+        RepositorioDados.guardarArbitros(arbitros);
+    }
+
+    /**
+     * Cria o calendário inicial do torneio.
+     *
+     * Como a fase de grupos é externa, o torneio arranca já nos oitavos:
+     * gera os 8 jogos a partir dos 1º e 2º classificados dos 8 grupos
+     * (ver LogicaTorneio.gerarOitavos()). Cada jogo recebe data, hora,
+     * estádio e preço aleatórios.
+     *
+     * Tem de correr DEPOIS de criarGruposSeNaoExistirem() e
+     * criarEstadiosSeNaoExistirem().
+     */
     private static void criarJogosCalendarioSeNaoExistirem() {
         File ficheiro = new File(CaminhosFicheiros.FICHEIRO_JOGOS_CALENDARIO);
 
@@ -104,57 +198,79 @@ public class InicializadorDados {
             return;
         }
 
-        ArrayList<JogoCalendario> jogos = new ArrayList<>();
-        LocalDate hoje = LocalDate.now();
+        new LogicaTorneio().gerarOitavos();
+    }
 
-        jogos.add(new JogoCalendario(
-                "GRUPO A", "Portugal", "Argentina",
-                hoje, LocalTime.of(18, 30),
-                "Estádio da Luz", 60000, 60000, 45.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO A", "Brasil", "Espanha",
-                hoje, LocalTime.of(21, 0),
-                "Estádio Nacional", 50000, 23000, 45.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO A", "Portugal", "Brasil",
-                hoje.plusDays(3), LocalTime.of(19, 0),
-                "Estádio do Dragão", 50000, 14500, 50.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO A", "Argentina", "Espanha",
-                hoje.minusDays(5), LocalTime.of(20, 0),
-                "Estádio José Alvalade", 50000, 50000, 45.00
-        ));
+    private static void criarEstadiosSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_ESTADIOS);
 
-        jogos.add(new JogoCalendario(
-                "GRUPO B", "França", "Japão",
-                hoje, LocalTime.of(20, 0),
-                "Estádio Municipal de Braga", 30000, 12000, 40.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO B", "França", "Inglaterra",
-                hoje.plusDays(1), LocalTime.of(21, 0),
-                "Estádio do Dragão", 50000, 9000, 55.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO B", "Japão", "Inglaterra",
-                hoje.minusDays(2), LocalTime.of(18, 0),
-                "Estádio Municipal de Braga", 30000, 30000, 40.00
-        ));
+        if (ficheiro.exists()) {
+            return;
+        }
 
-        jogos.add(new JogoCalendario(
-                "GRUPO C", "Alemanha", "Bélgica",
-                hoje.plusDays(2), LocalTime.of(19, 30),
-                "Estádio D. Afonso Henriques", 30000, 8000, 45.00
-        ));
-        jogos.add(new JogoCalendario(
-                "GRUPO C", "Itália", "Croácia",
-                hoje.minusDays(1), LocalTime.of(20, 30),
-                "Estádio Algarve", 30000, 30000, 45.00
-        ));
+        ArrayList<Estadio> estadios = new ArrayList<>();
 
-        RepositorioDados.guardarJogosCalendario(jogos);
+
+        // Estados Unidos (11)
+        estadios.add(new Estadio("AT&T Stadium", 94000, "Arlington", "Estados Unidos"));
+        estadios.add(new Estadio("MetLife Stadium", 82500, "East Rutherford", "Estados Unidos"));
+        estadios.add(new Estadio("Mercedes-Benz Stadium", 75000, "Atlanta", "Estados Unidos"));
+        estadios.add(new Estadio("Arrowhead Stadium", 73000, "Kansas City", "Estados Unidos"));
+        estadios.add(new Estadio("NRG Stadium", 72000, "Houston", "Estados Unidos"));
+        estadios.add(new Estadio("Levi's Stadium", 71000, "Santa Clara", "Estados Unidos"));
+        estadios.add(new Estadio("SoFi Stadium", 70000, "Inglewood", "Estados Unidos"));
+        estadios.add(new Estadio("Lincoln Financial Field", 69000, "Filadélfia", "Estados Unidos"));
+        estadios.add(new Estadio("Lumen Field", 69000, "Seattle", "Estados Unidos"));
+        estadios.add(new Estadio("Gillette Stadium", 65000, "Foxborough", "Estados Unidos"));
+        estadios.add(new Estadio("Hard Rock Stadium", 65000, "Miami Gardens", "Estados Unidos"));
+
+        // México (3)
+        estadios.add(new Estadio("Estadio Azteca", 83000, "Cidade do México", "México"));
+        estadios.add(new Estadio("Estadio BBVA", 53500, "Monterrey", "México"));
+        estadios.add(new Estadio("Estadio Akron", 48000, "Zapopan (Guadalajara)", "México"));
+
+        // Canadá (2)
+        estadios.add(new Estadio("BC Place", 54000, "Vancouver", "Canadá"));
+        estadios.add(new Estadio("BMO Field", 45000, "Toronto", "Canadá"));
+
+
+
+        RepositorioDados.guardarEstadios(estadios);
+    }
+
+    /**
+     * Cria o ficheiro grupos.dat com os 8 grupos apurados para os oitavos.
+     *
+     * A fase de grupos é assumida como já concluída — o código só lida com
+     * as 16 equipas qualificadas (1º e 2º de cada grupo). Por isso cada
+     * Grupo guarda exactamente DUAS equipas, por esta ordem:
+     *   índice 0 → 1º classificado;
+     *   índice 1 → 2º classificado.
+     * Esta ordem é usada por LogicaTorneio.gerarOitavos() para emparelhar
+     * 1º de um grupo contra o 2º do grupo vizinho.
+     *
+     * NOTA: os nomes abaixo são ilustrativos. Substituir pelos apurados
+     * reais quando definidos.
+     */
+
+    private static void criarGruposSeNaoExistirem() {
+        File ficheiro = new File(CaminhosFicheiros.FICHEIRO_GRUPOS);
+
+        if (ficheiro.exists()) {
+            return;
+        }
+
+        ArrayList<Grupo> grupos = new ArrayList<>();
+
+        grupos.add(new Grupo("GRUPO A", Arrays.asList("México", "Coreia do Sul")));
+        grupos.add(new Grupo("GRUPO B", Arrays.asList("Suiça", "Canadá")));
+        grupos.add(new Grupo("GRUPO C", Arrays.asList("Escócia", "Marrocos")));
+        grupos.add(new Grupo("GRUPO D", Arrays.asList("Portugal", "Austrália")));
+        grupos.add(new Grupo("GRUPO E", Arrays.asList("Alemanha", "Costa do Marfim")));
+        grupos.add(new Grupo("GRUPO F", Arrays.asList("Suécia", "Japão")));
+        grupos.add(new Grupo("GRUPO G", Arrays.asList("Nova Zelândia", "Irão")));
+        grupos.add(new Grupo("GRUPO H", Arrays.asList("Uruguai", "Arábia Saudita")));
+
+        RepositorioDados.guardarGrupos(grupos);
     }
 }

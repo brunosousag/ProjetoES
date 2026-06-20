@@ -1,6 +1,10 @@
 package org.modelo;
 
-public class ItemCarrinho {
+import java.io.Serializable;
+
+public class ItemCarrinho implements Serializable {
+
+    private static final long serialVersionUID = 2L;
 
     public enum Tipo {
         BILHETE,
@@ -13,12 +17,25 @@ public class ItemCarrinho {
     private final double precoUnitario;
     private int quantidade;
 
-    public ItemCarrinho(Tipo tipo, String descricao, String detalhe, double precoUnitario, int quantidade) {
+    // Campos específicos de bilhete (null para produtos)
+    private final String jogoDescricao;   // ex: "Portugal vs Argentina"
+    private final String bancadaNome;     // ex: "1º piso inferior Sul"
+
+    public ItemCarrinho(Tipo tipo, String descricao, String detalhe,
+                        double precoUnitario, int quantidade) {
+        this(tipo, descricao, detalhe, precoUnitario, quantidade, null, null);
+    }
+
+    public ItemCarrinho(Tipo tipo, String descricao, String detalhe,
+                        double precoUnitario, int quantidade,
+                        String jogoDescricao, String bancadaNome) {
         this.tipo = tipo;
         this.descricao = descricao;
         this.detalhe = detalhe;
         this.precoUnitario = precoUnitario;
         this.quantidade = quantidade;
+        this.jogoDescricao = jogoDescricao;
+        this.bancadaNome = bancadaNome;
     }
 
     public Tipo getTipo() { return tipo; }
@@ -26,6 +43,8 @@ public class ItemCarrinho {
     public String getDetalhe() { return detalhe; }
     public double getPrecoUnitario() { return precoUnitario; }
     public int getQuantidade() { return quantidade; }
+    public String getJogoDescricao() { return jogoDescricao; }
+    public String getBancadaNome() { return bancadaNome; }
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;

@@ -7,12 +7,9 @@ public class FicheiroBinario {
 
     public static <T> void guardarLista(String caminhoFicheiro, ArrayList<T> lista) {
         criarPastaSeNaoExistir(caminhoFicheiro);
-
         try (ObjectOutputStream output = new ObjectOutputStream(
                 new FileOutputStream(caminhoFicheiro))) {
-
             output.writeObject(lista);
-
         } catch (IOException e) {
             System.out.println("Erro ao guardar ficheiro: " + e.getMessage());
         }
@@ -21,11 +18,9 @@ public class FicheiroBinario {
     @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> carregarLista(String caminhoFicheiro) {
         File ficheiro = new File(caminhoFicheiro);
-
         if (!ficheiro.exists()) {
             return new ArrayList<>();
         }
-
         try (ObjectInputStream input = new ObjectInputStream(
                 new FileInputStream(ficheiro))) {
 

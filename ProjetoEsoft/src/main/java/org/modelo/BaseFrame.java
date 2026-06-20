@@ -1,33 +1,90 @@
 package org.modelo;
 
 import javax.swing.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseFrame extends JFrame {
 
     protected JButton btnGestao;
-    protected JButton btnClassificacaoGeral;
+    protected JButton btnEquipas;
     protected JButton btnMerch;
     protected JButton btnCarrinho;
+    protected JButton btnUser;
+
+    private String Username;
 
     private CarrinhoStore.CarrinhoListener carrinhoListener;
 
+    /** Componentes do cabeçalho/menu que só o Gestor pode ver. */
+    private final List<Component> componentesSoGestor = new ArrayList<>();
+    private Sessao.PerfilListener perfilListener;
+
     public BaseFrame(String title) {
         super(title);
+    }
+
+    protected void configurarMenuUtilizador() {
+        if (btnUser == null) {
+            return;
+        }
+
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem itemGestor = new JMenuItem("Gestor");
+        JMenuItem itemVendedor = new JMenuItem("Vendedor");
+
+        itemGestor.addActionListener(e -> Sessao.setPerfil(Sessao.Perfil.GESTOR));
+        itemVendedor.addActionListener(e -> Sessao.setPerfil(Sessao.Perfil.VENDEDOR));
+
+        popup.add(itemGestor);
+        popup.add(itemVendedor);
+
+        btnUser.addActionListener(e ->
+                popup.show(btnUser, 0, btnUser.getHeight())
+        );
+
+        atualizarTextoBtnUser();
+    }
+
+    /** Mostra o perfil ativo no próprio botão (ex.: "👤 Vendedor"). */
+    private void atualizarTextoBtnUser() {
+        if (btnUser == null) return;
+        btnUser.setText(Sessao.isGestor() ? "👤 Gestor" : "👤 Vendedor");
+    }
+
+    /**
+     * Mostra/esconde tudo o que é exclusivo do Gestor conforme o perfil ativo.
+     * O Vendedor só fica com venda de bilhetes e classificações.
+     */
+    private void aplicarPermissoes() {
+        boolean gestor = Sessao.isGestor();
+        for (Component c : componentesSoGestor) {
+            if (c != null) {
+                c.setVisible(gestor);
+            }
+        }
+        atualizarTextoBtnUser();
+        revalidate();
+        repaint();
     }
 
     protected void configurarMenuGestao() {
 
         JPopupMenu popup = new JPopupMenu();
 
-        JMenuItem itemEquipas = new JMenuItem("Gerir Equipas");
-        JMenuItem itemGrupos = new JMenuItem("Gerir torneio");
-        JMenuItem itemFases = new JMenuItem("Gerir Fases do Torneio");
+        // Visível para todos (Vendedor e Gestor)
+        JMenuItem itemFases = new JMenuItem("Brackets do torneio");
+        JMenuItem itemGolos = new JMenuItem("Melhores Marcadores");
+
+        // Exclusivo do Gestor
+        JMenuItem itemGrupos = new JMenuItem("Grupos do torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
-        JMenuItem itemGolos = new JMenuItem("Mais Golos Marcados");
-        JMenuItem itemJogos = new JMenuItem("Registar Jogos");
+        JMenuItem itemJogos = new JMenuItem("Gerir Resultados");
 
         itemHistorico.addActionListener(e ->
                 WindowManager.abrirJanela(
@@ -35,15 +92,6 @@ public abstract class BaseFrame extends JFrame {
                         "hostoricoVendas",
                         "A janela de historico de vendas já está aberta!",
                         new HistoricoVendas("Campeonato Mundial 2026 - Histórico de vendas")
-                )
-        );
-
-        itemEquipas.addActionListener(e ->
-                WindowManager.abrirJanela(
-                        this,
-                        "gerirEquipas",
-                        "A janela Gerir Equipas já está aberta!",
-                        new GerirEquipas("Campeonato Mundial 2026 - Gerir Equipas")
                 )
         );
 
@@ -83,20 +131,32 @@ public abstract class BaseFrame extends JFrame {
                 )
         );
 
-        popup.add(itemEquipas);
-        popup.add(itemGrupos);
         popup.add(itemFases);
-        popup.add(itemHistorico);
         popup.add(itemGolos);
+        popup.add(itemGrupos);
+        popup.add(itemHistorico);
         popup.add(itemJogos);
 
         btnGestao.addActionListener(e ->
                 popup.show(btnGestao, 0, btnGestao.getHeight())
         );
 
-        //btnClassificacaoGeral.addActionListener(this::abrirClassificacao);
+        configurarMenuEquipas();
+
         btnMerch.addActionListener(this::abrirMerch);
         btnCarrinho.addActionListener(this::abrirCarrinho);
+
+        // Tudo o que é só do Gestor: esconde-se quando o perfil é Vendedor.
+        // (No menu Torneio; os itens de Equipas são adicionados em configurarMenuEquipas.)
+        componentesSoGestor.add(itemGrupos);
+        componentesSoGestor.add(itemHistorico);
+        componentesSoGestor.add(itemJogos);
+
+        configurarMenuUtilizador();
+
+        perfilListener = novoPerfil -> aplicarPermissoes();
+        Sessao.registarListener(perfilListener);
+        aplicarPermissoes();
 
         sincronizarContadorCarrinho();
     }
@@ -111,6 +171,7 @@ public abstract class BaseFrame extends JFrame {
             @Override
             public void windowClosed(WindowEvent e) {
                 CarrinhoStore.getInstance().removerListener(carrinhoListener);
+                Sessao.removerListener(perfilListener);
             }
         });
     }
@@ -121,14 +182,67 @@ public abstract class BaseFrame extends JFrame {
         btnCarrinho.setText("🛒 " + n);
     }
 
-//    private void abrirClassificacao(ActionEvent e) {
-//        WindowManager.abrirJanela(
-//                this,
-//                "classificacaoGeral",
-//                "A janela Classificação Geral já está aberta!",
-//                new ClassificacaoGeral("Campeonato Mundial 2026 - Classificação Geral")
-//        );
-//    }
+    /** Dropdown do botão EQUIPAS (cabeçalho de todas as páginas). */
+    protected void configurarMenuEquipas() {
+
+        JPopupMenu popup = new JPopupMenu();
+
+        // Mostrar Equipas: visível para todos. Os restantes só para o Gestor.
+        JMenuItem itemMostrar = new JMenuItem("Mostrar Equipas");
+        JMenuItem itemAdicionar = new JMenuItem("Adicionar Equipas");
+        JMenuItem itemDeslocacao = new JMenuItem("Alterar Deslocação");
+        JMenuItem itemAlojamento = new JMenuItem("Alterar Alojamento");
+
+        itemAdicionar.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "gerirEquipas",
+                        "A janela Adicionar Equipas já está aberta!",
+                        new GerirEquipas("Campeonato Mundial 2026 - Adicionar Equipas")
+                )
+        );
+
+        itemMostrar.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "mostrarEquipas",
+                        "A janela Mostrar Equipas já está aberta!",
+                        new MostrarEquipas("Campeonato Mundial 2026 - Mostrar Equipas")
+                )
+        );
+
+        itemDeslocacao.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "alterarDeslocacao",
+                        "A janela Alterar Deslocação já está aberta!",
+                        new AlterarDeslocacao("Campeonato Mundial 2026 - Alterar Deslocação")
+                )
+        );
+
+        itemAlojamento.addActionListener(e ->
+                WindowManager.abrirJanela(
+                        this,
+                        "alterarAlojamento",
+                        "A janela Alterar Alojamento já está aberta!",
+                        new AlterarAlojamento("Campeonato Mundial 2026 - Alterar Alojamento")
+                )
+        );
+
+        popup.add(itemMostrar);
+        popup.add(itemAdicionar);
+        popup.add(itemDeslocacao);
+        popup.add(itemAlojamento);
+
+        btnEquipas.addActionListener(e ->
+                popup.show(btnEquipas, 0, btnEquipas.getHeight())
+        );
+
+        // Gerir equipas é só do Gestor; "Mostrar Equipas" fica para todos.
+        componentesSoGestor.add(itemAdicionar);
+        componentesSoGestor.add(itemDeslocacao);
+        componentesSoGestor.add(itemAlojamento);
+    }
 
     private void abrirMerch(ActionEvent e) {
         WindowManager.abrirJanela(

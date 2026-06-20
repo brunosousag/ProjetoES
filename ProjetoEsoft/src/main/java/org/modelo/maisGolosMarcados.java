@@ -9,7 +9,7 @@ import java.util.List;
 public class maisGolosMarcados extends BaseFrame {
     private JPanel panel1;
     private JPanel menuPrincipal;
-    private JButton btnClassificacaoGeral;
+    private JButton btnEquipas;
     private JButton btnCarrinho;
     private JButton btnMerch;
     private JButton btnGestao;
@@ -25,7 +25,7 @@ public class maisGolosMarcados extends BaseFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         super.btnGestao = btnGestao;
-        super.btnClassificacaoGeral = btnClassificacaoGeral;
+        super.btnEquipas = btnEquipas;
         super.btnMerch = btnMerch;
         super.btnCarrinho = btnCarrinho;
 
@@ -84,7 +84,7 @@ public class maisGolosMarcados extends BaseFrame {
 
             lblPos.setText(String.valueOf(index + 1));
             lblNome.setText(jogador.getNome());
-            lblEquipa.setText(jogador.getEquipa());
+            lblEquipa.setText(RepositorioDados.nomeEquipaPorId(jogador.getEquipaId()));
             lblGolos.setText(String.valueOf(jogador.getGolos()));
 
             Color fundo = isSelected ? list.getSelectionBackground() : list.getBackground();

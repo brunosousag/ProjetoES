@@ -6,40 +6,40 @@ public class Equipa implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private int id;
     private String nome;
-    private String descricao;
-    private String nacionalidade;
+    private String tipo;
 
     private Alojamento alojamento;
     private Deslocacao deslocacao;
 
-    public Equipa(String nome, String descricao, String nacionalidade) {
+    public Equipa(int id, String nome, String tipo) {
+        this.id = id;
         this.nome = nome;
-        this.descricao = descricao;
-        this.nacionalidade = nacionalidade;
+        this.tipo = tipo;
         this.alojamento = null;
         this.deslocacao = null;
     }
 
-    public Equipa(String nome, String descricao, String nacionalidade,
+    public Equipa(int id, String nome, String tipo,
                   Alojamento alojamento, Deslocacao deslocacao) {
+        this.id = id;
         this.nome = nome;
-        this.descricao = descricao;
-        this.nacionalidade = nacionalidade;
+        this.tipo = tipo;
         this.alojamento = alojamento;
         this.deslocacao = deslocacao;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public String getNacionalidade() {
-        return nacionalidade;
+    public String getTipo() {
+        return tipo;
     }
 
     public Alojamento getAlojamento() {
@@ -50,16 +50,16 @@ public class Equipa implements Serializable {
         return deslocacao;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public void setNacionalidade(String nacionalidade) {
-        this.nacionalidade = nacionalidade;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public void setAlojamento(Alojamento alojamento) {
@@ -80,6 +80,6 @@ public class Equipa implements Serializable {
 
     @Override
     public String toString() {
-        return nome + " (" + nacionalidade + ")";
+        return nome;
     }
 }

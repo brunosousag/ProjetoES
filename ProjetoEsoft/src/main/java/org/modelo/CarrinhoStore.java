@@ -9,15 +9,17 @@ public class CarrinhoStore {
     public interface CarrinhoListener {
         void onCarrinhoAlterado();
     }
-
+    // ÚNICA instância — criada uma vez, guardada para sempre
     private static final CarrinhoStore INSTANCIA = new CarrinhoStore();
 
     private final List<ItemCarrinho> itens = new ArrayList<>();
     private final List<CarrinhoListener> listeners = new ArrayList<>();
 
+    //Construtor PRIVADO — ninguém de fora pode fazer `new CarrinhoStore()`
     private CarrinhoStore() {
     }
 
+    //Único acesso público à instância
     public static CarrinhoStore getInstance() {
         return INSTANCIA;
     }
@@ -51,45 +53,49 @@ public class CarrinhoStore {
         return total;
     }
 
-    public void adicionarBilhete(JogoCalendario jogo) {
-        ItemCarrinho existente = encontrarBilhete(jogo);
+    /**
+     * Adiciona bilhetes para o jogo numa bancada específica.
+     * Se já existir um item para o mesmo jogo+bancada, soma à quantidade.
+     */
+    public void adicionarBilhete(JogoCalendario jogo, Bancada bancada, int quantidade) {
+        if (quantidade <= 0) return;
+
+        String descricao = descricaoBilhete(jogo);
+        String detalhe = detalheBilhete(jogo, bancada);
+        double preco = bancada.getPreco(jogo.getPrecoBilhete());
+
+        ItemCarrinho existente = encontrarBilhete(descricao, detalhe);
         if (existente != null) {
-            existente.incrementarQuantidade();
+            existente.setQuantidade(existente.getQuantidade() + quantidade);
             notificarListeners();
             return;
         }
 
         itens.add(new ItemCarrinho(
                 ItemCarrinho.Tipo.BILHETE,
-                descricaoBilhete(jogo),
-                detalheBilhete(jogo),
-                jogo.getPrecoBilhete(),
-                1
+                descricao,
+                detalhe,
+                preco,
+                quantidade,
+                descricao,
+                bancada.getNome()
         ));
         notificarListeners();
     }
 
-    public void removerUmBilhete(JogoCalendario jogo) {
-        ItemCarrinho item = encontrarBilhete(jogo);
-        if (item == null) {
-            return;
-        }
-        if (item.getQuantidade() <= 1) {
-            itens.remove(item);
-        } else {
-            item.setQuantidade(item.getQuantidade() - 1);
-        }
-        notificarListeners();
-    }
-
     public int getQuantidadeBilhete(JogoCalendario jogo) {
-        ItemCarrinho item = encontrarBilhete(jogo);
-        return item == null ? 0 : item.getQuantidade();
+        int total = 0;
+        String descricao = descricaoBilhete(jogo);
+        for (ItemCarrinho item : itens) {
+            if (item.getTipo() == ItemCarrinho.Tipo.BILHETE
+                    && descricao.equals(item.getJogoDescricao())) {
+                total += item.getQuantidade();
+            }
+        }
+        return total;
     }
 
-    private ItemCarrinho encontrarBilhete(JogoCalendario jogo) {
-        String descricao = descricaoBilhete(jogo);
-        String detalhe = detalheBilhete(jogo);
+    private ItemCarrinho encontrarBilhete(String descricao, String detalhe) {
         for (ItemCarrinho item : itens) {
             if (item.getTipo() == ItemCarrinho.Tipo.BILHETE
                     && item.getDescricao().equals(descricao)
@@ -104,8 +110,8 @@ public class CarrinhoStore {
         return jogo.getEquipaA() + " vs " + jogo.getEquipaB();
     }
 
-    private String detalheBilhete(JogoCalendario jogo) {
-        return jogo.getGrupo() + " · "
+    private String detalheBilhete(JogoCalendario jogo, Bancada bancada) {
+        return bancada.getNome() + " · "
                 + jogo.getDataFormatada() + " " + jogo.getHoraFormatada()
                 + " · " + jogo.getEstadio();
     }
@@ -160,6 +166,7 @@ public class CarrinhoStore {
         listeners.remove(listener);
     }
 
+    //Avisa todas as janelas registadas que o carrinho mudou — para que elas possam atualizar a UI automaticamente.
     private void notificarListeners() {
         for (CarrinhoListener listener : new ArrayList<>(listeners)) {
             listener.onCarrinhoAlterado();
