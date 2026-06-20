@@ -28,7 +28,7 @@ public class MostrarEquipas extends BaseFrame {
     private static final Color TEXTO_HEADER = new Color(-525825, true);
     private static final Color COR_LINHA = new Color(-16448250, true);
 
-    private static final String[] COLUNAS = {"Nome", "Descrição", "Nacionalidade"};
+    private static final String[] COLUNAS = {"Nome", "Tipo"};
 
     private static final String FICHEIRO_EQUIPAS =
             "dados" + File.separator + "equipas.dat";
@@ -97,8 +97,7 @@ public class MostrarEquipas extends BaseFrame {
             gbc.gridy = linha++;
             String[] valores = {
                     equipa.getNome(),
-                    equipa.getDescricao(),
-                    equipa.getNacionalidade()
+                    equipa.getTipo()
             };
             for (int c = 0; c < valores.length; c++) {
                 gbc.gridx = c;

@@ -10,10 +10,6 @@ public class GerirEquipas extends BaseFrame {
     private transient JPanel gerirEquipas;
     private JLabel lblDadosEquipa;
     private JTextField txtFldNomeEquipa;
-    private JTextField txtFldDescricao;
-    private JTextField txtFldNacionalidade;
-    private transient JLabel lblNacionalidade;
-    private transient JLabel lblDescricao;
     private transient JLabel lblNomeEquipa;
     private transient JPanel menuPrincipal;
     private transient JButton btnEquipas;
@@ -52,20 +48,17 @@ public class GerirEquipas extends BaseFrame {
 
     private void adicionarEquipa() {
         String nome = txtFldNomeEquipa.getText().trim();
-        String descricao = txtFldDescricao.getText().trim();
-        String nacionalidade = txtFldNacionalidade.getText().trim();
+        String tipo = (String) comboBox1.getSelectedItem();
 
-        if (nome.isEmpty() || descricao.isEmpty() || nacionalidade.isEmpty()) {
+        if (nome.isEmpty() || tipo == null) {
             JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        equipas.add(new Equipa(nome, descricao, nacionalidade));
+        equipas.add(new Equipa(nome, tipo));
         guardarEquipasDisco();
 
         txtFldNomeEquipa.setText("");
-        txtFldDescricao.setText("");
-        txtFldNacionalidade.setText("");
 
         JOptionPane.showMessageDialog(this, "Equipa adicionada com sucesso!");
     }
