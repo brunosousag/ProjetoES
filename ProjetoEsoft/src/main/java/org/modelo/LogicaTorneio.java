@@ -4,42 +4,46 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 /**
  * Centraliza a lógica do torneio:
- *   - geração dos jogos da fase de grupos (calendário);
- *   - apuramento da fase de grupos (quem passa);
- *   - progressão pelas fases eliminatórias
- *     (16avos -> oitavos -> quartos -> meias-finais -> final).
+ *   - geração dos jogos de calendário;
+ *   - classificação da fase de grupos;
+ *   - criação e atualização automática da árvore eliminatória.
  */
 public class LogicaTorneio {
 
     // ------------------------------------------------------------------ fases
 
-    /** Nomes das fases eliminatórias (têm de coincidir com os usados em GerirJogos). */
     public static final String FASE_OITAVOS = "Oitavos de final";
     public static final String FASE_QUARTOS = "Quartos de final";
     public static final String FASE_MEIAS   = "Meias-finais";
+    public static final String FASE_TERCEIRO = "3.º lugar";
     public static final String FASE_FINAL   = "Final";
 
-    /** Fases eliminatórias por ordem de progressão (da primeira à última). */
+    /** Ordem visual usada no bracket. */
+    public static final String[] FASES_BRACKET = {
+            FASE_OITAVOS, FASE_QUARTOS, FASE_MEIAS, FASE_TERCEIRO, FASE_FINAL
+    };
+
+    /** Ordem competitiva principal. O jogo do 3.º lugar é derivado das meias-finais. */
     public static final String[] FASES_ELIMINATORIAS = {
             FASE_OITAVOS, FASE_QUARTOS, FASE_MEIAS, FASE_FINAL
     };
 
     // ----------------------------------------------- parâmetros da geração do calendário
 
-    /** Hora mais cedo a que um jogo pode começar. */
-    private static final int HORA_MIN = 14;            // 14:00
-    /** Hora mais tarde a que um jogo pode começar (ainda antes da meia-noite). */
-    private static final int HORA_MAX = 23;            // 23:xx
-    /** Preços possíveis para o bilhete (€). */
+    private static final int HORA_MIN = 14;
+    private static final int HORA_MAX = 23;
     private static final double[] PRECOS = {35.0, 40.0, 45.0, 50.0, 55.0};
-    /** Quantos grupos jogam no mesmo dia (espalha a jornada pelo calendário). */
     private static final int GRUPOS_POR_DIA = 2;
 
     // ------------------------------------------------------------------ dados
@@ -47,8 +51,8 @@ public class LogicaTorneio {
     private final List<Equipa> equipas;
     private final List<Grupo> grupos;
     private final List<Estadio> estadios;
-    private final List<JogoCalendario> jogosGrupos;     // fase de grupos (calendário)
-    private final List<Jogo> jogosEliminatorios;        // fases a eliminar
+    private final List<JogoCalendario> jogosGrupos;
+    private final List<Jogo> jogosEliminatorios;
     private final Random random = new Random();
 
     public LogicaTorneio() {
@@ -61,7 +65,6 @@ public class LogicaTorneio {
 
     // ------------------------------------------------- fase de grupos: consulta
 
-    /** Nomes dos grupos existentes (ex.: "GRUPO A"), pela ordem do ficheiro. */
     public List<String> grupos() {
         List<String> nomes = new ArrayList<>();
         for (Grupo grupo : grupos) {
@@ -70,7 +73,6 @@ public class LogicaTorneio {
         return nomes;
     }
 
-    /** Equipas que disputam um determinado grupo. */
     public List<String> equipasDoGrupo(String grupo) {
         for (Grupo g : grupos) {
             if (g.getNome().equals(grupo)) {
@@ -82,26 +84,13 @@ public class LogicaTorneio {
 
     // -------------------------------------- fase de grupos: geração do calendário
 
-    /**
-     * Gera o primeiro jogo de cada equipa (1ª jornada de todos os grupos).
-     * É apenas um atalho para gerarJornada() quando ainda não há jogos.
-     */
     public List<JogoCalendario> gerarPrimeiraJornada() {
         return gerarJornada();
     }
 
-    /**
-     * Gera uma jornada para cada grupo: empareia aleatoriamente as equipas que
-     * ainda não se defrontaram (nenhuma joga contra a mesma duas vezes), atribui
-     * data e hora (entre as 14:00 e as 00:00) e um estádio com a sua capacidade.
-     * Os jogos são acrescentados ao calendário e guardados no ficheiro.
-     *
-     * Voltar a chamar gera a jornada seguinte — a usar depois de registados os
-     * resultados da jornada anterior.
-     */
     public List<JogoCalendario> gerarJornada() {
         Set<String> paresJogados = paresJogados();
-        LocalDate dataBase = dataBaseProximaJornada();
+        LocalDate dataBase = dataBaseProximaJornada(jogosGrupos);
 
         List<JogoCalendario> novos = new ArrayList<>();
         int indiceGrupo = 0;
@@ -109,7 +98,7 @@ public class LogicaTorneio {
             List<String[]> pares = emparelhar(grupo.getEquipas(), paresJogados);
             LocalDate dia = dataBase.plusDays(indiceGrupo / GRUPOS_POR_DIA);
             for (String[] par : pares) {
-                novos.add(criarJogo(grupo.getNome(), par[0], par[1], dia));
+                novos.add(criarJogoCalendario(grupo.getNome(), par[0], par[1], dia));
                 paresJogados.add(chavePar(par[0], par[1]));
             }
             indiceGrupo++;
@@ -120,8 +109,7 @@ public class LogicaTorneio {
         return novos;
     }
 
-    /** Cria um JogoCalendario com hora, estádio e preço atribuídos aleatoriamente. */
-    private JogoCalendario criarJogo(String grupo, String equipaA, String equipaB, LocalDate data) {
+    private JogoCalendario criarJogoCalendario(String grupo, String equipaA, String equipaB, LocalDate data) {
         LocalTime hora = horaAleatoria();
         Estadio estadio = estadioAleatorio();
         double preco = PRECOS[random.nextInt(PRECOS.length)];
@@ -129,29 +117,30 @@ public class LogicaTorneio {
                 grupo, equipaA, equipaB,
                 data, hora,
                 estadio.getNome(), estadio.getCapacidade(),
-                0,              // bilhetes vendidos: começa a zero
+                0,
                 preco
         );
     }
 
-    /** Hora aleatória entre as 14:00 e as 23:45. */
     private LocalTime horaAleatoria() {
-        int hora = HORA_MIN + random.nextInt(HORA_MAX - HORA_MIN + 1);  // 14..23
-        int minuto = random.nextInt(4) * 15;                            // 0,15,30,45
+        int hora = HORA_MIN + random.nextInt(HORA_MAX - HORA_MIN + 1);
+        int minuto = random.nextInt(4) * 15;
         return LocalTime.of(hora, minuto);
     }
 
     private Estadio estadioAleatorio() {
+        if (estadios == null || estadios.isEmpty()) {
+            return new Estadio("Estádio por definir", 50000, "Cidade por definir", "País por definir");
+        }
         return estadios.get(random.nextInt(estadios.size()));
     }
 
-    /** Próxima data livre: hoje (se não há jogos) ou o dia a seguir ao último jogo. */
-    private LocalDate dataBaseProximaJornada() {
-        if (jogosGrupos.isEmpty()) {
+    private LocalDate dataBaseProximaJornada(List<JogoCalendario> jogos) {
+        if (jogos == null || jogos.isEmpty()) {
             return LocalDate.now();
         }
-        LocalDate ultima = jogosGrupos.get(0).getData();
-        for (JogoCalendario jogo : jogosGrupos) {
+        LocalDate ultima = jogos.get(0).getData();
+        for (JogoCalendario jogo : jogos) {
             if (jogo.getData().isAfter(ultima)) {
                 ultima = jogo.getData();
             }
@@ -159,7 +148,6 @@ public class LogicaTorneio {
         return ultima.plusDays(1);
     }
 
-    /** Confrontos já marcados (chave normalizada "A|B"), para não repetir jogos. */
     private Set<String> paresJogados() {
         Set<String> pares = new HashSet<>();
         for (JogoCalendario jogo : jogosGrupos) {
@@ -168,11 +156,6 @@ public class LogicaTorneio {
         return pares;
     }
 
-    /**
-     * Empareia as equipas de um grupo em jogos, garantindo que cada equipa joga
-     * uma vez e que nenhum par já se defrontou. Usa backtracking porque, nas
-     * últimas jornadas, pode só restar um emparelhamento válido.
-     */
     private List<String[]> emparelhar(List<String> equipas, Set<String> paresJogados) {
         List<String> restantes = new ArrayList<>(equipas);
         Collections.shuffle(restantes, random);
@@ -183,7 +166,7 @@ public class LogicaTorneio {
 
     private boolean emparelharRec(List<String> restantes, Set<String> paresJogados, List<String[]> pares) {
         if (restantes.size() < 2) {
-            return true;   // 0 (ou 1, se o grupo for ímpar) equipas por emparelhar
+            return true;
         }
         String a = restantes.remove(0);
         for (int i = 0; i < restantes.size(); i++) {
@@ -207,35 +190,119 @@ public class LogicaTorneio {
 
     // ------------------------------------------------- fase de grupos: apuramento
 
+    private static class EstatisticaEquipa {
+        String equipa;
+        int ordemOriginal;
+        int pontos;
+        int golosMarcados;
+        int golosSofridos;
+
+        int diferencaGolos() {
+            return golosMarcados - golosSofridos;
+        }
+    }
+
     /**
-     * Devolve, por ordem de classificação, as equipas apuradas da fase de grupos.
-     *
-     * TODO (a fazer em conjunto): definir o critério de apuramento
-     * (pontos -> diferença de golos -> golos marcados) e quantas equipas
-     * passam por grupo. Depende de termos resultado/golos nos jogos de grupo,
-     * que o JogoCalendario ainda não guarda.
+     * Devolve os apurados de todos os grupos, pela ordem 1.º, 2.º, 1.º, 2.º, ...
+     * Critérios: pontos -> diferença de golos -> golos marcados -> ordem do grupo.
      */
     public List<String> apuradosFaseGrupos() {
-        // TODO
-        return new ArrayList<>();
+        ArrayList<Jogo> jogos = RepositorioDados.carregarJogos();
+        List<String> apurados = new ArrayList<>();
+        for (Grupo grupo : grupos) {
+            List<String> classificados = classificadosDoGrupo(grupo, jogos);
+            if (classificados.size() >= 1) apurados.add(classificados.get(0));
+            if (classificados.size() >= 2) apurados.add(classificados.get(1));
+        }
+        return apurados;
+    }
+
+    private Map<String, List<String>> classificadosPorGrupo(ArrayList<Jogo> jogos) {
+        Map<String, List<String>> resultado = new LinkedHashMap<>();
+        for (Grupo grupo : grupos) {
+            resultado.put(grupo.getNome(), classificadosDoGrupo(grupo, jogos));
+        }
+        return resultado;
+    }
+
+    private List<String> classificadosDoGrupo(Grupo grupo, ArrayList<Jogo> jogos) {
+        List<EstatisticaEquipa> tabela = new ArrayList<>();
+        Map<String, EstatisticaEquipa> porNome = new HashMap<>();
+
+        for (int i = 0; i < grupo.getEquipas().size(); i++) {
+            EstatisticaEquipa e = new EstatisticaEquipa();
+            e.equipa = grupo.getEquipas().get(i);
+            e.ordemOriginal = i;
+            tabela.add(e);
+            porNome.put(e.equipa, e);
+        }
+
+        for (Jogo jogo : jogos) {
+            if (!grupo.getNome().equals(jogo.getFase()) || !jogo.isTerminado()) continue;
+
+            EstatisticaEquipa a = porNome.get(jogo.getEquipaA());
+            EstatisticaEquipa b = porNome.get(jogo.getEquipaB());
+            if (a == null || b == null) continue;
+
+            a.golosMarcados += jogo.getGolosA();
+            a.golosSofridos += jogo.getGolosB();
+            b.golosMarcados += jogo.getGolosB();
+            b.golosSofridos += jogo.getGolosA();
+
+            if (jogo.getGolosA() > jogo.getGolosB()) {
+                a.pontos += 3;
+            } else if (jogo.getGolosB() > jogo.getGolosA()) {
+                b.pontos += 3;
+            } else {
+                a.pontos += 1;
+                b.pontos += 1;
+            }
+        }
+
+        tabela.sort(
+                Comparator.comparingInt((EstatisticaEquipa e) -> e.pontos).reversed()
+                        .thenComparing(Comparator.comparingInt(EstatisticaEquipa::diferencaGolos).reversed())
+                        .thenComparing(Comparator.comparingInt((EstatisticaEquipa e) -> e.golosMarcados).reversed())
+                        .thenComparingInt(e -> e.ordemOriginal)
+        );
+
+        List<String> classificados = new ArrayList<>();
+        for (EstatisticaEquipa e : tabela) {
+            classificados.add(e.equipa);
+        }
+        return classificados;
     }
 
     // ------------------------------------------------------------------ fases eliminatórias
 
-    /** Fase seguinte à fase dada, ou null se já for a final (ou fase desconhecida). */
-    public String proximaFase(String fase) {
-        for (int i = 0; i < FASES_ELIMINATORIAS.length - 1; i++) {
-            if (FASES_ELIMINATORIAS[i].equals(fase)) {
-                return FASES_ELIMINATORIAS[i + 1];
-            }
+    public static boolean isFaseEliminatoria(String fase) {
+        if (fase == null) return false;
+        for (String f : FASES_BRACKET) {
+            if (f.equals(fase)) return true;
         }
+        return false;
+    }
+
+    public static boolean isPlaceholder(String equipa) {
+        if (equipa == null) return true;
+        return equipa.startsWith("Vencedor Jogo ")
+                || equipa.startsWith("Perdedor Jogo ")
+                || equipa.startsWith("1.º ")
+                || equipa.startsWith("2.º ")
+                || equipa.trim().isEmpty();
+    }
+
+    public String proximaFase(String fase) {
+        if (FASE_OITAVOS.equals(fase)) return FASE_QUARTOS;
+        if (FASE_QUARTOS.equals(fase)) return FASE_MEIAS;
+        if (FASE_MEIAS.equals(fase)) return FASE_FINAL;
         return null;
     }
 
-    /** Equipas vencedoras dos jogos já terminados de uma fase. */
     public List<String> vencedores(String fase) {
+        ArrayList<Jogo> jogos = RepositorioDados.carregarJogos();
         List<String> vencedores = new ArrayList<>();
-        for (Jogo jogo : jogosEliminatorios) {
+        for (Jogo jogo : jogos) {
             if (fase.equals(jogo.getFase()) && jogo.isTerminado()) {
                 String venc = jogo.getVencedora();
                 if (venc != null) {
@@ -246,60 +313,250 @@ public class LogicaTorneio {
         return vencedores;
     }
 
-    /**
-     * Cria os jogos da fase eliminatória seguinte a partir das equipas apuradas.
-     *
-     * TODO (a fazer em conjunto): emparelhar as equipas (sorteio/seeding),
-     * criar os objetos Jogo com a fase correta e guardá-los.
-     */
     public List<Jogo> gerarJogos(String fase, List<String> apurados) {
-        // TODO
-        return new ArrayList<>();
+        List<Jogo> jogos = new ArrayList<>();
+        for (int i = 0; i + 1 < apurados.size(); i += 2) {
+            jogos.add(new Jogo(fase, apurados.get(i), apurados.get(i + 1)));
+        }
+        return jogos;
     }
 
     /**
-     * Gera os 8 jogos dos oitavos de final a partir dos apurados da fase
-     * de grupos.
-     *
-     * A fase de grupos é externa ao código — assume-se que cada um dos 8
-     * grupos guarda exactamente duas equipas, por esta ordem:
-     *   índice 0 → 1º classificado;
-     *   índice 1 → 2º classificado.
-     *
-     * Cruzamento (pares de grupos vizinhos A↔B, C↔D, E↔F, G↔H):
-     *   - 1º do grupo X  vs  2º do grupo Y
-     *   - 1º do grupo Y  vs  2º do grupo X
-     * Total: 8 jogos, 16 equipas, cada equipa joga uma vez.
-     *
-     * Cada jogo recebe data, hora, estádio e preço aleatórios e é guardado
-     * no calendário (jogosCalendario.dat) — aparece na janela principal
-     * como qualquer outro JogoCalendario, com o "grupo" preenchido com o
-     * nome da fase ("Oitavos de final") para distinguir dos jogos de grupos.
+     * Garante que existem os jogos 49 a 64 e atualiza automaticamente as equipas
+     * dos jogos seguintes conforme os vencedores já registados.
      */
-    public List<JogoCalendario> gerarOitavos() {
-        LocalDate dataBase = dataBaseProximaJornada();
-        List<JogoCalendario> novos = new ArrayList<>();
+    public List<Jogo> garantirArvoreEliminatoria() {
+        ArrayList<Jogo> todos = RepositorioDados.carregarJogos();
+        if (todos == null) todos = new ArrayList<>();
 
-        for (int i = 0; i + 1 < grupos.size(); i += 2) {
-            Grupo grupoX = grupos.get(i);
-            Grupo grupoY = grupos.get(i + 1);
-            if (grupoX.getEquipas().size() < 2 || grupoY.getEquipas().size() < 2) {
-                continue;   // grupo incompleto — não gera o par
-            }
+        boolean alterado = removerEliminatoriasAntigasSemNumero(todos);
+        Map<Integer, Jogo> mapa = mapearPorNumero(todos);
+        Map<String, List<String>> classificados = classificadosPorGrupo(todos);
 
-            String x1 = grupoX.getEquipas().get(0);
-            String x2 = grupoX.getEquipas().get(1);
-            String y1 = grupoY.getEquipas().get(0);
-            String y2 = grupoY.getEquipas().get(1);
-
-            LocalDate dia = dataBase.plusDays(i / 2);     // 2 jogos por dia
-            novos.add(criarJogo(FASE_OITAVOS, x1, y2, dia));
-            novos.add(criarJogo(FASE_OITAVOS, y1, x2, dia));
+        // Oitavos: ordem compatível com o print da árvore automática.
+        String[][] oitavos = paresOitavos(classificados);
+        for (int i = 0; i < oitavos.length; i++) {
+            alterado |= garantirJogo(todos, mapa, 49 + i, FASE_OITAVOS, oitavos[i][0], oitavos[i][1]);
         }
 
-        jogosGrupos.addAll(novos);
-        RepositorioDados.guardarJogosCalendario(new ArrayList<>(jogosGrupos));
-        return novos;
+        // Quartos.
+        alterado |= garantirJogo(todos, mapa, 57, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 49), vencedorOuPlaceholder(mapa, 50));
+        alterado |= garantirJogo(todos, mapa, 58, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 53), vencedorOuPlaceholder(mapa, 54));
+        alterado |= garantirJogo(todos, mapa, 59, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 51), vencedorOuPlaceholder(mapa, 52));
+        alterado |= garantirJogo(todos, mapa, 60, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 55), vencedorOuPlaceholder(mapa, 56));
+
+        // Meias-finais.
+        alterado |= garantirJogo(todos, mapa, 61, FASE_MEIAS, vencedorOuPlaceholder(mapa, 57), vencedorOuPlaceholder(mapa, 58));
+        alterado |= garantirJogo(todos, mapa, 62, FASE_MEIAS, vencedorOuPlaceholder(mapa, 59), vencedorOuPlaceholder(mapa, 60));
+
+        // 3.º lugar: perdedores das meias.
+        alterado |= garantirJogo(todos, mapa, 63, FASE_TERCEIRO, perdedorOuPlaceholder(mapa, 61), perdedorOuPlaceholder(mapa, 62));
+
+        // Final: vencedores das meias.
+        alterado |= garantirJogo(todos, mapa, 64, FASE_FINAL, vencedorOuPlaceholder(mapa, 61), vencedorOuPlaceholder(mapa, 62));
+
+        ordenarJogosParaGravacao(todos);
+        if (alterado) {
+            RepositorioDados.guardarJogos(todos);
+        }
+
+        sincronizarCalendarioEliminatorias(todos);
+        return filtrarEliminatorias(todos);
+    }
+
+
+    private boolean removerEliminatoriasAntigasSemNumero(ArrayList<Jogo> jogos) {
+        boolean removeu = false;
+        for (int i = jogos.size() - 1; i >= 0; i--) {
+            Jogo jogo = jogos.get(i);
+            if (jogo.getNumero() <= 0 && isFaseEliminatoria(jogo.getFase())) {
+                jogos.remove(i);
+                removeu = true;
+            }
+        }
+        return removeu;
+    }
+
+    private Map<Integer, Jogo> mapearPorNumero(List<Jogo> jogos) {
+        Map<Integer, Jogo> mapa = new HashMap<>();
+        for (Jogo jogo : jogos) {
+            if (jogo.getNumero() > 0) {
+                mapa.put(jogo.getNumero(), jogo);
+            }
+        }
+        return mapa;
+    }
+
+    private String[][] paresOitavos(Map<String, List<String>> classificados) {
+        return new String[][]{
+                {posicao(classificados, "GRUPO A", 0), posicao(classificados, "GRUPO B", 1)},
+                {posicao(classificados, "GRUPO C", 0), posicao(classificados, "GRUPO D", 1)},
+                {posicao(classificados, "GRUPO B", 0), posicao(classificados, "GRUPO A", 1)},
+                {posicao(classificados, "GRUPO D", 0), posicao(classificados, "GRUPO C", 1)},
+                {posicao(classificados, "GRUPO E", 0), posicao(classificados, "GRUPO F", 1)},
+                {posicao(classificados, "GRUPO G", 0), posicao(classificados, "GRUPO H", 1)},
+                {posicao(classificados, "GRUPO F", 0), posicao(classificados, "GRUPO E", 1)},
+                {posicao(classificados, "GRUPO H", 0), posicao(classificados, "GRUPO G", 1)}
+        };
+    }
+
+    private String posicao(Map<String, List<String>> classificados, String grupo, int posicao) {
+        List<String> lista = classificados.get(grupo);
+        if (lista != null && lista.size() > posicao) {
+            return lista.get(posicao);
+        }
+        return (posicao + 1) + ".º " + grupo;
+    }
+
+    private boolean garantirJogo(
+            ArrayList<Jogo> todos,
+            Map<Integer, Jogo> mapa,
+            int numero,
+            String fase,
+            String equipaA,
+            String equipaB
+    ) {
+        Jogo jogo = mapa.get(numero);
+        if (jogo == null) {
+            jogo = new Jogo(fase, equipaA, equipaB);
+            jogo.setNumero(numero);
+            jogo.setTerminado(false);
+            todos.add(jogo);
+            mapa.put(numero, jogo);
+            return true;
+        }
+
+        boolean alterado = false;
+        if (jogo.getNumero() != numero) {
+            jogo.setNumero(numero);
+            alterado = true;
+        }
+        if (!fase.equals(jogo.getFase())) {
+            jogo.setFase(fase);
+            alterado = true;
+        }
+
+        // Só alteramos automaticamente equipas de jogos ainda não terminados.
+        // Assim, um resultado já validado não é apagado por engano.
+        if (!jogo.isTerminado()) {
+            if (!textoIgual(jogo.getEquipaA(), equipaA) || !textoIgual(jogo.getEquipaB(), equipaB)) {
+                jogo.setEquipaA(equipaA);
+                jogo.setEquipaB(equipaB);
+                jogo.setGolosA(0);
+                jogo.setGolosB(0);
+                jogo.setVencedorDesempate(null);
+                jogo.getMarcadores().clear();
+                alterado = true;
+            }
+        }
+
+        return alterado;
+    }
+
+    private boolean textoIgual(String a, String b) {
+        if (a == null) return b == null;
+        return a.equals(b);
+    }
+
+    private String vencedorOuPlaceholder(Map<Integer, Jogo> mapa, int numero) {
+        Jogo jogo = mapa.get(numero);
+        String vencedor = jogo == null ? null : jogo.getVencedora();
+        return vencedor == null ? "Vencedor Jogo " + numero : vencedor;
+    }
+
+    private String perdedorOuPlaceholder(Map<Integer, Jogo> mapa, int numero) {
+        Jogo jogo = mapa.get(numero);
+        String perdedor = jogo == null ? null : jogo.getPerdedora();
+        return perdedor == null ? "Perdedor Jogo " + numero : perdedor;
+    }
+
+    private List<Jogo> filtrarEliminatorias(List<Jogo> todos) {
+        List<Jogo> resultado = new ArrayList<>();
+        for (Jogo jogo : todos) {
+            if (isFaseEliminatoria(jogo.getFase())) {
+                resultado.add(jogo);
+            }
+        }
+        resultado.sort(Comparator.comparingInt(Jogo::getNumero));
+        return resultado;
+    }
+
+    private void ordenarJogosParaGravacao(ArrayList<Jogo> jogos) {
+        jogos.sort((a, b) -> {
+            boolean aElim = a.getNumero() > 0;
+            boolean bElim = b.getNumero() > 0;
+            if (aElim && bElim) return Integer.compare(a.getNumero(), b.getNumero());
+            if (aElim) return 1;
+            if (bElim) return -1;
+            int fase = String.valueOf(a.getFase()).compareTo(String.valueOf(b.getFase()));
+            if (fase != 0) return fase;
+            int equipaA = String.valueOf(a.getEquipaA()).compareTo(String.valueOf(b.getEquipaA()));
+            if (equipaA != 0) return equipaA;
+            return String.valueOf(a.getEquipaB()).compareTo(String.valueOf(b.getEquipaB()));
+        });
+    }
+
+    /**
+     * Mantém o calendário público coerente com a árvore eliminatória.
+     * Remove entradas antigas das eliminatórias e recria apenas jogos com equipas reais.
+     */
+    private void sincronizarCalendarioEliminatorias(List<Jogo> todos) {
+        ArrayList<JogoCalendario> calendario = RepositorioDados.carregarJogosCalendario();
+        if (calendario == null) calendario = new ArrayList<>();
+
+        Map<String, JogoCalendario> antigos = new HashMap<>();
+        ArrayList<JogoCalendario> apenasGrupos = new ArrayList<>();
+
+        for (JogoCalendario jogo : calendario) {
+            if (isFaseEliminatoria(jogo.getGrupo())) {
+                antigos.put(chaveCalendario(jogo.getGrupo(), jogo.getEquipaA(), jogo.getEquipaB()), jogo);
+            } else {
+                apenasGrupos.add(jogo);
+            }
+        }
+
+        LocalDate dataBase = dataBaseProximaJornada(apenasGrupos);
+        int indice = 0;
+
+        List<Jogo> eliminatorias = filtrarEliminatorias(todos);
+        for (Jogo jogo : eliminatorias) {
+            if (isPlaceholder(jogo.getEquipaA()) || isPlaceholder(jogo.getEquipaB())) {
+                continue;
+            }
+
+            String chave = chaveCalendario(jogo.getFase(), jogo.getEquipaA(), jogo.getEquipaB());
+            JogoCalendario existente = antigos.get(chave);
+            if (existente != null) {
+                apenasGrupos.add(existente);
+            } else {
+                apenasGrupos.add(criarJogoCalendario(
+                        jogo.getFase(),
+                        jogo.getEquipaA(),
+                        jogo.getEquipaB(),
+                        dataBase.plusDays(indice / 2)
+                ));
+            }
+            indice++;
+        }
+
+        RepositorioDados.guardarJogosCalendario(apenasGrupos);
+    }
+
+    private String chaveCalendario(String fase, String equipaA, String equipaB) {
+        return fase + "|" + equipaA + "|" + equipaB;
+    }
+
+    /** Compatibilidade com o código antigo: agora também cria/atualiza jogos.dat. */
+    public List<JogoCalendario> gerarOitavos() {
+        garantirArvoreEliminatoria();
+        ArrayList<JogoCalendario> calendario = RepositorioDados.carregarJogosCalendario();
+        List<JogoCalendario> oitavos = new ArrayList<>();
+        for (JogoCalendario jogo : calendario) {
+            if (FASE_OITAVOS.equals(jogo.getGrupo())) {
+                oitavos.add(jogo);
+            }
+        }
+        return oitavos;
     }
 
     // ------------------------------------------------------------------ getters

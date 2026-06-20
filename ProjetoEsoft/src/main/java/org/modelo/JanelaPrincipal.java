@@ -3,6 +3,8 @@ package org.modelo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -61,6 +63,14 @@ public class JanelaPrincipal extends BaseFrame {
 
     private ArrayList<JogoCalendario> jogos;
 
+    /**
+     * No perfil Gestor, o menu principal deixa de mostrar venda de bilhetes
+     * e passa a mostrar os jogos eliminatórios ainda por preencher.
+     */
+    private Timer timerAtualizacaoGestor;
+    private Sessao.PerfilListener listenerPerfilPrincipal;
+    private String assinaturaJogosGestor = "";
+
     public JanelaPrincipal(String title) {
         super(title);
 
@@ -79,6 +89,7 @@ public class JanelaPrincipal extends BaseFrame {
         carregarDados();
         configurarFiltroEquipa();
         renderizarJogos();
+        configurarAtualizacaoMenuGestor();
 
         atualizarContadorCarrinho();
         CarrinhoStore.getInstance().registarListener(this::onCarrinhoAlterado);
@@ -166,6 +177,15 @@ public class JanelaPrincipal extends BaseFrame {
 
     private void renderizarJogos() {
         painelLista.removeAll();
+        atualizarVisibilidadeFiltro();
+
+        if (Sessao.isGestor()) {
+            renderizarJogosGestor();
+            painelLista.add(Box.createVerticalGlue());
+            painelLista.revalidate();
+            painelLista.repaint();
+            return;
+        }
 
         FiltroJogos filtro = getFiltroSelecionado();
         Map<String, List<JogoCalendario>> porData = agruparPorData(filtro);
@@ -188,6 +208,264 @@ public class JanelaPrincipal extends BaseFrame {
         painelLista.add(Box.createVerticalGlue());
         painelLista.revalidate();
         painelLista.repaint();
+    }
+
+
+    // ------------------------------------------------------------------ vista do Gestor
+
+    private void configurarAtualizacaoMenuGestor() {
+        listenerPerfilPrincipal = novoPerfil -> SwingUtilities.invokeLater(() -> {
+            recarregarJogos();
+            assinaturaJogosGestor = "";
+            renderizarJogos();
+        });
+        Sessao.registarListener(listenerPerfilPrincipal);
+
+        timerAtualizacaoGestor = new Timer(1000, e -> atualizarJogosGestorSeNecessario());
+        timerAtualizacaoGestor.start();
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                Sessao.removerListener(listenerPerfilPrincipal);
+                if (timerAtualizacaoGestor != null) {
+                    timerAtualizacaoGestor.stop();
+                }
+            }
+        });
+    }
+
+    private void atualizarVisibilidadeFiltro() {
+        if (painelFiltro != null) {
+            painelFiltro.setVisible(!Sessao.isGestor());
+        }
+    }
+
+    private void atualizarJogosGestorSeNecessario() {
+        if (!Sessao.isGestor()) {
+            return;
+        }
+
+        String novaAssinatura = criarAssinaturaJogosGestor();
+        if (!novaAssinatura.equals(assinaturaJogosGestor)) {
+            assinaturaJogosGestor = novaAssinatura;
+            renderizarJogos();
+        }
+    }
+
+    private String criarAssinaturaJogosGestor() {
+        try {
+            new LogicaTorneio().garantirArvoreEliminatoria();
+        } catch (Exception ex) {
+            // A assinatura não deve partir a interface se algum ficheiro ainda não existir.
+        }
+
+        ArrayList<Jogo> todos = RepositorioDados.carregarJogos();
+        if (todos == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        todos.sort(comparadorJogosEliminatorios());
+        for (Jogo jogo : todos) {
+            if (jogo.getNumero() <= 0 || !LogicaTorneio.isFaseEliminatoria(jogo.getFase())) {
+                continue;
+            }
+            sb.append(jogo.getNumero()).append('|')
+                    .append(jogo.getFase()).append('|')
+                    .append(jogo.getEquipaA()).append('|')
+                    .append(jogo.getEquipaB()).append('|')
+                    .append(jogo.getGolosA()).append('|')
+                    .append(jogo.getGolosB()).append('|')
+                    .append(jogo.isTerminado()).append('|')
+                    .append(jogo.getVencedora()).append('\n');
+        }
+        return sb.toString();
+    }
+
+    private void renderizarJogosGestor() {
+        try {
+            new LogicaTorneio().garantirArvoreEliminatoria();
+        } catch (Exception ex) {
+            painelLista.add(criarMensagemErroGestor(ex));
+            return;
+        }
+
+        List<Jogo> pendentes = carregarJogosEliminatoriosPendentes();
+        assinaturaJogosGestor = criarAssinaturaJogosGestor();
+
+        painelLista.add(criarTituloGestor());
+        painelLista.add(Box.createVerticalStrut(8));
+
+        if (pendentes.isEmpty()) {
+            painelLista.add(criarMensagemGestorVazia());
+            return;
+        }
+
+        Map<String, List<Jogo>> porFase = agruparEliminatoriasPorFase(pendentes);
+        for (Map.Entry<String, List<Jogo>> entry : porFase.entrySet()) {
+            painelLista.add(criarHeaderData(entry.getKey()));
+            for (Jogo jogo : entry.getValue()) {
+                painelLista.add(criarCardJogoGestor(jogo));
+                painelLista.add(Box.createVerticalStrut(10));
+            }
+            painelLista.add(Box.createVerticalStrut(12));
+        }
+    }
+
+    private List<Jogo> carregarJogosEliminatoriosPendentes() {
+        ArrayList<Jogo> todos = RepositorioDados.carregarJogos();
+        List<Jogo> pendentes = new ArrayList<>();
+        if (todos == null) {
+            return pendentes;
+        }
+
+        for (Jogo jogo : todos) {
+            if (jogo.getNumero() > 0
+                    && LogicaTorneio.isFaseEliminatoria(jogo.getFase())
+                    && !jogo.isTerminado()) {
+                pendentes.add(jogo);
+            }
+        }
+        pendentes.sort(comparadorJogosEliminatorios());
+        return pendentes;
+    }
+
+    private Comparator<Jogo> comparadorJogosEliminatorios() {
+        return Comparator.comparingInt(Jogo::getNumero);
+    }
+
+    private Map<String, List<Jogo>> agruparEliminatoriasPorFase(List<Jogo> jogos) {
+        Map<String, List<Jogo>> porFase = new LinkedHashMap<>();
+        for (String fase : LogicaTorneio.FASES_BRACKET) {
+            porFase.put(fase, new ArrayList<>());
+        }
+
+        for (Jogo jogo : jogos) {
+            porFase.computeIfAbsent(jogo.getFase(), k -> new ArrayList<>()).add(jogo);
+        }
+
+        porFase.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        return porFase;
+    }
+
+    private JComponent criarTituloGestor() {
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.setOpaque(false);
+        painel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        painel.setBorder(BorderFactory.createEmptyBorder(6, 4, 6, 4));
+
+        JLabel titulo = new JLabel("🎯 Jogos eliminatórios por registar");
+        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 18f));
+        titulo.setForeground(TEXTO_GRUPO);
+
+        JLabel dica = new JLabel("Os jogos aparecem como Ganhador do jogo X × Perdedor do jogo Y quando ainda dependem de resultados anteriores.");
+        dica.setFont(dica.getFont().deriveFont(Font.PLAIN, 13f));
+        dica.setForeground(new Color(0x555555));
+
+        painel.add(titulo, BorderLayout.NORTH);
+        painel.add(dica, BorderLayout.SOUTH);
+        return painel;
+    }
+
+    private JComponent criarMensagemGestorVazia() {
+        JLabel lbl = new JLabel("Todos os jogos eliminatórios já têm resultado registado.");
+        lbl.setFont(lbl.getFont().deriveFont(Font.ITALIC, 14f));
+        lbl.setForeground(TEXTO_GRUPO);
+        lbl.setBorder(BorderFactory.createEmptyBorder(20, 4, 20, 0));
+        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return lbl;
+    }
+
+    private JComponent criarMensagemErroGestor(Exception ex) {
+        JLabel lbl = new JLabel("Não foi possível carregar os jogos eliminatórios: " + ex.getMessage());
+        lbl.setFont(lbl.getFont().deriveFont(Font.ITALIC, 14f));
+        lbl.setForeground(new Color(0x8B1E1E));
+        lbl.setBorder(BorderFactory.createEmptyBorder(20, 4, 20, 0));
+        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return lbl;
+    }
+
+    private JPanel criarCardJogoGestor(Jogo jogo) {
+        JPanel card = new JPanel(new GridBagLayout());
+        card.setBackground(FUNDO_CARD);
+        card.setBorder(BorderFactory.createEmptyBorder(12, 14, 12, 14));
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 145));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 4, 2, 4);
+
+        JLabel lblNumero = new JLabel("Jogo " + jogo.getNumero() + " · " + jogo.getFase());
+        lblNumero.setForeground(new Color(0xDDE6F0));
+        lblNumero.setFont(lblNumero.getFont().deriveFont(Font.BOLD, 13f));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        card.add(lblNumero, gbc);
+
+        JLabel lblEquipas = new JLabel(textoEquipaGestor(jogo.getEquipaA()) + "   X   " + textoEquipaGestor(jogo.getEquipaB()));
+        lblEquipas.setForeground(TEXTO_CARD);
+        lblEquipas.setFont(lblEquipas.getFont().deriveFont(Font.BOLD, 16f));
+        lblEquipas.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 1; gbc.anchor = GridBagConstraints.CENTER; gbc.fill = GridBagConstraints.HORIZONTAL;
+        card.add(lblEquipas, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+
+        JLabel lblEstado = new JLabel(jogoPodeSerRegistado(jogo)
+                ? "Pronto para registar resultado"
+                : "A aguardar resultados anteriores");
+        lblEstado.setOpaque(true);
+        lblEstado.setForeground(STATUS_TEXTO);
+        lblEstado.setBackground(jogoPodeSerRegistado(jogo) ? STATUS_LIVRE_FUNDO : BOTAO_INDISPONIVEL);
+        lblEstado.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        lblEstado.setFont(lblEstado.getFont().deriveFont(Font.BOLD, 12f));
+        gbc.gridy = 2; gbc.anchor = GridBagConstraints.WEST;
+        card.add(lblEstado, gbc);
+
+        JButton btnRegistar = new JButton(jogoPodeSerRegistado(jogo)
+                ? "Registar resultado"
+                : "Aguardando definição");
+        btnRegistar.setFont(btnRegistar.getFont().deriveFont(Font.BOLD, 12f));
+        btnRegistar.setEnabled(jogoPodeSerRegistado(jogo));
+        btnRegistar.setBackground(jogoPodeSerRegistado(jogo) ? BOTAO_ADICIONAR : BOTAO_INDISPONIVEL);
+        btnRegistar.setForeground(jogoPodeSerRegistado(jogo) ? BOTAO_ADICIONAR_TEXTO : TEXTO_CARD);
+        btnRegistar.addActionListener(e -> abrirRegistoResultado(jogo));
+        gbc.gridx = 1; gbc.gridy = 2; gbc.gridwidth = 1; gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        card.add(btnRegistar, gbc);
+
+        return card;
+    }
+
+    private boolean jogoPodeSerRegistado(Jogo jogo) {
+        return jogo != null
+                && !LogicaTorneio.isPlaceholder(jogo.getEquipaA())
+                && !LogicaTorneio.isPlaceholder(jogo.getEquipaB());
+    }
+
+    private String textoEquipaGestor(String equipa) {
+        if (equipa == null || equipa.trim().isEmpty()) {
+            return "Por definir";
+        }
+
+        if (equipa.startsWith("Vencedor Jogo ")) {
+            return "Ganhador do jogo " + equipa.substring("Vencedor Jogo ".length());
+        }
+
+        if (equipa.startsWith("Perdedor Jogo ")) {
+            return "Perdedor do jogo " + equipa.substring("Perdedor Jogo ".length());
+        }
+
+        return equipa;
+    }
+
+    private void abrirRegistoResultado(Jogo jogo) {
+        WindowManager.abrirJanela(
+                this,
+                "gerirJogos",
+                "A janela Registar Jogos já está aberta!",
+                new GerirJogos("Campeonato Mundial 2026 - Registar Jogos", jogo.getNumero())
+        );
     }
 
     private Map<String, List<JogoCalendario>> agruparPorData(FiltroJogos filtro) {
@@ -375,11 +653,11 @@ public class JanelaPrincipal extends BaseFrame {
     }
 
     private void btnComprarActionPerformed(ActionEvent e) {
-        if (CarrinhoStore.getInstance().getItens().isEmpty()) {
+        if (!CarrinhoStore.getInstance().temBilhetes()) {
             JOptionPane.showMessageDialog(
                     this,
-                    "O carrinho está vazio. Adicione pelo menos um item para continuar a compra.",
-                    "Carrinho vazio",
+                    "Adicione pelo menos um jogo ao carrinho para continuar a compra.",
+                    "Carrinho sem jogos",
                     JOptionPane.WARNING_MESSAGE
             );
             return;
