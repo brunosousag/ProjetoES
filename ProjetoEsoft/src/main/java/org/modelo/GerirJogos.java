@@ -404,7 +404,6 @@ public class GerirJogos extends BaseFrame {
         if (a == null || b == null) txt = "Escolhe um grupo com pelo menos duas equipas.";
         else if (ga > gb)       txt += "      🏆 " + a;
         else if (gb > ga)  txt += "      🏆 " + b;
-        else               txt += "      (empate — decidido nos penáltis)";
         lblResultado.setText(txt);
     }
 
