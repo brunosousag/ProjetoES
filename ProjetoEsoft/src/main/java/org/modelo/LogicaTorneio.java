@@ -21,8 +21,6 @@ public class LogicaTorneio {
     // ------------------------------------------------------------------ fases
 
     /** Nomes das fases eliminatórias (têm de coincidir com os usados em GerirJogos). */
-    public static final String FASE_16AVOS  = "Dezasseis-avos de final";
-    public static final String TERCEIROS_QUALIFICADOS = "Terceiros qualificados";
     public static final String FASE_OITAVOS = "Oitavos de final";
     public static final String FASE_QUARTOS = "Quartos de final";
     public static final String FASE_MEIAS   = "Meias-finais";
@@ -30,7 +28,7 @@ public class LogicaTorneio {
 
     /** Fases eliminatórias por ordem de progressão (da primeira à última). */
     public static final String[] FASES_ELIMINATORIAS = {
-            FASE_16AVOS, FASE_OITAVOS, FASE_QUARTOS, FASE_MEIAS, FASE_FINAL
+            FASE_OITAVOS, FASE_QUARTOS, FASE_MEIAS, FASE_FINAL
     };
 
     // ----------------------------------------------- parâmetros da geração do calendário
@@ -257,6 +255,51 @@ public class LogicaTorneio {
     public List<Jogo> gerarJogos(String fase, List<String> apurados) {
         // TODO
         return new ArrayList<>();
+    }
+
+    /**
+     * Gera os 8 jogos dos oitavos de final a partir dos apurados da fase
+     * de grupos.
+     *
+     * A fase de grupos é externa ao código — assume-se que cada um dos 8
+     * grupos guarda exactamente duas equipas, por esta ordem:
+     *   índice 0 → 1º classificado;
+     *   índice 1 → 2º classificado.
+     *
+     * Cruzamento (pares de grupos vizinhos A↔B, C↔D, E↔F, G↔H):
+     *   - 1º do grupo X  vs  2º do grupo Y
+     *   - 1º do grupo Y  vs  2º do grupo X
+     * Total: 8 jogos, 16 equipas, cada equipa joga uma vez.
+     *
+     * Cada jogo recebe data, hora, estádio e preço aleatórios e é guardado
+     * no calendário (jogosCalendario.dat) — aparece na janela principal
+     * como qualquer outro JogoCalendario, com o "grupo" preenchido com o
+     * nome da fase ("Oitavos de final") para distinguir dos jogos de grupos.
+     */
+    public List<JogoCalendario> gerarOitavos() {
+        LocalDate dataBase = dataBaseProximaJornada();
+        List<JogoCalendario> novos = new ArrayList<>();
+
+        for (int i = 0; i + 1 < grupos.size(); i += 2) {
+            Grupo grupoX = grupos.get(i);
+            Grupo grupoY = grupos.get(i + 1);
+            if (grupoX.getEquipas().size() < 2 || grupoY.getEquipas().size() < 2) {
+                continue;   // grupo incompleto — não gera o par
+            }
+
+            String x1 = grupoX.getEquipas().get(0);
+            String x2 = grupoX.getEquipas().get(1);
+            String y1 = grupoY.getEquipas().get(0);
+            String y2 = grupoY.getEquipas().get(1);
+
+            LocalDate dia = dataBase.plusDays(i / 2);     // 2 jogos por dia
+            novos.add(criarJogo(FASE_OITAVOS, x1, y2, dia));
+            novos.add(criarJogo(FASE_OITAVOS, y1, x2, dia));
+        }
+
+        jogosGrupos.addAll(novos);
+        RepositorioDados.guardarJogosCalendario(new ArrayList<>(jogosGrupos));
+        return novos;
     }
 
     // ------------------------------------------------------------------ getters

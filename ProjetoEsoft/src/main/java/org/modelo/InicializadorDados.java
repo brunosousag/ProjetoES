@@ -181,12 +181,15 @@ public class InicializadorDados {
     }
 
     /**
-     * Cria o calendário inicial da fase de grupos.
+     * Cria o calendário inicial do torneio.
      *
-     * Já não é hardcoded: gera automaticamente o primeiro jogo de cada equipa
-     * (1ª jornada de todos os grupos) a partir dos grupos e estádios já criados.
-     * Por isso este método tem de correr DEPOIS de criarGruposSeNaoExistirem()
-     * e criarEstadiosSeNaoExistirem().
+     * Como a fase de grupos é externa, o torneio arranca já nos oitavos:
+     * gera os 8 jogos a partir dos 1º e 2º classificados dos 8 grupos
+     * (ver LogicaTorneio.gerarOitavos()). Cada jogo recebe data, hora,
+     * estádio e preço aleatórios.
+     *
+     * Tem de correr DEPOIS de criarGruposSeNaoExistirem() e
+     * criarEstadiosSeNaoExistirem().
      */
     private static void criarJogosCalendarioSeNaoExistirem() {
         File ficheiro = new File(CaminhosFicheiros.FICHEIRO_JOGOS_CALENDARIO);
@@ -195,7 +198,7 @@ public class InicializadorDados {
             return;
         }
 
-        new LogicaTorneio().gerarPrimeiraJornada();
+        new LogicaTorneio().gerarOitavos();
     }
 
     private static void criarEstadiosSeNaoExistirem() {
@@ -236,13 +239,20 @@ public class InicializadorDados {
     }
 
     /**
-     * Cria o ficheiro grupos.dat com os 12 grupos do Mundial 2026 (48 equipas).
-     * O ficheiro guarda APENAS os nomes das equipas — a logística (alojamento,
-     * deslocação) fica na classe Equipa, ligada depois pelo nome.
+     * Cria o ficheiro grupos.dat com os 8 grupos apurados para os oitavos.
      *
-     * NOTA: a composição abaixo é ilustrativa. Substituir pelos grupos do
-     * sorteio oficial quando estiverem definidos.
+     * A fase de grupos é assumida como já concluída — o código só lida com
+     * as 16 equipas qualificadas (1º e 2º de cada grupo). Por isso cada
+     * Grupo guarda exactamente DUAS equipas, por esta ordem:
+     *   índice 0 → 1º classificado;
+     *   índice 1 → 2º classificado.
+     * Esta ordem é usada por LogicaTorneio.gerarOitavos() para emparelhar
+     * 1º de um grupo contra o 2º do grupo vizinho.
+     *
+     * NOTA: os nomes abaixo são ilustrativos. Substituir pelos apurados
+     * reais quando definidos.
      */
+
     private static void criarGruposSeNaoExistirem() {
         File ficheiro = new File(CaminhosFicheiros.FICHEIRO_GRUPOS);
 
@@ -252,18 +262,14 @@ public class InicializadorDados {
 
         ArrayList<Grupo> grupos = new ArrayList<>();
 
-        grupos.add(new Grupo("GRUPO A", Arrays.asList("México", "Coreia do Sul", "República Checa", "África do Sul")));
-        grupos.add(new Grupo("GRUPO B", Arrays.asList("Suiça", "Canadá", "Catar", "Bósnia e Herzegovina")));
-        grupos.add(new Grupo("GRUPO C", Arrays.asList("Escócia", "Marrocos", "Brasil", "Haiti")));
-        grupos.add(new Grupo("GRUPO D", Arrays.asList("EUA", "Austrália", "Turquia", "Paraguai")));
-        grupos.add(new Grupo("GRUPO E", Arrays.asList("Alemanha", "Costa do Marfim", "Equador", "Curaçau")));
-        grupos.add(new Grupo("GRUPO F", Arrays.asList("Suécia", "Japão", "Países Baixos", "Tunísia")));
-        grupos.add(new Grupo("GRUPO G", Arrays.asList("Nova Zelândia", "Irão", "Bélgica", "Egipto")));
-        grupos.add(new Grupo("GRUPO H", Arrays.asList("Uruguai", "Arábia Saudita", "Espanha", "Cabo Verde")));
-        grupos.add(new Grupo("GRUPO I", Arrays.asList("Noruega", "França", "Senegal", "Iraque")));
-        grupos.add(new Grupo("GRUPO J", Arrays.asList("Argentina", "Áustria", "Jordânia", "Argélia")));
-        grupos.add(new Grupo("GRUPO K", Arrays.asList("Colombia", "DR Congo", "Portugal", "Uzbequistão")));
-        grupos.add(new Grupo("GRUPO L", Arrays.asList("Inglaterra", "Gana", "Panamá", "Croácia")));
+        grupos.add(new Grupo("GRUPO A", Arrays.asList("México", "Coreia do Sul")));
+        grupos.add(new Grupo("GRUPO B", Arrays.asList("Suiça", "Canadá")));
+        grupos.add(new Grupo("GRUPO C", Arrays.asList("Escócia", "Marrocos")));
+        grupos.add(new Grupo("GRUPO D", Arrays.asList("Portugal", "Austrália")));
+        grupos.add(new Grupo("GRUPO E", Arrays.asList("Alemanha", "Costa do Marfim")));
+        grupos.add(new Grupo("GRUPO F", Arrays.asList("Suécia", "Japão")));
+        grupos.add(new Grupo("GRUPO G", Arrays.asList("Nova Zelândia", "Irão")));
+        grupos.add(new Grupo("GRUPO H", Arrays.asList("Uruguai", "Arábia Saudita")));
 
         RepositorioDados.guardarGrupos(grupos);
     }
