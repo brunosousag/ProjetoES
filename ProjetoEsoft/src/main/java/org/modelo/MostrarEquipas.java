@@ -2,6 +2,8 @@ package org.modelo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -21,6 +23,9 @@ public class MostrarEquipas extends BaseFrame {
 
     /** Grelha onde as equipas são desenhadas dinamicamente (dentro de visualizarEquipas). */
     private transient JPanel painelTabela;
+
+    /** Redesenha a tabela quando o perfil (Gestor/Vendedor) muda. */
+    private transient Sessao.PerfilListener perfilTabelaListener;
 
     // Cores para manter o mesmo aspeto (cabeçalho escuro, células com bordas, fundo claro).
     private static final Color FUNDO_TABELA = new Color(-2565410, true);
@@ -50,6 +55,16 @@ public class MostrarEquipas extends BaseFrame {
 
         configurarTabelaEquipas();
         preencherTabela();
+
+        // Atualiza a coluna/botão (Editar vs Visualizar/Ver) ao mudar de perfil.
+        perfilTabelaListener = novoPerfil -> preencherTabela();
+        Sessao.registarListener(perfilTabelaListener);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                Sessao.removerListener(perfilTabelaListener);
+            }
+        });
 
         pack();
         setLocationRelativeTo(null);
@@ -92,7 +107,7 @@ public class MostrarEquipas extends BaseFrame {
             painelTabela.add(criarCelula(COLUNAS[c], true), gbc);
         }
         gbc.gridx = COLUNAS.length;
-        painelTabela.add(criarCelula("Editar", true), gbc);
+        painelTabela.add(criarCelula(Sessao.isGestor() ? "Ações" : "Visualizar", true), gbc);
 
         int linha = 1;
         for (Equipa equipa : equipas) {
@@ -105,18 +120,33 @@ public class MostrarEquipas extends BaseFrame {
                 gbc.gridx = c;
                 painelTabela.add(criarCelula(valores[c], false), gbc);
             }
+
             gbc.gridx = COLUNAS.length;
-            painelTabela.add(criarBotaoEditar(equipa), gbc);
+            painelTabela.add(criarCelulaBotao(equipa), gbc);
         }
 
         painelTabela.revalidate();
         painelTabela.repaint();
     }
 
+    /**
+     * Célula da coluna de ação: tem a mesma borda/fundo das restantes células
+     * (para a grelha ficar uniforme) e contém o botão compacto centrado.
+     */
+    private JPanel criarCelulaBotao(Equipa equipa) {
+        JPanel cell = new JPanel(new GridBagLayout());
+        cell.setOpaque(true);
+        cell.setBackground(FUNDO_TABELA);
+        cell.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COR_LINHA),
+                BorderFactory.createEmptyBorder(6, 12, 6, 12)));
+        cell.add(criarBotaoAccao(equipa));
+        return cell;
+    }
+
     /** Botão que abre a página de membros da equipa correspondente. */
-    private JButton criarBotaoEditar(Equipa equipa) {
-        JButton btn = new JButton("Editar");
-        btn.setBorder(BorderFactory.createLineBorder(COR_LINHA));
+    private JButton criarBotaoAccao(Equipa equipa) {
+        JButton btn = new JButton(Sessao.isGestor() ? "Editar" : "Ver");
         btn.addActionListener(e ->
                 WindowManager.abrirJanela(
                         this,
