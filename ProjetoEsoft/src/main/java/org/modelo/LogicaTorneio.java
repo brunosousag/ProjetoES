@@ -340,12 +340,24 @@ public class LogicaTorneio {
         }
 
         // Quartos.
+        // IMPORTANTE:
+        // A progressão deve respeitar a posição visual do bracket.
+        // Jogos 49-52 estão no lado esquerdo da árvore, por isso os seus
+        // vencedores têm de continuar no lado esquerdo:
+        //   57 = vencedor 49 vs vencedor 50
+        //   58 = vencedor 51 vs vencedor 52
+        // Jogos 53-56 estão no lado direito da árvore, por isso os seus
+        // vencedores continuam no lado direito:
+        //   59 = vencedor 53 vs vencedor 54
+        //   60 = vencedor 55 vs vencedor 56
         alterado |= garantirJogo(todos, mapa, 57, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 49), vencedorOuPlaceholder(mapa, 50));
-        alterado |= garantirJogo(todos, mapa, 58, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 53), vencedorOuPlaceholder(mapa, 54));
-        alterado |= garantirJogo(todos, mapa, 59, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 51), vencedorOuPlaceholder(mapa, 52));
+        alterado |= garantirJogo(todos, mapa, 58, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 51), vencedorOuPlaceholder(mapa, 52));
+        alterado |= garantirJogo(todos, mapa, 59, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 53), vencedorOuPlaceholder(mapa, 54));
         alterado |= garantirJogo(todos, mapa, 60, FASE_QUARTOS, vencedorOuPlaceholder(mapa, 55), vencedorOuPlaceholder(mapa, 56));
 
         // Meias-finais.
+        // Lado esquerdo: jogos 57 e 58.
+        // Lado direito: jogos 59 e 60.
         alterado |= garantirJogo(todos, mapa, 61, FASE_MEIAS, vencedorOuPlaceholder(mapa, 57), vencedorOuPlaceholder(mapa, 58));
         alterado |= garantirJogo(todos, mapa, 62, FASE_MEIAS, vencedorOuPlaceholder(mapa, 59), vencedorOuPlaceholder(mapa, 60));
 
