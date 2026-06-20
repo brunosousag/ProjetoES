@@ -458,12 +458,7 @@ public class JanelaPrincipal extends BaseFrame {
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 18f));
         titulo.setForeground(TEXTO_GRUPO);
 
-        JLabel dica = new JLabel("Os jogos aparecem como Ganhador do jogo X × Perdedor do jogo Y quando ainda dependem de resultados anteriores.");
-        dica.setFont(dica.getFont().deriveFont(Font.PLAIN, 13f));
-        dica.setForeground(new Color(0x555555));
-
         painel.add(titulo, BorderLayout.NORTH);
-        painel.add(dica, BorderLayout.SOUTH);
         return painel;
     }
 
