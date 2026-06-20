@@ -91,7 +91,7 @@ public class GerirJogos extends BaseFrame {
 
         JPanel botoes = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         botoes.setOpaque(false);
-        btnGestao = criarBotaoMenu("GESTAO", new Color(24, 38, 84));
+        btnGestao = criarBotaoMenu("TORNEIO", new Color(24, 38, 84));
         btnEquipas = criarBotaoMenu("EQUIPAS", new Color(30, 80, 120));
         btnMerch = criarBotaoMenu("MERCH", new Color(120, 70, 110));
         btnCarrinho = criarBotaoMenu("🛒 0", new Color(200, 90, 70));
