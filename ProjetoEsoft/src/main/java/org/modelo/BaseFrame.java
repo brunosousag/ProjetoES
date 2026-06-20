@@ -82,7 +82,6 @@ public abstract class BaseFrame extends JFrame {
         JMenuItem itemGolos = new JMenuItem("Melhores Marcadores");
 
         // Exclusivo do Gestor
-        JMenuItem itemGrupos = new JMenuItem("Grupos do torneio");
         JMenuItem itemHistorico = new JMenuItem("Histórico de Vendas");
         JMenuItem itemJogos = new JMenuItem("Gerir Resultados");
 
@@ -92,15 +91,6 @@ public abstract class BaseFrame extends JFrame {
                         "hostoricoVendas",
                         "A janela de historico de vendas já está aberta!",
                         new HistoricoVendas("Campeonato Mundial 2026 - Histórico de vendas")
-                )
-        );
-
-        itemGrupos.addActionListener(e ->
-                WindowManager.abrirJanela(
-                        this,
-                        "gerirGrupos",
-                        "A janela Gerir Torneio já está aberta!",
-                        new GerirGrupos("Campeonato Mundial 2026 - Gerir Grupos")
                 )
         );
 
@@ -133,7 +123,6 @@ public abstract class BaseFrame extends JFrame {
 
         popup.add(itemFases);
         popup.add(itemGolos);
-        popup.add(itemGrupos);
         popup.add(itemHistorico);
         popup.add(itemJogos);
 
@@ -148,7 +137,6 @@ public abstract class BaseFrame extends JFrame {
 
         // Tudo o que é só do Gestor: esconde-se quando o perfil é Vendedor.
         // (No menu Torneio; os itens de Equipas são adicionados em configurarMenuEquipas.)
-        componentesSoGestor.add(itemGrupos);
         componentesSoGestor.add(itemHistorico);
         componentesSoGestor.add(itemJogos);
 
